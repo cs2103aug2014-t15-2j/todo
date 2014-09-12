@@ -7,6 +7,9 @@ import todo.model.Item;
 
 public class NaturalLanguageProcessor {
 	public static Item processAdd(String msg){
+		
+		//TODO ****split msg into array****
+		
 		Item item = new Item();
 		Calendar c = Calendar.getInstance();
 		
