@@ -6,8 +6,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+
 import com.joestelmach.natty.*;
 
+import todo.library.NLP;
 import todo.library.NaturalLanguageProcessor;
 import todo.model.Item;
 
@@ -29,19 +31,21 @@ public class todo {
 		commandTypeString=scanner.next();
 		while (!commandTypeString.equals("exit")){
 			if (commandTypeString.equals("add")){
-				String content = scanner.nextLine().substring(1);
+				String content = scanner.nextLine().trim();
 				/*
 				Item item = NaturalLanguageProcessor.processAdd(content);
 				System.out.println("Description: " + item.getDescription());
 				System.out.println("StartDateTime: " + item.getStartDateTime());
 				*/
+				/*
 				Parser parser = new Parser();
 				List<DateGroup> groups = parser.parse(content);
 				
 				Date dates = groups.get(0).getDates().get(0);
 				DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 				System.out.println("date: " + df.format(dates));
-
+				*/
+				NLP.addParser(content);
 			}
 			System.out.print("command: ");
 			commandTypeString=scanner.next();
