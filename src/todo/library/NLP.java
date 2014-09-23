@@ -33,15 +33,13 @@ public class NLP {
 		String msgToDetectDate = removeQuoted(msg);
 		groups = parser.parse(msgToDetectDate);
 		
-		// escape wrong date time parse by Natty
+		// escape wrong date time parse by Natty, skip all integers
 		while (groups.size() > 0 && isInteger(groups.get(0).getText())){
-			//System.out.println("text: " + groups.get(0).getText());
 			 msgToDetectDate = msgToDetectDate.substring(msgToDetectDate.indexOf(groups.get(0).getText())+1, msgToDetectDate.length());
 			if(msgToDetectDate.equals("")){
 				groups.clear();
 				break;
 			}
-			//System.out.println("new string: " + msgToDetectDate);
 			groups = parser.parse(msgToDetectDate);
 		}
 		
@@ -49,13 +47,14 @@ public class NLP {
 		if (groups.size() > 0){
 			DateGroup group = groups.get(0);
 			if (group.getDates().size() == 2){
+				// has both start time and due time
 				date1 = group.getDates().get(0);
 				date2 = group.getDates().get(1);
 			}else if(group.getDates().size() == 1){
+				// only start time or due time
 				date1 = group.getDates().get(0);
 			}
 			
-			//System.out.println("to delete str: " + group.getText());
 			// delete preposition before date
 			String wordBeforeDate = getWordBeforeSubstring(msg,group.getText());
 			if (Arrays.asList(preStart).contains(wordBeforeDate)
@@ -70,8 +69,6 @@ public class NLP {
 				msg = msg.replace(group.getText(), "");
 			}
 		}
-
-		//System.out.println(getWordBeforeSubstring("this is a test text", "text"));
 		
 		msg = trimString(msg);
 		strArray = msg.split(" ");
@@ -83,9 +80,12 @@ public class NLP {
 				msg = msg.replace(strArray[i], "");
 			}
 		}
+		
+		//if the whole sentence is quoted, then delete the quotation marks
 		msg = trimString(removeFullQuote(msg));
+
 		
-		
+		//print out for testing
 		System.out.println("description: " + msg);
 		DateFormat mDateFormate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 		if (date1 != null)
@@ -100,6 +100,12 @@ public class NLP {
 		return str.trim().replaceAll(" +", " ");
 	}
 	
+	/**
+	 * Get the word before the given substring
+	 * @param str original string
+	 * @param sub substring
+	 * @return the word string before the substring
+	 */
 	private static String getWordBeforeSubstring(String str, String sub){
 		int idx = str.lastIndexOf(sub)-2;
 		String result = "";
@@ -110,6 +116,11 @@ public class NLP {
 		return result;
 	}
 	
+	/**
+	 * Check if a string can be converted into an integer
+	 * @param s string
+	 * @return boolean
+	 */
 	private static boolean isInteger(String s) {
 	    try { 
 	        Integer.parseInt(s); 
@@ -119,6 +130,11 @@ public class NLP {
 	    return true;
 	}
 	
+	/**
+	 * Delete all the content quoted in a string
+	 * @param str original string
+	 * @return cleaned string
+	 */
 	private static String removeQuoted(String str){
 		//System.out.println("current str: "+str);
 		if(str.contains("\"")) {
@@ -138,6 +154,13 @@ public class NLP {
 		}
 	}
 	
+	/**
+	 * if there are only two quotation marks in the string
+	 * and one is at the beginning, and the other is at the end
+	 * then remove the two quotation marks
+	 * @param str the original string
+	 * @return string
+	 */
 	private static String removeFullQuote(String str){
 		if (str.charAt(0) == '\"' && str.charAt(str.length()-1) == '\"'){
 			int count = 0;
