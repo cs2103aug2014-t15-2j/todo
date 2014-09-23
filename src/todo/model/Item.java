@@ -4,17 +4,19 @@ public class Item {
 	private static int itemQty =0;
 	private int itemId = 0;
 	private int lastItemId =0;
+	private int priority =0;
 	private String description;
 	private String startDateTime; //CHANGE TYPE TO STRING FOR NOW. FOR TESTING PURPOSE. REVERT TO DATETIME CLASS LATER
-	private String dueDateTime;
+	private String dueDateTime;   //CHANGE TYPE TO STRING FOR NOW. FOR TESTING PURPOSE. REVERT TO DATETIME CLASS LATER
 	private String location; 
 	
 	//Constructors
+	//Default Constructor
 	public Item(){
 		itemQty++;
-		setItemID(lastItemId);
-		
+		setItemID(lastItemId);	
 	}
+	
 	public Item(String description, String startDateTime){
 		setDescription(description);
 		setStartDateTime(startDateTime);
@@ -51,6 +53,10 @@ public class Item {
 		return this.location;
 	}
 	
+	public int getPriority() {
+		return this.priority;
+	}
+	
 	//Modifiers
 	public  void setItemID (int lastItemId){
 		itemId = lastItemId+1;
@@ -65,5 +71,8 @@ public class Item {
 		this.startDateTime = startDateTime;
 	}
 	
+	public void setPriority(int newPriority) {
+		this.priority = newPriority;
+	}
 	
 }
