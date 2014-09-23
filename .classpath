@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="libs/timingframework-swing-7.3.jar"/>
 	<classpathentry kind="lib" path="libs/timingframework-swing-demos-7.3.jar"/>
 	<classpathentry kind="src" path="libs"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
