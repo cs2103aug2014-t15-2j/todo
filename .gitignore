@@ -6,3 +6,9 @@
 *.class
 
 bin/todo/todo.class
+
+*.class
+
+*.class
+
+bin/todo/todo.class

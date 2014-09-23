@@ -10,7 +10,6 @@ import java.util.Scanner;
 import com.joestelmach.natty.*;
 
 import todo.library.NLP;
-import todo.library.NaturalLanguageProcessor;
 import todo.model.Item;
 
 public class todo {
