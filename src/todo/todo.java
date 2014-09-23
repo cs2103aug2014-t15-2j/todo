@@ -46,6 +46,9 @@ public class todo {
 				System.out.println("date: " + df.format(dates));
 				*/
 				NLP.addParser(content);
+			}else{
+				System.out.println("Invalid command");
+				commandTypeString=scanner.nextLine();
 			}
 			System.out.print("command: ");
 			commandTypeString=scanner.next();

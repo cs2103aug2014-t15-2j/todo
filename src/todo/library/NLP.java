@@ -3,6 +3,7 @@ package todo.library;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -10,44 +11,145 @@ import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.Parser;
 
 public class NLP {
+	public static final String[] preStart = {"from", "on", "at", "in"};
+	public static final String[] preDue = {"by", "before", "due"};
+	
 	public static void addParser(String msg){
-		Parser parser = new Parser();
-		List<DateGroup> groups = parser.parse(msg);
-		ArrayList<String> tagList = new ArrayList<String>();
+		// TEMP tutorial
+		if (msg.equals("")){
+			System.out.println("[add] add a new event or task");
+			System.out.println("e.g. add project meeting next monday #project");
+			return;
+		}
 		
+		Parser parser = new Parser();
+		List<DateGroup> groups;
+		ArrayList<String> tagList = new ArrayList<String>();
+		String[] strArray;
 		
 		Date date1 = null;
 		Date date2 = null;
-		if (groups.size() == 2){
-			date1 = groups.get(0).getDates().get(0);
-			msg = msg.replace(groups.get(0).getText(), "");
-			date2 = groups.get(1).getDates().get(0);
-			msg = msg.replace(groups.get(1).getText(), "");
-		}else if(groups.size() == 1){
-			date1 = groups.get(0).getDates().get(0);
-			msg = msg.replaceAll(groups.get(0).getText(), "");
+		
+		String msgToDetectDate = removeQuoted(msg);
+		groups = parser.parse(msgToDetectDate);
+		
+		// escape wrong date time parse by Natty
+		while (groups.size() > 0 && isInteger(groups.get(0).getText())){
+			//System.out.println("text: " + groups.get(0).getText());
+			 msgToDetectDate = msgToDetectDate.substring(msgToDetectDate.indexOf(groups.get(0).getText())+1, msgToDetectDate.length());
+			if(msgToDetectDate.equals("")){
+				groups.clear();
+				break;
+			}
+			//System.out.println("new string: " + msgToDetectDate);
+			groups = parser.parse(msgToDetectDate);
 		}
 		
-		msg = msg.trim().replaceAll(" +", " ");
-		String[] strArray = msg.split(" ");
+		// find possible date time
+		if (groups.size() > 0){
+			DateGroup group = groups.get(0);
+			if (group.getDates().size() == 2){
+				date1 = group.getDates().get(0);
+				date2 = group.getDates().get(1);
+			}else if(group.getDates().size() == 1){
+				date1 = group.getDates().get(0);
+			}
+			
+			//System.out.println("to delete str: " + group.getText());
+			// delete preposition before date
+			String wordBeforeDate = getWordBeforeSubstring(msg,group.getText());
+			if (Arrays.asList(preStart).contains(wordBeforeDate)
+					|| Arrays.asList(preDue).contains(wordBeforeDate)){
+				// if it is due date, then set to date2
+				if (Arrays.asList(preDue).contains(wordBeforeDate)){
+					date2 = date1;
+					date1 = null;
+				}
+				msg = msg.replace(wordBeforeDate + " " + group.getText(), "");
+			}else{ // no preposition
+				msg = msg.replace(group.getText(), "");
+			}
+		}
+
+		//System.out.println(getWordBeforeSubstring("this is a test text", "text"));
 		
-		for(int i = strArray.length-1; i > 0 ; i--){
+		msg = trimString(msg);
+		strArray = msg.split(" ");
+		
+		// find out all the tags
+		for(int i = strArray.length-1; i >= 0 ; i--){
 			if (strArray[i].charAt(0) == '#'){
 				tagList.add(0, strArray[i].substring(1));
 				msg = msg.replace(strArray[i], "");
 			}
 		}
-		msg = msg.trim().replaceAll(" +", " ");
+		msg = trimString(removeFullQuote(msg));
 		
 		
 		System.out.println("description: " + msg);
 		DateFormat mDateFormate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 		if (date1 != null)
-			System.out.println("date1: " + mDateFormate.format(date1));
+			System.out.println("start time: " + mDateFormate.format(date1));
 		if (date2 != null)
-			System.out.println("date2: " + mDateFormate.format(date2));
+			System.out.println("due time: " + mDateFormate.format(date2));
 		if (tagList.size() != 0)
 			System.out.println("tags: " + tagList.toString());
 	}
 	
+	private static String trimString(String str){
+		return str.trim().replaceAll(" +", " ");
+	}
+	
+	private static String getWordBeforeSubstring(String str, String sub){
+		int idx = str.lastIndexOf(sub)-2;
+		String result = "";
+		while (idx > 0 && str.charAt(idx) != ' '){
+			result = str.charAt(idx) + result;
+			idx--;
+		}
+		return result;
+	}
+	
+	private static boolean isInteger(String s) {
+	    try { 
+	        Integer.parseInt(s); 
+	    } catch(NumberFormatException e) { 
+	        return false; 
+	    }
+	    return true;
+	}
+	
+	private static String removeQuoted(String str){
+		//System.out.println("current str: "+str);
+		if(str.contains("\"")) {
+			String toDelete = "\"";
+			int idx = str.indexOf('"');
+			while(idx+1<str.length() && str.charAt(idx+1) != ('\"')){
+				toDelete += str.charAt(idx+1);
+				idx++;
+			}
+			if(str.charAt(idx+1) == '\"'){
+				toDelete += "\"";
+				str = str.replace(toDelete, "");
+			}
+			return removeQuoted(str).trim().replaceAll(" +", " ");
+		}else{
+			return str.trim().replaceAll(" +", " ");
+		}
+	}
+	
+	private static String removeFullQuote(String str){
+		if (str.charAt(0) == '\"' && str.charAt(str.length()-1) == '\"'){
+			int count = 0;
+			for(int i = 0; i < str.length(); i++){
+				if(str.charAt(i) == '\"'){
+					count++;
+				}
+			}
+			if (count == 2){
+				return str.substring(1, str.length()-2);
+			}
+		}
+		return str;
+	}
 }
