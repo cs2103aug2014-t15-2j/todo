@@ -42,6 +42,11 @@ public class ItemTest {
 		Item abc = new Item(item1,datetime1);
 		abc.setTags(tagList);
 		assertEquals(tagList,abc.getTags());
+		abc.displayTagList();
+	}
+	@Test 
+	public void testDisaplayTags() {
+		
 	}
 	
 }

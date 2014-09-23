@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Item {
 	private static int itemQty =0;
 	private int itemId = 0;
-	private int lastItemId =0;
+	private static int lastItemId =0;
 	private int priority =0;
 	private String description;
 	private String startDateTime = null; //CHANGE TYPE TO STRING FOR NOW. FOR TESTING PURPOSE. REVERT TO DATETIME CLASS LATER
@@ -97,4 +97,10 @@ public class Item {
 		this.tags = tagList;
 	}
 	
+	//Display
+	public void displayTagList() {
+		for(int i = 0; i < tags.size(); i++) {
+			System.out.println(tags.get(i));
+		}
+	}
 }
