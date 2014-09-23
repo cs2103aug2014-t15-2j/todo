@@ -2,6 +2,8 @@ package todo.model;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 public class ItemTest {
@@ -30,7 +32,16 @@ public class ItemTest {
 		assertEquals(abc.getStartDateTime(),datetime1);
 		assertEquals(abc.getItemId(),1);
 		assertEquals(abc.getLastItemId(),0);
-		assertEquals(4,Item.getItemQty());
+		assertEquals(5,Item.getItemQty());
+	}
+	@Test
+	public void testTagsInput() {
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		Item abc = new Item(item1,datetime1);
+		abc.setTags(tagList);
+		assertEquals(tagList,abc.getTags());
 	}
 	
 }
