@@ -7,12 +7,15 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import todo.model.Item;
+import todo.model.ItemList;
+
 import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.Parser;
 
 public class NLP {
-	public static final String[] preStart = {"from", "on", "at", "in"};
-	public static final String[] preDue = {"by", "before", "due"};
+	public static final String[] preStart = {"from", "on", "at"};
+	public static final String[] preDue = {"by", "before", "due", "in"};
 	
 	public static void addParser(String msg){
 		// TEMP tutorial
@@ -75,7 +78,7 @@ public class NLP {
 		
 		// find out all the tags
 		for(int i = strArray.length-1; i >= 0 ; i--){
-			if (strArray[i].charAt(0) == '#'){
+			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '#'){
 				tagList.add(0, strArray[i].substring(1));
 				msg = msg.replace(strArray[i], "");
 			}
@@ -84,6 +87,24 @@ public class NLP {
 		//if the whole sentence is quoted, then delete the quotation marks
 		msg = trimString(removeFullQuote(msg));
 
+		/*
+		Item mItem = new Item(msg, "");
+		mItem.setTags(tagList);
+		mItem.setPriority(1);
+		//System.out.println("Item to string: "+mItem.toString());
+		//mItem.displayTagList();
+		
+		Item mItem2 = new Item("description test", "");
+		tagList.add("for2");
+		mItem.setTags(tagList);
+		
+		ItemList mItemList = new ItemList();
+		mItemList.add(mItem);
+		mItemList.add(mItem2);
+		
+		mItemList.displayList();
+		System.out.println("item list size: "+mItemList.size());
+		*/
 		
 		//print out for testing
 		System.out.println("description: " + msg);
