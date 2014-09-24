@@ -17,12 +17,12 @@ public class NLP {
 	public static final String[] preStart = {"from", "on", "at"};
 	public static final String[] preDue = {"by", "before", "due", "in"};
 	
-	public static void addParser(String msg){
+	public static boolean addParser(String msg){
 		// TEMP tutorial
 		if (msg.equals("")){
 			System.out.println("[add] add a new event or task");
 			System.out.println("e.g. add project meeting next monday #project");
-			return;
+			return false;
 		}
 		
 		Parser parser = new Parser();
@@ -118,6 +118,8 @@ public class NLP {
 			System.out.println("due time: " + mDateFormate.format(date2));
 		if (tagList.size() != 0)
 			System.out.println("tags: " + tagList.toString());
+		
+		return true;
 	}
 	
 	private static String trimString(String str){
@@ -186,15 +188,17 @@ public class NLP {
 	 * @return string
 	 */
 	private static String removeFullQuote(String str){
-		if (str.charAt(0) == '\"' && str.charAt(str.length()-1) == '\"'){
-			int count = 0;
-			for(int i = 0; i < str.length(); i++){
-				if(str.charAt(i) == '\"'){
-					count++;
+		if (str.length() > 1){
+			if (str.charAt(0) == '\"' && str.charAt(str.length()-1) == '\"'){
+				int count = 0;
+				for(int i = 0; i < str.length(); i++){
+					if(str.charAt(i) == '\"'){
+						count++;
+					}
 				}
-			}
-			if (count == 2){
-				return str.substring(1, str.length()-2);
+				if (count == 2){
+					return str.substring(1, str.length()-1);
+				}
 			}
 		}
 		return str;
