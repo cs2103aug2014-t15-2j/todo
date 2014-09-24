@@ -47,6 +47,7 @@ public class NLP {
 			groups = parser.parse(msgToDetectDate);
 		}
 		
+		
 		// find possible date time
 		if (groups.size() > 0){
 			DateGroup group = groups.get(0);
@@ -74,8 +75,15 @@ public class NLP {
 			}
 		}
 		
+		// find long location
+		String locationString = getBracketLocation(msg);
+		if (locationString.length() > 0){
+			location = locationString.substring(2, locationString.length()-1);
+			msg = msg.replace(locationString, "");
+			msg = trimString(msg);
+		}
 
-		// find out location and all the tags
+		// find out one word location and all the tags
 		msg = trimString(msg);
 		strArray = msg.split(" ");
 		for(int i = strArray.length-1; i >= 0 ; i--){
@@ -212,4 +220,32 @@ public class NLP {
 		}
 		return str;
 	}
+	
+	/**
+	 * get the location within a pair of brackets after @
+	 * @param str original string
+	 * @return "@(content)"
+	 */
+	private static String getBracketLocation(String str){
+		String toDelete = "";
+		if(str.contains("@(")) {
+			toDelete = "@(";
+			int idx = str.indexOf("@(");
+			if (str.charAt(idx-1) == '\\'){
+				return getBracketLocation(str.substring(idx+1, str.length()));
+			}
+			idx++;
+			while(idx+1<str.length() && str.charAt(idx+1) != (')')){
+				toDelete += str.charAt(idx+1);
+				idx++;
+			}
+			if(idx+1<str.length() && str.charAt(idx+1) == ')'){
+				toDelete += ")";
+			}else{
+				toDelete = "";
+			}
+		}
+		return toDelete;
+	}
+
 }
