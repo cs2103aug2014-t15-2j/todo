@@ -84,6 +84,9 @@ public class NLP {
 			}
 		}
 		
+		// delete all the escape characters
+		msg = msg.replaceAll("\\\\#", "#");
+		
 		//if the whole sentence is quoted, then delete the quotation marks
 		msg = trimString(removeFullQuote(msg));
 
