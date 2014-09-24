@@ -16,6 +16,7 @@ import com.joestelmach.natty.Parser;
 public class NLP {
 	public static final String[] preStart = {"from", "on", "at"};
 	public static final String[] preDue = {"by", "before", "due", "in"};
+	public static final String[] filterOut = {"eve"};
 	
 	public static boolean addParser(String msg){
 		// TEMP tutorial
@@ -37,16 +38,20 @@ public class NLP {
 		String msgToDetectDate = removeQuoted(msg);
 		groups = parser.parse(msgToDetectDate);
 		
-		// escape wrong date time parse by Natty, skip all integers
-		while (groups.size() > 0 && isInteger(groups.get(0).getText())){
-			 msgToDetectDate = msgToDetectDate.substring(msgToDetectDate.indexOf(groups.get(0).getText())+1, msgToDetectDate.length());
+
+		
+		// escape wrong date time parse by Natty
+		// skip when the date text is an integers
+		// or a word in the filterOut list
+		while (groups.size() > 0 && (isInteger(groups.get(0).getText())
+				|| Arrays.asList(filterOut).contains(groups.get(0).getText()))){
+			 msgToDetectDate = msgToDetectDate.replace(groups.get(0).getText(), "");
 			if(msgToDetectDate.equals("")){
 				groups.clear();
 				break;
 			}
 			groups = parser.parse(msgToDetectDate);
 		}
-		
 		
 		// find possible date time
 		if (groups.size() > 0){
@@ -231,6 +236,8 @@ public class NLP {
 		if(str.contains("@(")) {
 			toDelete = "@(";
 			int idx = str.indexOf("@(");
+			
+			// if there is an escape character
 			if (str.charAt(idx-1) == '\\'){
 				return getBracketLocation(str.substring(idx+1, str.length()));
 			}
