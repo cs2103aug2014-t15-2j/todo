@@ -32,6 +32,7 @@ public class NLP {
 		
 		Date date1 = null;
 		Date date2 = null;
+		String location = "";
 		
 		String msgToDetectDate = removeQuoted(msg);
 		groups = parser.parse(msgToDetectDate);
@@ -73,19 +74,24 @@ public class NLP {
 			}
 		}
 		
+
+		// find out location and all the tags
 		msg = trimString(msg);
 		strArray = msg.split(" ");
-		
-		// find out all the tags
 		for(int i = strArray.length-1; i >= 0 ; i--){
 			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '#'){
 				tagList.add(0, strArray[i].substring(1));
+				msg = msg.replace(strArray[i], "");
+			}
+			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '@'){
+				location = strArray[i].substring(1);
 				msg = msg.replace(strArray[i], "");
 			}
 		}
 		
 		// delete all the escape characters
 		msg = msg.replaceAll("\\\\#", "#");
+		msg = msg.replaceAll("\\\\@", "@");
 		
 		//if the whole sentence is quoted, then delete the quotation marks
 		msg = trimString(removeFullQuote(msg));
@@ -116,6 +122,8 @@ public class NLP {
 			System.out.println("start time: " + mDateFormate.format(date1));
 		if (date2 != null)
 			System.out.println("due time: " + mDateFormate.format(date2));
+		if (!location.equals(""))
+			System.out.println("location: " + location);
 		if (tagList.size() != 0)
 			System.out.println("tags: " + tagList.toString());
 		
@@ -163,14 +171,15 @@ public class NLP {
 	 */
 	private static String removeQuoted(String str){
 		//System.out.println("current str: "+str);
-		if(str.contains("\"")) {
+		if(str.contains("\"") && str.replaceAll("[^\"]", "").length() % 2 == 0) {
+			//there is quotation, and the number of them is even
 			String toDelete = "\"";
 			int idx = str.indexOf('"');
 			while(idx+1<str.length() && str.charAt(idx+1) != ('\"')){
 				toDelete += str.charAt(idx+1);
 				idx++;
 			}
-			if(str.charAt(idx+1) == '\"'){
+			if(idx+1<str.length() && str.charAt(idx+1) == '\"'){
 				toDelete += "\"";
 				str = str.replace(toDelete, "");
 			}
