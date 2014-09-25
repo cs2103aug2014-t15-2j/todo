@@ -12,13 +12,13 @@ public class Item {
 	private DateTime dueDateTime = null;
 	private String location = null;
 	private ArrayList<String> tags = new ArrayList<String>();
-	private boolean active = true;
+	private boolean isActive = true;
 	
 	//Constructors
 	//Default Constructor
 	public Item(){
-		itemQty++;
 		setItemID(lastItemId);	
+		itemQty++;
 	}
 	
 	public Item(String description, DateTime startDateTime){
@@ -35,6 +35,8 @@ public class Item {
 		setLocation(location);
 		setPriority(priority);
 		setTags(tags);
+		setItemID(getLastItemId());
+		itemQty++;
 	}
 	
 	//Accessors
@@ -46,7 +48,7 @@ public class Item {
 		return itemId;
 	}
 	
-	public int getLastItemId() {
+	public static int getLastItemId() {
 		return lastItemId;
 	}
 	
@@ -73,13 +75,17 @@ public class Item {
 	public ArrayList<String> getTags() {
 		return this.tags;
 	}
-	//Modifiers
 	
-	//
-	public  void setItemID (int lastItemId){
+	public boolean getActive(){
+		return this.isActive;
+	}
+	
+	//Modifiers
+	public void setItemID (int lastItemId){
 		itemId = lastItemId+1;
 		lastItemId++;
 	}
+	
 	public void setDescription(String description){
 		this.description = description;
 	}
@@ -105,11 +111,11 @@ public class Item {
 	}
 	
 	public void setDone(){
-		this.active = false;
+		this.isActive = false;
 	}
 	
 	public void setUndone(){
-		this.active = true;
+		this.isActive = true;
 	}
 	
 	//Display
