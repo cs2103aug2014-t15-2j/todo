@@ -44,7 +44,7 @@ public class NLP {
 
 		
 		// escape wrong date time parse by Natty
-		// skip when the date text is an integers
+		// skip when the date text is an integer
 		// or a word in the filterOut list
 		while (groups.size() > 0 && (isInteger(groups.get(0).getText())
 				|| Arrays.asList(filterOut).contains(groups.get(0).getText()))){

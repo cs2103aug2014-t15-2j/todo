@@ -12,3 +12,5 @@ bin/todo/todo.class
 *.class
 
 bin/todo/todo.class
+
+*.class
