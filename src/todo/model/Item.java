@@ -76,7 +76,7 @@ public class Item {
 		return this.tags;
 	}
 	
-	public boolean getActive(){
+	public boolean getIsActive(){
 		return this.isActive;
 	}
 	
