@@ -14,9 +14,10 @@ import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.Parser;
 
 public class NLP {
+	public static final String[] filterOut = {"eve"};
 	public static final String[] preStart = {"from", "on", "at"};
 	public static final String[] preDue = {"by", "before", "due", "in"};
-	public static final String[] filterOut = {"eve"};
+	public static final String[] timeKeyword = {"EXPLICIT_TIME", "minute", "hour"};
 	
 	public static boolean addParser(String msg){
 		// TEMP tutorial
@@ -31,9 +32,11 @@ public class NLP {
 		ArrayList<String> tagList = new ArrayList<String>();
 		String[] strArray;
 		
-		Date date1 = null;
-		Date date2 = null;
+		Date startDate = null;
+		Date dueDate = null;
 		String location = "";
+		boolean startDateHasTime = false;
+		boolean dueDateHasTime = false;
 		
 		String msgToDetectDate = removeQuoted(msg);
 		groups = parser.parse(msgToDetectDate);
@@ -55,14 +58,30 @@ public class NLP {
 		
 		// find possible date time
 		if (groups.size() > 0){
+			String syntaxTree;
 			DateGroup group = groups.get(0);
 			if (group.getDates().size() == 2){
 				// has both start time and due time
-				date1 = group.getDates().get(0);
-				date2 = group.getDates().get(1);
+				startDate = group.getDates().get(0);
+				dueDate = group.getDates().get(1);
+				syntaxTree = group.getSyntaxTree().toStringTree();
+				String[] syntaxTreeArray = syntaxTree.split("DATE_TIME ");
+				if(stringContainSub(syntaxTreeArray[1], timeKeyword)){
+					// if start date has time
+					startDateHasTime = true;
+				}
+				if(stringContainSub(syntaxTreeArray[2], timeKeyword)){
+					// if due date has time
+					dueDateHasTime = true;
+				}
 			}else if(group.getDates().size() == 1){
 				// only start time or due time
-				date1 = group.getDates().get(0);
+				syntaxTree = group.getSyntaxTree().toStringTree();
+				if(stringContainSub(syntaxTree, timeKeyword)){
+					// if has time
+					startDateHasTime = true;
+				}
+				startDate = group.getDates().get(0);
 			}
 			
 			// delete preposition before date
@@ -71,8 +90,9 @@ public class NLP {
 					|| Arrays.asList(preDue).contains(wordBeforeDate)){
 				// if it is due date, then set to date2
 				if (Arrays.asList(preDue).contains(wordBeforeDate)){
-					date2 = date1;
-					date1 = null;
+					dueDate = startDate;
+					startDate = null;
+					dueDateHasTime = startDateHasTime;
 				}
 				msg = msg.replace(wordBeforeDate + " " + group.getText(), "");
 			}else{ // no preposition
@@ -131,10 +151,10 @@ public class NLP {
 		//print out for testing
 		System.out.println("description: " + msg);
 		DateFormat mDateFormate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-		if (date1 != null)
-			System.out.println("start time: " + mDateFormate.format(date1));
-		if (date2 != null)
-			System.out.println("due time: " + mDateFormate.format(date2));
+		if (startDate != null)
+			System.out.println("start time: " + mDateFormate.format(startDate) + "  " + startDateHasTime);
+		if (dueDate != null)
+			System.out.println("due time: " + mDateFormate.format(dueDate) + "  " + dueDateHasTime);
 		if (!location.equals(""))
 			System.out.println("location: " + location);
 		if (tagList.size() != 0)
@@ -253,6 +273,21 @@ public class NLP {
 			}
 		}
 		return toDelete;
+	}
+	
+	/**
+	 * This method check a string contains any string in a string array
+	 * @param str the string to be checked
+	 * @param list a string array
+	 * @return boolean
+	 */
+	private static boolean stringContainSub(String str, String[] list){
+		for (int i = 0; i < list.length; i++){
+			if (str.contains(list[i])){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
