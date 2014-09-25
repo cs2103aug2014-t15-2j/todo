@@ -3,35 +3,42 @@ package todo.model;
 import java.util.ArrayList;
 
 public class Item {
-	private static int itemQty =0;
+	private static int itemQty = 0;
 	private int itemId = 0;
-	private static int lastItemId =0;
-	private int priority =0;
+	private static int lastItemId = 0;
+	private int priority = 0;
 	private String description;
-	private String startDateTime = null; //CHANGE TYPE TO STRING FOR NOW. FOR TESTING PURPOSE. REVERT TO DATETIME CLASS LATER
-	private String dueDateTime = null;   //CHANGE TYPE TO STRING FOR NOW. FOR TESTING PURPOSE. REVERT TO DATETIME CLASS LATER
+	private DateTime startDateTime = null;
+	private DateTime dueDateTime = null;
 	private String location = null;
 	private ArrayList<String> tags = new ArrayList<String>();
-	
+	private boolean active = true;
 	
 	//Constructors
 	//Default Constructor
 	public Item(){
-		
 		itemQty++;
 		setItemID(lastItemId);	
 	}
 	
-	public Item(String description, String startDateTime){
-		
+	public Item(String description, DateTime startDateTime){
 		setDescription(description);
 		setStartDateTime(startDateTime);
 		setItemID(getLastItemId());
 		itemQty++;
 	}
+	
+	public Item(String description, DateTime startDateTime, DateTime dueDateTime, String location, int priority, ArrayList<String> tags){
+		setDescription(description);
+		setStartDateTime(startDateTime);
+		setDueDateTime(dueDateTime);
+		setLocation(location);
+		setPriority(priority);
+		setTags(tags);
+	}
+	
 	//Accessors
 	public static int getItemQty() {
-		
 		return itemQty;
 	}
 	
@@ -40,55 +47,53 @@ public class Item {
 	}
 	
 	public int getLastItemId() {
-		
 		return lastItemId;
 	}
 	
 	public String getDescription(){
-		
 		return this.description;
 	}
 	
-	public String getStartDateTime(){ //CHANGE TYPE TO STRING FOR NOW. FOR TESTING PURPOSE. REVERT TO DATETIME CLASS LATER
-		
+	public DateTime getStartDateTime(){
 		return this.startDateTime;
 	}
 	
-	public String getDueDateTime() { ////CHANGE TYPE TO STRING FOR NOW. FOR TESTING PURPOSE. REVERT TO DATETIME CLASS LATER
-		
+	public DateTime getDueDateTime() {
 		return this.dueDateTime;
 	}
 	
 	public String getLocation() {
-		
 		return this.location;
 	}
 	
 	public int getPriority() {
-		
 		return this.priority;
 	}
 	
 	public ArrayList<String> getTags() {
-		
 		return this.tags;
 	}
 	//Modifiers
 	
 	//
 	public  void setItemID (int lastItemId){
-		
 		itemId = lastItemId+1;
 		lastItemId++;
 	}
 	public void setDescription(String description){
-		
 		this.description = description;
 	}
 	
-	public void setStartDateTime(String startDateTime){ //CHANGE TYPE TO STRING FOR NOW. FOR TESTING PURPOSE. REVERT TO DATETIME CLASS LATER
-		
+	public void setStartDateTime(DateTime startDateTime){
 		this.startDateTime = startDateTime;
+	}
+	
+	public void setDueDateTime(DateTime dueDateTime){
+		this.dueDateTime = dueDateTime;
+	}
+	
+	public void setLocation(String location){
+		this.location = location;
 	}
 	
 	public void setPriority(int newPriority) {
@@ -97,6 +102,14 @@ public class Item {
 	
 	public void setTags(ArrayList<String> tagList){
 		this.tags = tagList;
+	}
+	
+	public void setDone(){
+		this.active = false;
+	}
+	
+	public void setUndone(){
+		this.active = true;
 	}
 	
 	//Display

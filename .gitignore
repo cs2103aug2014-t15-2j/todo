@@ -14,3 +14,7 @@ bin/todo/todo.class
 bin/todo/todo.class
 
 *.class
+
+*.class
+
+bin/todo/model/Item.class
