@@ -81,6 +81,14 @@ public class Item {
 	}
 	
 	//Modifiers
+	public static void setItemQty(int itemQty){
+		Item.itemQty = itemQty;
+	}
+	
+	public static void setLastItemID(int lastItemID){
+		Item.lastItemId = lastItemID;
+	}
+	
 	public void setItemID (int lastItemId){
 		itemId = lastItemId+1;
 		lastItemId++;
