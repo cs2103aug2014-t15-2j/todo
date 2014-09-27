@@ -59,6 +59,14 @@ public class ItemList {
 			});
 		}
 		
+		//Sort the itemList from later to early times
+		public void sortByTimeDecreasing(){
+			Collections.sort(itemList, new Comparator<Item>(){
+				public int compare(Item item2, Item item1){
+					return item1.getStartDateTime().getDate().compareTo(item2.getStartDateTime().getDate());
+				}
+			});
+		}
 		
 		// Search certain key word in itemList
 		public void search(String searchKey){

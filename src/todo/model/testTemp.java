@@ -16,7 +16,7 @@ public class testTemp {
 		
 		myList.displayList();
 		
-		myList.sortByTimeIncreasing();
+		myList.sortByTimeDecreasing();
 		myList.displayList();
 
 		
