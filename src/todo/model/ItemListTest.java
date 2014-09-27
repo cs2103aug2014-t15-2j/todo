@@ -14,5 +14,9 @@ public class ItemListTest {
 		myList.search("report");
 		myList.sort();
 		myList.displayList();
+		myList.add(new Item("doing homework", "tomorrow"));
+		myList.clear();
+		myList.displayList();
+		
 	}
 }

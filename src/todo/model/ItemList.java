@@ -25,7 +25,7 @@ public class ItemList {
 		}
 		
 		// Delete item
-		public void delete(int item){
+		public void delete(Item item){
 			itemList.remove(item);
 		}
 		
