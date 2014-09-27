@@ -42,13 +42,23 @@ public class ItemList {
 		}
 		
 		// Sort the itemList according to alphabetical order of description
-		public void sort(){
+		public void sortByFirstAlphabet(){
 		Collections.sort(itemList, new Comparator<Item>(){
 			public int compare(Item item1, Item item2){
 				return item1.getDescription().compareToIgnoreCase(item2.getDescription());
 			}
 		});
 		}
+		
+		// Sort the itemList from early to later times
+		public void sortByTimeIncreasing(){
+			Collections.sort(itemList, new Comparator<Item>(){
+				public int compare(Item item1, Item item2){
+					return item1.getStartDateTime().getDate().compareTo(item2.getStartDateTime().getDate());
+				}
+			});
+		}
+		
 		
 		// Search certain key word in itemList
 		public void search(String searchKey){
