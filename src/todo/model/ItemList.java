@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class ItemList {
-	// Data attributes
+	    // Data attributes
 		private ArrayList <Item> itemList = new ArrayList <Item> ();
 		
 		// Return the size of itemList
@@ -32,7 +32,7 @@ public class ItemList {
 		// Display the whole itemList
 		public void displayList(){
 			for (Item i : itemList){
-				System.out.println(i.getDescription() + " " + i.getStartDateTime());
+				System.out.println(i.getDescription() + " " + i.getStartDateTime().toString());
 			}
 		}
 		
