@@ -1,9 +1,9 @@
 package todo.library;
 
 public class Command {
-	enum CommandType {
+	public static enum CommandType {
 		// four basic CRUD operations
-		CREATE, READ, UPDATE, DELETE, INVALID
+		CREATE, READ, UPDATE, DELETE, INVALID, EXIT
 	};
 
 	/**
@@ -12,15 +12,9 @@ public class Command {
 	 * @param entire line of user input
 	 * @return predefined CommandType enum
 	 */
-	public static CommandType determineCommandType(String userInput) {
-		// check if string is null
-		if (userInput == null) {
-			throw new Error("userInput string cannot be null!");
-		}
+	public static CommandType determineCommandType(String commandString) {
 
-		String commandTypeString = getFirstWord(userInput);
-
-		switch (commandTypeString.toLowerCase()) {
+		switch (commandString.toLowerCase()) {
 		// ----------Possible cases of 'create'-----------
 		case "create":
 			return CommandType.CREATE;
@@ -41,6 +35,12 @@ public class Command {
 		case "list":
 			return CommandType.READ;
 		case "view":
+			return CommandType.READ;
+		case "display":
+			return CommandType.READ;
+		case "show":
+			return CommandType.READ;
+		case "all":
 			return CommandType.READ;
 			
 		// ----------Possible cases of 'update'-----------
@@ -65,33 +65,16 @@ public class Command {
 		case "cancel":
 			return CommandType.DELETE;
 			
+		// ----------Possible cases of 'delete'-----------
+		case "exit":
+			return CommandType.EXIT;
+		case "quit":
+			return CommandType.EXIT;
+				
 		// ----------otherwise, 'invalid'-----------
 		default:
 			return CommandType.INVALID;
 		}
 	}
 
-	/**
-	 * This method executes whichever commandType it receives accordingly
-	 * @param commandType
-	 */
-	public static void executeCommand(CommandType commandType) {
-		switch (commandType) {
-		case CREATE:
-			break;
-		case READ:
-			break;
-		case UPDATE:
-			break;
-		case DELETE:
-			break;
-		default:
-			break;
-		}
-	}
-
-	private static String getFirstWord(String userCommand) {
-		String commandTypeString = userCommand.trim().split("\\s+")[0];
-		return commandTypeString;
-	}
 }

@@ -1,44 +1,47 @@
 package todo.model;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Date;
 
 public class DateTime {
 	private boolean hasTime;
-	private Calendar calendar;
+	private Date date;
 	
-	public DateTime(){
-	}
-	
-	public DateTime(Calendar calendar){
-		this.calendar = calendar;
-	}
-	
-	public DateTime(int year, int month, int dayOfMonth){
-		this.calendar = new GregorianCalendar(year, month, dayOfMonth);
-		this.hasTime = false;
-	}
-	
-	public DateTime(int year, int month, int dayOfMonth, int hourOfDay, int minute){
-		this.calendar = new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute);
+	public DateTime(Date date){
+		this.date = date;
 		this.hasTime = true;
 	}
 	
-	public void setDate(){
-		
+	public DateTime(Date date, boolean hasTime){
+		this.date = date;
+		this.hasTime = hasTime;
+	}
+	
+	public void setDate(Date date){
+		this.date = date;
+	}
+	
+	public void setDate(Date date, boolean hasTime){
+		this.date = date;
+		this.hasTime = hasTime;
+	}
+	
+	public Date getDate(){
+		return this.date;
+	}
+	
+	public boolean hasTime(){
+		return this.hasTime;
 	}
 	
 	public String toString(){
-		String result;
-		SimpleDateFormat sdf;
+		DateFormat mDateFormate;
 		if (hasTime){
-			sdf = new SimpleDateFormat("yyyy MMM dd HH:mm");
-			
+			mDateFormate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 		}else{
-			sdf = new SimpleDateFormat("yyyy MMM dd");
+			mDateFormate = new SimpleDateFormat("MM/dd/yyyy");
 		}
-		result = sdf.format(calendar.getTime());
-		return result;
+		return mDateFormate.format(this.date);
 	}
 }

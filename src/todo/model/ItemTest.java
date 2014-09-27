@@ -14,7 +14,7 @@ public class ItemTest {
 	String item3 = "3rditem";
 	String datetime3 = "sunday fifth october";
 	
-	
+	/*
 	@Test
 	public void testQtyMultiple() {
 		Item abc = new Item(item1,datetime1);
@@ -48,5 +48,6 @@ public class ItemTest {
 	public void testDisaplayTags() {
 		
 	}
+	*/
 	
 }
