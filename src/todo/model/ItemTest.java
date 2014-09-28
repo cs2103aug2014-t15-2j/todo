@@ -55,6 +55,7 @@ public class ItemTest {
 		assertEquals(tagList,jkl.getTags());
 		assertEquals(4,Item.getItemQty());
 		assertEquals(4,Item.getLastItemId());
+		System.out.println();
 	}
 	
 	@Test
@@ -76,8 +77,7 @@ public class ItemTest {
 		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
 		System.out.println(abc5.toString());
 		
-		assertEquals(14,Item.getItemQty());
-		assertEquals(14,Item.getLastItemId());
+		
 	}
 	@Test
 	public void testItemList() {
@@ -104,6 +104,37 @@ public class ItemTest {
 		myList.add(abc3);
 		myList.add(abc4);
 		myList.add(abc5);
+		myList.displayList();
+		System.out.println();
+	}
+	@Test
+	public void testItemListSort() {
+		System.out.println("Currently testing: testItemListSort: ");
+		ItemList myList = new ItemList();
+		
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		
+		Item abc1 = new Item(item1);
+		abc1.setStatusDone();
+		
+		Item abc2 = new Item(item1,testDateTime1);
+	
+		Item abc3 = new Item(item1,priority1,tagList);
+		
+		Item abc4 = new Item(item1,tagList,priority1,location1);
+		
+		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
+
+		myList.add(abc1);
+		myList.add(abc2);
+		myList.add(abc3);
+		myList.add(abc4);
+		myList.add(abc5);
+		myList.displayList();
+		
+		myList.sortByTimeDecreasing();
 		myList.displayList();
 	}
 	
