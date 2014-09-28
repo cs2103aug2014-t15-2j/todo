@@ -18,3 +18,5 @@ bin/todo/todo.class
 *.class
 
 bin/todo/model/Item.class
+
+todo.xml

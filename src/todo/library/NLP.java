@@ -37,7 +37,6 @@ public class NLP {
 		String msgToDetectDate = removeQuoted(msg);
 		groups = parser.parse(msgToDetectDate);
 		
-
 		
 		// escape wrong date time parse by Natty
 		// skip when the date text is an integer
@@ -48,6 +47,18 @@ public class NLP {
 			if(msgToDetectDate.equals("")){
 				groups.clear();
 				break;
+			}
+			groups = parser.parse(msgToDetectDate);
+		}
+		
+		//escape when the first integer of the date/time is a part of the description
+		//if the first char is an integer, and there is no space before it
+		if(isInteger(groups.get(0).getText().charAt(0)+"") 
+				&& msgToDetectDate.charAt(msgToDetectDate.indexOf(groups.get(0).getText())-1) != ' '){
+			msgToDetectDate = groups.get(0).getText().substring(1);
+			//delete all the subsequent integers
+			while (isInteger(msgToDetectDate.charAt(0)+"")){
+				msgToDetectDate = msgToDetectDate.substring(1);
 			}
 			groups = parser.parse(msgToDetectDate);
 		}
@@ -124,25 +135,6 @@ public class NLP {
 		
 		//if the whole sentence is quoted, then delete the quotation marks
 		msg = trimString(removeFullQuote(msg));
-
-		/*
-		Item mItem = new Item(msg, "");
-		mItem.setTags(tagList);
-		mItem.setPriority(1);
-		//System.out.println("Item to string: "+mItem.toString());
-		//mItem.displayTagList();
-		
-		Item mItem2 = new Item("description test", "");
-		tagList.add("for2");
-		mItem.setTags(tagList);
-		
-		ItemList mItemList = new ItemList();
-		mItemList.add(mItem);
-		mItemList.add(mItem2);
-		
-		mItemList.displayList();
-		System.out.println("item list size: "+mItemList.size());
-		*/
 		
 		//print out for testing
 		/*

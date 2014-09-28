@@ -49,7 +49,7 @@ public class todo {
 	
 	private static String requeatForCommand(){
 		System.out.print("command: ");
-		return scanner.nextLine();
+		return scanner.nextLine().trim();
 	}
 	
 	/**
