@@ -12,7 +12,7 @@ public class Item {
 	private DateTime dueDateTime = null;
 	private String location = null;
 	private ArrayList<String> tags = new ArrayList<String>();
-	private boolean isActive = true;
+	private boolean isCompleted = false;
 	
 	//Constructors
 	
@@ -120,8 +120,8 @@ public class Item {
 		return this.tags;
 	}
 	
-	public boolean getIsActive(){
-		return this.isActive;
+	public boolean getStatus(){
+		return this.isCompleted;
 	}
 	
 	//Modifiers
@@ -162,20 +162,12 @@ public class Item {
 		this.tags = tagList;
 	}
 	
-	public void setDone(){
-		this.isActive = false;
+	public void setStatusDone(){
+		this.isCompleted = true;
 	}
 	
-	public void setUndone(){
-		this.isActive = true;
-	}
-	
-	//Display Methods
-	//Display TagList
-	public void displayTagList() {
-		for(int i = 0; i < tags.size(); i++) {
-			System.out.println(tags.get(i));
-		}
+	public void setStatusUndone(){
+		this.isCompleted = false;
 	}
 	
 	//Display item
@@ -183,9 +175,36 @@ public class Item {
 		String result = "";
 		result = result.concat("Description: ");
 		result = result.concat(description);
-		result = result.concat("Start: ");
-		if(startDateTime.equals(null)) {
+		
+		if(startDateTime != null) {
+			result = result.concat(" Start: ");
 			result = result.concat(getStartDateTime().toString());
+		}
+		
+		if(dueDateTime != null) {
+			result = result.concat(" Due: ");
+			result = result.concat(getDueDateTime().toString());
+		}
+		
+		if (location != null){
+			result = result.concat(" Location: ");
+			result = result.concat(getLocation());
+		}
+		
+		if (tags != null) {
+			result = result.concat(" Tags: ");
+			result = result.concat(getTags().toString());
+		}
+		
+		result = result.concat(" Priority: ");
+		result = result.concat(Integer.toString(getPriority()));
+		
+		result = result.concat(" Status: ");
+		if(getStatus()){
+			result = result.concat("Completed");
+		}
+		if(!getStatus()){
+			result = result.concat("Uncompleted");
 		}
 		return result;
 		

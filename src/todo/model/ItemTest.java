@@ -53,7 +53,6 @@ public class ItemTest {
 		Item jkl = new Item (item4,testDateTime4);
 		jkl.setTags(tagList);
 		assertEquals(tagList,jkl.getTags());
-		jkl.displayTagList();
 		assertEquals(4,Item.getItemQty());
 		assertEquals(4,Item.getLastItemId());
 	}
@@ -64,6 +63,7 @@ public class ItemTest {
 		tagList.add("school");
 		
 		Item abc1 = new Item(item1);
+		abc1.setStatusDone();
 		System.out.println(abc1.toString());
 		Item abc2 = new Item(item1,testDateTime1);
 		System.out.println(abc2.toString());
