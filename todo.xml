@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ItemList>
     <itemQty>4</itemQty>
-    <lastItemId>3</lastItemId>
+    <lastItemId>4</lastItemId>
     <Item>
         <itemId>1</itemId>
         <priority>0</priority>
         <description>meet yy</description>
         <startDateTime>
             <hasTime>true</hasTime>
-            <DateTime>09/28/2014 20:50:26</DateTime>
+            <DateTime>09/29/2014 00:18:28</DateTime>
         </startDateTime>
         <dueDateTime>
             <hasTime>true</hasTime>
-            <DateTime>09/28/2014 20:50:26</DateTime>
+            <DateTime>09/29/2014 00:18:28</DateTime>
         </dueDateTime>
         <location>clementi</location>
         <tags/>
-        <isActive>false</isActive>
+        <isCompleted>false</isCompleted>
     </Item>
     <Item>
         <itemId>2</itemId>
@@ -24,18 +24,18 @@
         <description>meet sw</description>
         <startDateTime>
             <hasTime>true</hasTime>
-            <DateTime>09/28/2014 20:50:26</DateTime>
+            <DateTime>09/29/2014 00:18:28</DateTime>
         </startDateTime>
         <dueDateTime>
             <hasTime>true</hasTime>
-            <DateTime>09/28/2014 20:50:26</DateTime>
+            <DateTime>09/29/2014 00:18:28</DateTime>
         </dueDateTime>
         <location>utown</location>
         <tags>
             <tag>Important</tag>
             <tag>Bring Laptop</tag>
         </tags>
-        <isActive>false</isActive>
+        <isCompleted>false</isCompleted>
     </Item>
     <Item>
         <itemId>3</itemId>
@@ -43,18 +43,18 @@
         <description>go to lecture</description>
         <startDateTime>
             <hasTime>true</hasTime>
-            <DateTime>09/28/2014 20:50:26</DateTime>
+            <DateTime>09/29/2014 00:18:28</DateTime>
         </startDateTime>
         <dueDateTime>
             <hasTime>true</hasTime>
-            <DateTime>09/28/2014 20:50:26</DateTime>
+            <DateTime>09/29/2014 00:18:28</DateTime>
         </dueDateTime>
         <location>lt19</location>
         <tags>
             <tag>bring textbook</tag>
             <tag>last lecture</tag>
         </tags>
-        <isActive>false</isActive>
+        <isCompleted>false</isCompleted>
     </Item>
     <Item>
         <itemId>4</itemId>
@@ -70,6 +70,6 @@
         </dueDateTime>
         <location/>
         <tags/>
-        <isActive>false</isActive>
+        <isCompleted>false</isCompleted>
     </Item>
 </ItemList>
