@@ -28,11 +28,14 @@ public class ItemList {
 		
 		// Delete item
 		public void delete(int index){
-			String removedItemDescription = itemList.get(index - 1).getDescription();
-			
-			itemList.remove(index - 1);
-			System.out.println("\"" + removedItemDescription + "\"" + " is deleted.");
-			Item.setItemQtyAfterDeletion();
+			if(itemList.size() == 0){
+				System.out.println("fail to delete, the list is empty.");
+			} else{
+				String removedItemDescription = itemList.get(index - 1).getDescription();
+				itemList.remove(index - 1);
+				System.out.println("\"" + removedItemDescription + "\"" + " is deleted.");
+				Item.setItemQtyAfterDeletion();
+			}
 		}
 		
 		// Display the whole itemList
@@ -63,37 +66,47 @@ public class ItemList {
 		
 		// Sort the itemList from early to later times
 		public void sortByTimeIncreasing(){
-
-			Collections.sort(itemList, new Comparator<Item>(){
-				public int compare(Item item1, Item item2){		
-					if((item1.getStartDateTime() == null) || (item2.getStartDateTime() == null))
-						return 0;
-					else 
-						return item1.getStartDateTime().getDate().compareTo(item2.getStartDateTime().getDate());
-				}
-			});
-		}
-		
-		//Sort the itemList from later to early times
-/*		public void sortByTimeDecreasing(){
-			ArrayList<Item> listWithoutStartDateTime = new ArrayList<Item>();
+ArrayList<Item> listWithoutStartDateTime = new ArrayList<Item>();
 			
-			for(Item i : itemList){
-				if (i.getStartDateTime() == null){
-					listWithoutStartDateTime.add(i);
-					itemList.
-				}
-				else{
-					sortByTimeList.add(itemList.get(i));
+			for(int i=0; i < itemList.size(); i++){
+				if (itemList.get(i).getStartDateTime() == null){
+					listWithoutStartDateTime.add(itemList.get(i));
+					itemList.remove(i);
+					i--;
 				}
 			}
 			
-			Collections.sort(sortByTimeList, new Comparator<Item>(){
+			Collections.sort(itemList, new Comparator<Item>(){
+				public int compare(Item item1, Item item2){
+					return item1.getStartDateTime().getDate().compareTo(item2.getStartDateTime().getDate());
+				}
+			});
+			for(Item item : listWithoutStartDateTime){
+				itemList.add(item);
+			}
+		}
+		
+		//Sort the itemList from later to early times
+		public void sortByTimeDecreasing(){
+			ArrayList<Item> listWithoutStartDateTime = new ArrayList<Item>();
+			
+			for(int i=0; i < itemList.size(); i++){
+				if (itemList.get(i).getStartDateTime() == null){
+					listWithoutStartDateTime.add(itemList.get(i));
+					itemList.remove(i);
+					i--;
+				}
+			}
+			
+			Collections.sort(itemList, new Comparator<Item>(){
 				public int compare(Item item2, Item item1){
 					return item1.getStartDateTime().getDate().compareTo(item2.getStartDateTime().getDate());
 				}
 			});
-		}  */
+			for(Item item : listWithoutStartDateTime){
+				itemList.add(item);
+			}
+		}  
 		
 		// Search certain key word in itemList
 		public void search(String searchKey){

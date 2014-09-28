@@ -18,13 +18,15 @@ public class Item {
 	
 	//Default Constructor
 	public Item(){
-		setItemID(lastItemId);	
+		setItemID(getLastItemId());
 		itemQty++;
+		lastItemId++;
 	}
 	
 	//Constructor with only description 
 	public Item(String description) {
 		setDescription(description);
+		setItemID(getLastItemId());
 		itemQty++;
 		lastItemId++;
 	}
