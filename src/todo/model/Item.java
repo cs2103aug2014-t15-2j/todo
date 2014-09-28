@@ -26,6 +26,7 @@ public class Item {
 		setStartDateTime(startDateTime);
 		setItemID(getLastItemId());
 		itemQty++;
+		lastItemId++;
 	}
 	
 	public Item(String description, DateTime startDateTime, DateTime dueDateTime, String location, int priority, ArrayList<String> tags){
@@ -37,6 +38,7 @@ public class Item {
 		setTags(tags);
 		setItemID(getLastItemId());
 		itemQty++;
+		lastItemId++;
 	}
 	
 	//Accessors

@@ -8,17 +8,20 @@ public class ItemTest {
 	String item1 = "item-1";
 	String item2 = "item-2";
 	String item3 = "item-3";
+	String item4 = "item-4";
 	Date currentDate1 = new Date();
 	DateTime testDateTime1 = new DateTime(currentDate1);
-	Item abc = new Item (item1,testDateTime1);
-	
 	Date currentDate2 = new Date();
 	DateTime testDateTime2 = new DateTime(currentDate2);
 	Date currentDate3 = new Date();
 	DateTime testDateTime3 = new DateTime(currentDate3);
+	Date currentDate4 = new Date();
+	DateTime testDateTime4 = new DateTime(currentDate4);
 	
 	@Test
 	public void testItemConstructor() {
+		System.out.println(Item.getItemQty());
+		Item abc = new Item (item1,testDateTime1);
 		Item def = new Item (item1,testDateTime1);
 		System.out.println(Item.getItemQty());
 		assertEquals(abc.getDescription(),def.getDescription());
@@ -30,10 +33,10 @@ public class ItemTest {
 	@Test
 	public void testStaticAttributes() {
 		System.out.println(Item.getItemQty());
-		Item ghi = new Item(item3,testDateTime3);
+		Item ghi = new Item(item2,testDateTime2);
 		System.out.println(Item.getItemQty());
-		assertEquals(Item.getItemQty(),3);
-		assertEquals(Item.getLastItemId(),3);
+		assertEquals(3,Item.getItemQty());
+		assertEquals(3,Item.getLastItemId());
 	}
 	
 	
@@ -42,9 +45,12 @@ public class ItemTest {
 		ArrayList<String> tagList = new ArrayList<String>();
 		tagList.add("homework");
 		tagList.add("school");
-		abc.setTags(tagList);
-		assertEquals(tagList,abc.getTags());
-		abc.displayTagList();
+		Item jkl = new Item (item4,testDateTime4);
+		jkl.setTags(tagList);
+		assertEquals(tagList,jkl.getTags());
+		jkl.displayTagList();
+		assertEquals(4,Item.getItemQty());
+		assertEquals(4,Item.getLastItemId());
 	}
 	
 }
