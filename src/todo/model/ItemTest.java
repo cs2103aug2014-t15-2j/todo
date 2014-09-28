@@ -64,10 +64,15 @@ public class ItemTest {
 		tagList.add("school");
 		
 		Item abc1 = new Item(item1);
+		System.out.println(abc1.toString());
 		Item abc2 = new Item(item1,testDateTime1);
-		Item abc3 = new Item(item1,priority1, tagList);
-		Item abc4 = new Item(location1, priority1, tagList);
+		System.out.println(abc2.toString());
+		Item abc3 = new Item(item1,priority1,tagList);
+		System.out.println(abc3.toString());
+		Item abc4 = new Item(item1,tagList,priority1,location1);
+		System.out.println(abc4.toString());
 		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
+		System.out.println(abc5.toString());
 		
 		assertEquals(9,Item.getItemQty());
 		assertEquals(9,Item.getLastItemId());

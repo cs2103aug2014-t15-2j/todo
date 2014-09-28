@@ -59,8 +59,8 @@ public class Item {
 		lastItemId++;
 	}
 	
-	//Constructor with location, priority, tags
-	public Item(String description, String location, int priority, ArrayList<String> tags){
+	//Constructor with tags, priority, location
+	public Item(String description, ArrayList<String> tags, int priority, String location){
 		setDescription(description);
 		setLocation(location);
 		setPriority(priority);
@@ -170,10 +170,24 @@ public class Item {
 		this.isActive = true;
 	}
 	
-	//Display
+	//Display Methods
+	//Display TagList
 	public void displayTagList() {
 		for(int i = 0; i < tags.size(); i++) {
 			System.out.println(tags.get(i));
 		}
+	}
+	
+	//Display item
+	public String toString() {
+		String result = "";
+		result = result.concat("Description: ");
+		result = result.concat(description);
+		result = result.concat("Start: ");
+		if(startDateTime.equals(null)) {
+			result = result.concat(getStartDateTime().toString());
+		}
+		return result;
+		
 	}
 }
