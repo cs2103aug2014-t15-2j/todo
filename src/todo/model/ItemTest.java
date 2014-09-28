@@ -76,7 +76,7 @@ public class ItemTest {
 		System.out.println(abc4.toString());
 		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
 		System.out.println(abc5.toString());
-		
+		System.out.println();
 		
 	}
 	@Test
@@ -136,6 +136,7 @@ public class ItemTest {
 		
 	//	myList.sortByTimeDecreasing();
 		myList.displayList();
+		System.out.println();
 	}
 	
 }
