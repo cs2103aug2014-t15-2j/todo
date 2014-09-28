@@ -35,7 +35,7 @@ public class ItemTest {
 		
 	}
 	
-	@Test
+	
 	public void testStaticAttributes() {
 		
 		Item ghi = new Item(item2,testDateTime2);
@@ -45,7 +45,7 @@ public class ItemTest {
 	}
 	
 	
-	@Test
+	
 	public void testTagsInput() {
 		ArrayList<String> tagList = new ArrayList<String>();
 		tagList.add("homework");
