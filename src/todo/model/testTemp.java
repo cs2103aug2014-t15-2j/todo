@@ -16,8 +16,9 @@ public class testTemp {
 		
 		myList.displayList();
 		
+		myList.delete(2);
 		//myList.sortByTimeDecreasing();
-	//	myList.displayList();
+		myList.displayList();
 
 		
 	}

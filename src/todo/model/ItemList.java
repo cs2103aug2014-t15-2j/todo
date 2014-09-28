@@ -27,8 +27,11 @@ public class ItemList {
 		}
 		
 		// Delete item
-		public void delete(Item item){
-			itemList.remove(item);
+		public void delete(int index){
+			String removedItemDescription = itemList.get(index - 1).getDescription();
+			
+			itemList.remove(index - 1);
+			System.out.println("\"" + removedItemDescription + "\"" + " is deleted.");
 			Item.setItemQtyAfterDeletion();
 		}
 		

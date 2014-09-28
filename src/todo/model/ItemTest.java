@@ -134,7 +134,7 @@ public class ItemTest {
 		myList.add(abc5);
 		myList.displayList();
 		
-		myList.sortByTimeDecreasing();
+	//	myList.sortByTimeDecreasing();
 		myList.displayList();
 	}
 	
