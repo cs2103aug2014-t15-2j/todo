@@ -27,12 +27,13 @@ public class ItemList {
 		// Delete item
 		public void delete(Item item){
 			itemList.remove(item);
+			Item.setItemQtyAfterDeletion();
 		}
 		
 		// Display the whole itemList
 		public void displayList(){
 			for (Item i : itemList){
-				System.out.println(i.getDescription() + " " + i.getStartDateTime().toString());
+				System.out.println(i.toString());
 			}
 		}
 		

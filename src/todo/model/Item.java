@@ -125,8 +125,8 @@ public class Item {
 	}
 	
 	//Modifiers
-	public static void setItemQty(int itemQty){
-		Item.itemQty = itemQty;
+	public static void setItemQtyAfterDeletion(){
+		Item.itemQty = itemQty--;
 	}
 	
 	public static void setLastItemID(int lastItemID){
