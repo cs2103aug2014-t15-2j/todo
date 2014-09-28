@@ -135,7 +135,7 @@ public class Item {
 	
 	public void setItemID (int lastItemId){
 		itemId = lastItemId+1;
-		lastItemId++;
+		Item.lastItemId++;
 	}
 	
 	public void setDescription(String description){
