@@ -51,7 +51,7 @@ public class Storage {
 	public static final String LOCATION = "location";
 	public static final String TAGS = "tags";
 	public static final String TAG = "tag";
-	public static final String IS_ACTIVE = "isActive";
+	public static final String IS_COMPLETED = "isCompleted";
 	
 	// Related to date and time
 	public static final String DATE_WITH_TIME = "MM/dd/yyyy HH:mm:ss";
@@ -142,11 +142,11 @@ public class Storage {
 			}
 			newItem.setTags(newTags);
 			
-			Node isActive = doc.getElementsByTagName(IS_ACTIVE).item(i);
+			Node isActive = doc.getElementsByTagName(IS_COMPLETED).item(i);
 			if(isActive.getTextContent().equals(TRUE)){
-				newItem.setStatusUndone();
-			}else{
 				newItem.setStatusDone();
+			}else{
+				newItem.setStatusUndone();
 			}
 		
 			newItemList.add(newItem);
@@ -270,13 +270,13 @@ public class Storage {
 				tags.appendChild(tag);
 			}
 			
-			Element isActive = doc.createElement(IS_ACTIVE);
+			Element isActive = doc.createElement(IS_COMPLETED);
 			isActive.appendChild(doc.createTextNode(String.valueOf(currentItem.getStatus())));
 			item.appendChild(isActive);
 		}
 		
 		Storage.serialise(doc);
-		System.out.println("File saved!");
+		//System.out.println("File saved!");
 	}
 	
 	/**
