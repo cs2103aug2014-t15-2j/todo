@@ -9,6 +9,8 @@ public class ItemList {
 	    // Data attributes
 		private ArrayList <Item> itemList = new ArrayList <Item> ();
 		
+		// Constructor
+		
 		// Return the size of itemList
 		public int size(){
 			return itemList.size();
@@ -32,8 +34,13 @@ public class ItemList {
 		
 		// Display the whole itemList
 		public void displayList(){
-			for (Item i : itemList){
-				System.out.println(i.toString());
+			int i = 1;
+			for (Item item : itemList){
+				System.out.println(i + ". " + item.toString());
+				i++;
+			}
+			if(itemList.size() == 0){
+				System.out.println("The list is empty");
 			}
 		}
 		
@@ -53,21 +60,37 @@ public class ItemList {
 		
 		// Sort the itemList from early to later times
 		public void sortByTimeIncreasing(){
+
 			Collections.sort(itemList, new Comparator<Item>(){
-				public int compare(Item item1, Item item2){
-					return item1.getStartDateTime().getDate().compareTo(item2.getStartDateTime().getDate());
+				public int compare(Item item1, Item item2){		
+					if((item1.getStartDateTime() == null) || (item2.getStartDateTime() == null))
+						return 0;
+					else 
+						return item1.getStartDateTime().getDate().compareTo(item2.getStartDateTime().getDate());
 				}
 			});
 		}
 		
 		//Sort the itemList from later to early times
-		public void sortByTimeDecreasing(){
-			Collections.sort(itemList, new Comparator<Item>(){
+/*		public void sortByTimeDecreasing(){
+			ArrayList<Item> listWithoutStartDateTime = new ArrayList<Item>();
+			
+			for(Item i : itemList){
+				if (i.getStartDateTime() == null){
+					listWithoutStartDateTime.add(i);
+					itemList.
+				}
+				else{
+					sortByTimeList.add(itemList.get(i));
+				}
+			}
+			
+			Collections.sort(sortByTimeList, new Comparator<Item>(){
 				public int compare(Item item2, Item item1){
 					return item1.getStartDateTime().getDate().compareTo(item2.getStartDateTime().getDate());
 				}
 			});
-		}
+		}  */
 		
 		// Search certain key word in itemList
 		public void search(String searchKey){
