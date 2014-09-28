@@ -144,9 +144,9 @@ public class Storage {
 			
 			Node isActive = doc.getElementsByTagName(IS_ACTIVE).item(i);
 			if(isActive.getTextContent().equals(TRUE)){
-				newItem.setUndone();
+				newItem.setStatusUndone();
 			}else{
-				newItem.setDone();
+				newItem.setStatusDone();
 			}
 		
 			newItemList.add(newItem);
@@ -271,7 +271,7 @@ public class Storage {
 			}
 			
 			Element isActive = doc.createElement(IS_ACTIVE);
-			isActive.appendChild(doc.createTextNode(String.valueOf(currentItem.getIsActive())));
+			isActive.appendChild(doc.createTextNode(String.valueOf(currentItem.getStatus())));
 			item.appendChild(isActive);
 		}
 		

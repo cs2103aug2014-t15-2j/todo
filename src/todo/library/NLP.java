@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import todo.model.DateTime;
 import todo.model.Item;
 import todo.model.ItemList;
 
@@ -19,14 +20,7 @@ public class NLP {
 	public static final String[] preDue = {"by", "before", "due", "in"};
 	public static final String[] timeKeyword = {"EXPLICIT_TIME", "minute", "hour"};
 	
-	public static boolean addParser(String msg){
-		// TEMP tutorial
-		if (msg.equals("")){
-			System.out.println("[add] add a new event or task");
-			System.out.println("e.g. add project meeting next monday #project");
-			return false;
-		}
-		
+	public static Item addParser(String msg){		
 		Parser parser = new Parser();
 		List<DateGroup> groups;
 		ArrayList<String> tagList = new ArrayList<String>();
@@ -37,6 +31,8 @@ public class NLP {
 		String location = "";
 		boolean startDateHasTime = false;
 		boolean dueDateHasTime = false;
+		DateTime startDateTime = null;
+		DateTime dueDateTime = null;
 		
 		String msgToDetectDate = removeQuoted(msg);
 		groups = parser.parse(msgToDetectDate);
@@ -149,6 +145,7 @@ public class NLP {
 		*/
 		
 		//print out for testing
+		/*
 		System.out.println("description: " + msg);
 		DateFormat mDateFormate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 		if (startDate != null)
@@ -159,8 +156,16 @@ public class NLP {
 			System.out.println("location: " + location);
 		if (tagList.size() != 0)
 			System.out.println("tags: " + tagList.toString());
+		*/
 		
-		return true;
+		// build DateTime for startDate & dueDate
+		if (startDate != null){
+			startDateTime = new DateTime(startDate, startDateHasTime);
+		}
+		if (dueDate != null){
+			dueDateTime = new DateTime(dueDate, dueDateHasTime);
+		}
+		return new Item(msg, startDateTime, dueDateTime, location, 1, tagList);
 	}
 	
 	private static String trimString(String str){
