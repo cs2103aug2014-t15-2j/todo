@@ -1,14 +1,19 @@
 package todo.model;
 
 import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Date;
+
 import org.junit.Test;
 public class ItemTest {
 	String item1 = "item-1";
 	String item2 = "item-2";
 	String item3 = "item-3";
 	String item4 = "item-4";
+	String location1 = "SchoolOfComputing";
+	String locatin2 = "Utown";
+	int priority1 = 1;
 	Date currentDate1 = new Date();
 	DateTime testDateTime1 = new DateTime(currentDate1);
 	Date currentDate2 = new Date();
@@ -51,6 +56,21 @@ public class ItemTest {
 		jkl.displayTagList();
 		assertEquals(4,Item.getItemQty());
 		assertEquals(4,Item.getLastItemId());
+	}
+	@Test
+	public void testAllConstructors() {
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		
+		Item abc1 = new Item(item1);
+		Item abc2 = new Item(item1,testDateTime1);
+		Item abc3 = new Item(item1,priority1, tagList);
+		Item abc4 = new Item(location1, priority1, tagList);
+		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
+		
+		assertEquals(9,Item.getItemQty());
+		assertEquals(9,Item.getLastItemId());
 	}
 	
 }

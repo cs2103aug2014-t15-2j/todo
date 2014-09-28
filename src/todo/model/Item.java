@@ -15,12 +15,21 @@ public class Item {
 	private boolean isActive = true;
 	
 	//Constructors
+	
 	//Default Constructor
 	public Item(){
 		setItemID(lastItemId);	
 		itemQty++;
 	}
 	
+	//Constructor with only description 
+	public Item(String description) {
+		setDescription(description);
+		itemQty++;
+		lastItemId++;
+	}
+	
+	//Constructor with description and start time.
 	public Item(String description, DateTime startDateTime){
 		setDescription(description);
 		setStartDateTime(startDateTime);
@@ -29,6 +38,39 @@ public class Item {
 		lastItemId++;
 	}
 	
+	//Constructor with priority and tags
+	public Item(String description, int priority, ArrayList<String> tags){
+		setDescription(description);
+		setPriority(priority);
+		setTags(tags);
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+	}
+	//Constructor with start,due,priority,tags
+	public Item(String description, DateTime startDateTime, DateTime dueDateTime, int priority, ArrayList<String> tags){
+		setDescription(description);
+		setStartDateTime(startDateTime);
+		setDueDateTime(dueDateTime);
+		setPriority(priority);
+		setTags(tags);
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+	}
+	
+	//Constructor with location, priority, tags
+	public Item(String description, String location, int priority, ArrayList<String> tags){
+		setDescription(description);
+		setLocation(location);
+		setPriority(priority);
+		setTags(tags);
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+	}
+	
+	//Constructor with all attributes
 	public Item(String description, DateTime startDateTime, DateTime dueDateTime, String location, int priority, ArrayList<String> tags){
 		setDescription(description);
 		setStartDateTime(startDateTime);
