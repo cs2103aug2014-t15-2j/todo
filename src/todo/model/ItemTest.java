@@ -25,10 +25,10 @@ public class ItemTest {
 	
 	@Test
 	public void testItemConstructor() {
-		System.out.println(Item.getItemQty());
+	
 		Item abc = new Item (item1,testDateTime1);
 		Item def = new Item (item1,testDateTime1);
-		System.out.println(Item.getItemQty());
+		
 		assertEquals(abc.getDescription(),def.getDescription());
 		assertEquals(abc.getStartDateTime(),def.getStartDateTime());
 		assertEquals(Item.getItemQty(),2);
@@ -37,9 +37,9 @@ public class ItemTest {
 	
 	@Test
 	public void testStaticAttributes() {
-		System.out.println(Item.getItemQty());
+		
 		Item ghi = new Item(item2,testDateTime2);
-		System.out.println(Item.getItemQty());
+		
 		assertEquals(3,Item.getItemQty());
 		assertEquals(3,Item.getLastItemId());
 	}
