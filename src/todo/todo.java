@@ -37,23 +37,12 @@ public class todo {
 		mItemList = FileUtil.readDataFromFile();
 
 		userInput = requeatForCommand();
-		commandTypeString = StringUtil.getFirstWord(userInput);
+		mCommandType = getCommandType(StringUtil.getFirstWord(userInput));
 		
-		// if the first word id an integer, then update
-		// otherwise, parse the command
-		if(StringUtil.isInteger(commandTypeString)){
-			mCommandType = CommandType.UPDATE;
-			currentIndex = Integer.valueOf(commandTypeString);
-		}else{
-			mCommandType = Command.determineCommandType(commandTypeString);
-			currentIndex = null;
-		}
-		
-		while (mCommandType != Command.CommandType.EXIT){
+		while (mCommandType != CommandType.EXIT){
 			executeCommand(mCommandType);
 			userInput = requeatForCommand();
-			commandTypeString = StringUtil.getFirstWord(userInput);
-			mCommandType = Command.determineCommandType(commandTypeString);
+			mCommandType = getCommandType(StringUtil.getFirstWord(userInput));
 		}
 		scanner.close();
 	}
@@ -61,6 +50,20 @@ public class todo {
 	private static String requeatForCommand(){
 		System.out.print("command: ");
 		return scanner.nextLine().trim();
+	}
+	
+	private static CommandType getCommandType(String commandTypeString){
+		CommandType result;
+		// if the first word is an integer, then command type is update
+		// otherwise, parse the command
+		if(StringUtil.isInteger(commandTypeString)){
+			result = CommandType.UPDATE;
+			currentIndex = Integer.valueOf(commandTypeString);
+		}else{
+			result = Command.determineCommandType(commandTypeString);
+			currentIndex = null;
+		}
+		return result;
 	}
 	
 	/**
@@ -78,7 +81,7 @@ public class todo {
 				read();
 				break;
 			case UPDATE:
-				System.out.println("Update command");
+				update();
 				break;
 			case DELETE:
 				delete();
@@ -107,6 +110,30 @@ public class todo {
 	
 	public static void read(){
 		mItemList.displayList();
+	}
+	
+	public static void update(){
+		String updateInfo = "";
+		String [] arr;
+		int updateIndex = -1;
+		int arrLen;
+		if (currentIndex == null){
+			arr = userInput.split(" ",3);
+			arrLen = 3;
+		}else{
+			arr = userInput.split(" ",2);
+			arrLen = 2;
+		}
+
+		if (arr.length == arrLen && StringUtil.isInteger(arr[arrLen-2])){
+			updateInfo = arr[arrLen-1];
+			updateIndex = Integer.valueOf(arr[arrLen-2]);
+		}else{
+			System.out.println("update an event or task");
+		}
+		//NLP
+		System.out.println(updateIndex);
+		System.out.println(updateInfo);
 	}
 	
 	public static void delete() throws ParserConfigurationException, TransformerException{

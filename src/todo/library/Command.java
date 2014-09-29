@@ -22,6 +22,8 @@ public class Command {
 			return CommandType.CREATE;
 		case "add":
 			return CommandType.CREATE;
+		case "a":
+			return CommandType.CREATE;
 		case "insert":
 			return CommandType.CREATE;
 			
@@ -51,6 +53,8 @@ public class Command {
 		case "edit":
 			return CommandType.UPDATE;
 		case "modify":
+			return CommandType.UPDATE;
+		case "change":
 			return CommandType.UPDATE;
 			
 		// ----------Possible cases of 'delete'-----------
