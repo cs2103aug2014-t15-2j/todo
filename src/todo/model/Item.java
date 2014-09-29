@@ -62,7 +62,7 @@ public class Item {
 	}
 	
 	//Constructor with tags, priority, location
-	public Item(String description, ArrayList<String> tags, int priority, String location){
+	public Item(String description, String location, int priority, ArrayList<String> tags){
 		setDescription(description);
 		setLocation(location);
 		setPriority(priority);

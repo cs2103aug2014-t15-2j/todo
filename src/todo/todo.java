@@ -133,9 +133,8 @@ public class todo {
 		}else{
 			System.out.println("update an event or task");
 		}
-		//NLP
-		System.out.println(updateIndex);
-		System.out.println(updateInfo);
+
+		NLP.updateParser(mItemList.getItem(updateIndex), updateInfo);
 	}
 	
 	public static void delete() throws ParserConfigurationException, TransformerException{

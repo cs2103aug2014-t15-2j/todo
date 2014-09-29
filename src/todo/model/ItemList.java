@@ -18,7 +18,7 @@ public class ItemList {
 		
 		// Return a specific item from the itemList
 		public Item getItem(int index){
-			return itemList.get(index);
+			return itemList.get(index-1);
 		}
 		
 		// Add item

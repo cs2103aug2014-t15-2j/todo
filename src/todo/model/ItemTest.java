@@ -72,7 +72,7 @@ public class ItemTest {
 		System.out.println(abc2.toString());
 		Item abc3 = new Item(item1,priority1,tagList);
 		System.out.println(abc3.toString());
-		Item abc4 = new Item(item1,tagList,priority1,location1);
+		Item abc4 = new Item(item1,location1, priority1, tagList);
 		System.out.println(abc4.toString());
 		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
 		System.out.println(abc5.toString());
@@ -95,7 +95,7 @@ public class ItemTest {
 	
 		Item abc3 = new Item(item1,priority1,tagList);
 		
-		Item abc4 = new Item(item1,tagList,priority1,location1);
+		Item abc4 = new Item(item1,location1, priority1, tagList);
 		
 		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
 
@@ -123,7 +123,7 @@ public class ItemTest {
 	
 		Item abc3 = new Item(item1,priority1,tagList);
 		
-		Item abc4 = new Item(item1,tagList,priority1,location1);
+		Item abc4 = new Item(item1,location1, priority1, tagList);
 		
 		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
 

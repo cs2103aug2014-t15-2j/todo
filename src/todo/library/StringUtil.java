@@ -72,16 +72,7 @@ public class StringUtil {
 		return result;
 	}
 	
-
-	
-	/**
-	 * if there are only two quotation marks in the string
-	 * and one is at the beginning, and the other is at the end
-	 * then remove the two quotation marks
-	 * @param str the original string
-	 * @return string
-	 */
-	public static String removeFullQuote(String str){
+	public static boolean isFullQuote(String str){
 		if (str.length() > 1){
 			if (str.charAt(0) == '\"' && str.charAt(str.length()-1) == '\"'){
 				int count = 0;
@@ -91,11 +82,26 @@ public class StringUtil {
 					}
 				}
 				if (count == 2){
-					return str.substring(1, str.length()-1);
+					return true;
 				}
 			}
 		}
-		return str;
+		return false;
+	}
+	
+	/**
+	 * if there are only two quotation marks in the string
+	 * and one is at the beginning, and the other is at the end
+	 * then remove the two quotation marks
+	 * @param str the original string
+	 * @return string
+	 */
+	public static String removeFullQuote(String str){
+		if (isFullQuote(str)){
+			return str.substring(1, str.length()-1);
+		}else{
+			return str;
+		}
 	}
 	
 	/**
