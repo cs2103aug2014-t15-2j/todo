@@ -111,7 +111,7 @@ public class todo {
 		mItemList.displayList();
 	}
 	
-	public static void update(){
+	public static void update() throws ParserConfigurationException, TransformerException{
 		String updateInfo = "";
 		String [] arr;
 		int updateIndex = -1;
@@ -135,6 +135,7 @@ public class todo {
 		}
 
 		NLP.updateParser(mItemList.getItem(updateIndex), updateInfo);
+		save();
 	}
 	
 	public static void delete() throws ParserConfigurationException, TransformerException{
