@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
 import todo.library.Command;
 import todo.library.Command.CommandType;
 import todo.library.NLP;
+import todo.library.StringUtil;
 import todo.model.Item;
 import todo.model.ItemList;
 import todo.storage.Storage;
@@ -24,6 +25,7 @@ public class todo {
 	private static String userInput;
 	
 	private static ItemList mItemList;
+	private static Integer currentIndex;
 	
 	public static void main(String arg[]) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException, TransformerException{
 		
@@ -35,13 +37,22 @@ public class todo {
 		readDataFromFile();
 
 		userInput = requeatForCommand();
-		commandTypeString = getFirstWord(userInput);
-		mCommandType = Command.determineCommandType(commandTypeString);
+		commandTypeString = StringUtil.getFirstWord(userInput);
+		
+		// if the first word id an integer, then update
+		// otherwise, parse the command
+		if(StringUtil.isInteger(commandTypeString)){
+			mCommandType = CommandType.UPDATE;
+			currentIndex = Integer.valueOf(commandTypeString);
+		}else{
+			mCommandType = Command.determineCommandType(commandTypeString);
+			currentIndex = null;
+		}
 		
 		while (mCommandType != Command.CommandType.EXIT){
 			executeCommand(mCommandType);
 			userInput = requeatForCommand();
-			commandTypeString = getFirstWord(userInput);
+			commandTypeString = StringUtil.getFirstWord(userInput);
 			mCommandType = Command.determineCommandType(commandTypeString);
 		}
 		scanner.close();
@@ -109,11 +120,6 @@ public class todo {
 			System.out.println("e.g. "); //TODO
 		}
 		saveDateToFile();
-	}
-	
-	private static String getFirstWord(String userCommand) {
-		String commandTypeString = userCommand.trim().split("\\s+")[0];
-		return commandTypeString;
 	}
 	
 	private static void readDataFromFile() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{

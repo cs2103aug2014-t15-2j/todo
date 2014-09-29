@@ -130,5 +130,16 @@ public class StringUtil {
 	public static String trimString(String str){
 		return str.trim().replaceAll(" +", " ");
 	}
+	
+	/**
+	 * get the first word from a string
+	 * if there is only one word in the string, return the word
+	 * @param str: the given string : String
+	 * @return the frist word : String
+	 */
+	public static String getFirstWord(String str) {
+		String firstWord = str.trim().split("\\s+")[0];
+		return firstWord;
+	}
 
 }
