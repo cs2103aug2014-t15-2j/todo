@@ -134,7 +134,7 @@ public class todo {
 			System.out.println("update an event or task");
 		}
 
-		NLP.updateParser(mItemList.getItem(updateIndex), updateInfo);
+		NLP.updateParser(mItemList.getItem(updateIndex-1), updateInfo);
 		save();
 	}
 	

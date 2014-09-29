@@ -93,8 +93,11 @@ public class NLP {
 	}
 	
 	public static void updateParser(Item item, String msg){
-		if(StringUtil.isFullQuote(msg)){
+		if (StringUtil.isFullQuote(msg)){
 			item.setDescription(StringUtil.removeFullQuote(msg));
+		}
+		if (msg.charAt(0) == '@'){
+			item.setLocation(msg.substring(1));
 		}
 	}
 	
