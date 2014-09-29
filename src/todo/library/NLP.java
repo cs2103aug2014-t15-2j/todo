@@ -53,7 +53,7 @@ public class NLP {
 		
 		//escape when the first integer of the date/time is a part of the description
 		//if the first char is an integer, and there is no space before it
-		if(isInteger(groups.get(0).getText().charAt(0)+"") 
+		if(groups.size() > 0 && isInteger(groups.get(0).getText().charAt(0)+"") 
 				&& msgToDetectDate.charAt(msgToDetectDate.indexOf(groups.get(0).getText())-1) != ' '){
 			msgToDetectDate = groups.get(0).getText().substring(1);
 			//delete all the subsequent integers
