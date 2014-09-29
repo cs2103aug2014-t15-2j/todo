@@ -13,11 +13,11 @@ import org.xml.sax.SAXException;
 
 import todo.library.Command;
 import todo.library.Command.CommandType;
+import todo.library.FileUtil;
 import todo.library.NLP;
 import todo.library.StringUtil;
 import todo.model.Item;
 import todo.model.ItemList;
-import todo.storage.Storage;
 
 public class todo {
 	
@@ -34,7 +34,7 @@ public class todo {
 		scanner = new Scanner(System.in);
 		
 		// read date from data file
-		readDataFromFile();
+		mItemList = FileUtil.readDataFromFile();
 
 		userInput = requeatForCommand();
 		commandTypeString = StringUtil.getFirstWord(userInput);
@@ -102,7 +102,7 @@ public class todo {
 			System.out.println("add a new event or task");
 			System.out.println("e.g. add project meeting next monday #project");
 		}
-		saveDateToFile();
+		save();
 	}
 	
 	public static void read(){
@@ -119,15 +119,11 @@ public class todo {
 			System.out.println("delete a new event or task");
 			System.out.println("e.g. "); //TODO
 		}
-		saveDateToFile();
+		save();
 	}
 	
-	private static void readDataFromFile() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
-		mItemList = Storage.readFromXML();
-	}
-	
-	private static void saveDateToFile() throws ParserConfigurationException, TransformerException{
-		Storage.storeIntoXML(mItemList);
+	private static void save() throws ParserConfigurationException, TransformerException{
+		FileUtil.saveDataToFile(mItemList);
 	}
 	
 }
