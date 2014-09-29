@@ -75,8 +75,12 @@ public class Storage {
 	 * @throws DOMException 
 	 */
 	public static ItemList readFromXML() throws ParserConfigurationException, SAXException, IOException, DOMException, ParseException{
+		File newFile = new File(FILE_DESTINATION);
+		if(!newFile.exists()){
+			return new ItemList();
+		}
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		Document doc = docBuilder.parse(new File(FILE_DESTINATION));
+		Document doc = docBuilder.parse(newFile);
 		doc.getDocumentElement().normalize();
 		ItemList newItemList = new ItemList();
 		
