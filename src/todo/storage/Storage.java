@@ -67,6 +67,7 @@ public class Storage {
 	
 	/**
 	 * This method reads the XML file 'todo.xml' and returns an ItemList
+	 * 
 	 * @return ItemList
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
@@ -82,10 +83,32 @@ public class Storage {
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document doc = docBuilder.parse(newFile);
 		doc.getDocumentElement().normalize();
+		ItemList newItemList = traverseNodesToRead(doc);
+	
+		// There only one ITEM_QUANTITY to set for Item
+		Node itemQty = doc.getElementsByTagName(ITEM_QUANTITY).item(ZERO);
+		Item.setItemQty(Integer.parseInt(itemQty.getTextContent()));
+	
+		// There only one LAST_ITEM_ID to set for Item
+		Node lastItemId = doc.getElementsByTagName(LAST_ITEM_ID).item(ZERO);
+		Item.setLastItemID(Integer.parseInt(lastItemId.getTextContent()));
+		
+		return newItemList;
+	}
+	
+	/**
+	 * This method traverses XML nodes, reads their values and stores into an Itemlist that is to be return 
+	 * 
+	 * @param doc
+	 * @return ItemList
+	 * @throws DOMException
+	 * @throws ParseException
+	 */
+	private static ItemList traverseNodesToRead(Document doc) throws DOMException, ParseException{
 		ItemList newItemList = new ItemList();
 		
 		NodeList items = doc.getElementsByTagName(ITEM);
-	
+		
 		for(int i = 0; i < items.getLength(); i++){
 			Item newItem = new Item();
 			
@@ -99,7 +122,7 @@ public class Storage {
 			Node description = doc.getElementsByTagName(DESCRIPTION).item(i);
 			newItem.setDescription(description.getTextContent());
 
-			//--------------------Retrieving of startDateTime
+			//------------------Retrieving of startDateTime---------------------
 			Node startDateTime = doc.getElementsByTagName(START_DATE_TIME).item(i);
 			Element startDateTimeElement = (Element) startDateTime;
 			Node sHasTime = startDateTimeElement.getElementsByTagName(HAS_TIME).item(ZERO);
@@ -114,9 +137,9 @@ public class Storage {
 					newItem.setStartDateTime(new DateTime(sDate, false));
 				}
 			}
-			//--------------------Retrieving of startDateTime
+			//------------------Retrieving of startDateTime---------------------
 			
-			//--------------------Retrieving of DueDateTime
+			//------------------Retrieving of DueDateTime-----------------------
 			Node dueDateTime = doc.getElementsByTagName(DUE_DATE_TIME).item(i);
 			Element dueDateTimeElement = (Element) dueDateTime;
 			Node dHasTime = dueDateTimeElement.getElementsByTagName(HAS_TIME).item(ZERO);
@@ -131,7 +154,7 @@ public class Storage {
 					newItem.setDueDateTime(new DateTime(dDate, false));
 				}
 			}
-			//--------------------Retrieving of DueDateTime	
+			//------------------Retrieving of DueDateTime-----------------------
 			
 			Node location = doc.getElementsByTagName(LOCATION).item(i);
 			newItem.setLocation(location.getTextContent());
@@ -156,19 +179,12 @@ public class Storage {
 			newItemList.add(newItem);
 		}
 		
-		// there is only one static itemQty tag
-		Node itemQty = doc.getElementsByTagName(ITEM_QUANTITY).item(ZERO);
-		Item.setItemQty(Integer.parseInt(itemQty.getTextContent()));
-	
-		// there is only one static lastItemId tag
-		Node lastItemId = doc.getElementsByTagName(LAST_ITEM_ID).item(ZERO);
-		Item.setLastItemID(Integer.parseInt(lastItemId.getTextContent()));
-
 		return newItemList;
 	}
 	
 	/**
 	 * This method creates a XML file 'todo.xml' and stores data according to the ItemList that gets passed in
+	 * 
 	 * @param ItemList
 	 * @throws ParserConfigurationException
 	 * @throws TransformerException
@@ -210,7 +226,7 @@ public class Storage {
 			}
 			item.appendChild(description);
 			
-			//------------------------------Storing of startDateTime--------------------------------
+			//----------------------Storing of startDateTime-----------------------
 			Element startDateTime = doc.createElement(START_DATE_TIME);
 			item.appendChild(startDateTime);
 			
@@ -231,9 +247,9 @@ public class Storage {
 			}
 			startDateTime.appendChild(sdtHasTime);
 			startDateTime.appendChild(sdtDateTime);
-			//------------------------------Storing of startDateTime--------------------------------
+			//----------------------Storing of startDateTime-----------------------
 			
-			//------------------------------Storing of dueDateTime----------------------------------
+			//-----------------------Storing of dueDateTime------------------------
 			Element dueDateTime = doc.createElement(DUE_DATE_TIME);
 			item.appendChild(dueDateTime);
 			
@@ -254,7 +270,7 @@ public class Storage {
 			}
 			dueDateTime.appendChild(ddtHasTime);
 			dueDateTime.appendChild(ddtDateTime);
-			//------------------------------Storing of dueDateTime----------------------------------
+			//-----------------------Storing of dueDateTime------------------------
 	
 			Element location = doc.createElement(LOCATION);
 			if(currentItem.getLocation() == null){
@@ -280,21 +296,21 @@ public class Storage {
 		}
 		
 		Storage.serialise(doc);
-		//System.out.println("File saved!");
 	}
 	
 	/**
-	 * This method writes into the XMl, i.e. 'todo.xml' with the Document passed in
+	 * This method writes into the XMl, i.e. 'todo.xml' with the Document being passed in
+	 * 
 	 * @param doc
 	 * @throws TransformerException
 	 */
-	public static void serialise(Document doc) throws TransformerException{
+	private static void serialise(Document doc) throws TransformerException{
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(doc);
 		// Output to file
 		StreamResult result = new StreamResult(new File(FILE_DESTINATION));
-		// Currently, output to console for testing only
+		// Output to console
 		//StreamResult result = new StreamResult(System.out);
 		
 		transformer.setOutputProperty(OutputKeys.INDENT, YES);
