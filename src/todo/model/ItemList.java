@@ -28,14 +28,19 @@ public class ItemList {
 		
 		// Delete item
 		public void delete(int index){
-			if(itemList.size() == 0){
-				System.out.println("fail to delete, the list is empty.");
-			} else{
+			try{
 				String removedItemDescription = itemList.get(index - 1).getDescription();
 				itemList.remove(index - 1);
 				System.out.println("\"" + removedItemDescription + "\"" + " is deleted.");
 				Item.setItemQtyAfterDeletion();
+			}catch(IndexOutOfBoundsException e){
+				if(itemList.size() == 0){
+					System.out.println("Fail to delete, the list is empty.");
+				}else if(index > itemList.size()){
+					System.out.println("Fail to delete, invalid index used.");
+				}
 			}
+				
 		}
 		
 		// Display the whole itemList
