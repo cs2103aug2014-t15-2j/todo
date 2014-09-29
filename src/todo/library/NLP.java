@@ -95,10 +95,25 @@ public class NLP {
 	public static void updateParser(Item item, String msg){
 		if (StringUtil.isFullQuote(msg)){
 			item.setDescription(StringUtil.removeFullQuote(msg));
-		}
-		if (msg.charAt(0) == '@'){
+		}else if (msg.charAt(0) == '@'){
 			item.setLocation(msg.substring(1));
+		}else{
+			List<DateGroup> groups = getDateGroups(msg);
+			List<DateTime> dateTimeList = new ArrayList<DateTime>();
+			if (groups.size() != 0){
+				DateGroup group = groups.get(0);
+				String groupText = group.getText();
+				dateTimeList = getDateTime(group);
+				String wordBeforeDate = StringUtil.getWordBeforeSubstring(msg,groupText);
+				if (Arrays.asList(preDue).contains(wordBeforeDate)){
+					// exchange start time and due time
+					dateTimeList.add(dateTimeList.remove(0));
+				}
+				item.setStartDateTime(dateTimeList.get(0));
+				item.setDueDateTime(dateTimeList.get(1));
+			}
 		}
+
 	}
 	
 	

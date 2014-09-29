@@ -65,7 +65,7 @@ public class StringUtil {
 	public static String getWordBeforeSubstring(String str, String sub){
 		int idx = str.lastIndexOf(sub)-2;
 		String result = "";
-		while (idx > 0 && str.charAt(idx) != ' '){
+		while (idx >= 0 && str.charAt(idx) != ' '){
 			result = str.charAt(idx) + result;
 			idx--;
 		}
