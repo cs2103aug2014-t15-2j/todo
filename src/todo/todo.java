@@ -25,11 +25,10 @@ public class todo {
 	private static String userInput;
 	
 	private static ItemList mItemList;
-	private static Integer currentIndex;
+	private static boolean fastUpdate;
 	
 	public static void main(String arg[]) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException, TransformerException{
 		
-		String commandTypeString;
 		CommandType mCommandType;
 		scanner = new Scanner(System.in);
 		
@@ -58,10 +57,10 @@ public class todo {
 		// otherwise, parse the command
 		if(StringUtil.isInteger(commandTypeString)){
 			result = CommandType.UPDATE;
-			currentIndex = Integer.valueOf(commandTypeString);
+			fastUpdate = true;
 		}else{
 			result = Command.determineCommandType(commandTypeString);
-			currentIndex = null;
+			fastUpdate = false;
 		}
 		return result;
 	}
@@ -117,12 +116,15 @@ public class todo {
 		String [] arr;
 		int updateIndex = -1;
 		int arrLen;
-		if (currentIndex == null){
-			arr = userInput.split(" ",3);
-			arrLen = 3;
-		}else{
+		if (fastUpdate){
+			// start with item index
 			arr = userInput.split(" ",2);
 			arrLen = 2;
+			
+		}else{
+			// start with update command
+			arr = userInput.split(" ",3);
+			arrLen = 3;
 		}
 
 		if (arr.length == arrLen && StringUtil.isInteger(arr[arrLen-2])){
