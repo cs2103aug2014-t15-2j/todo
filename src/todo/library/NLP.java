@@ -2,6 +2,7 @@ package todo.library;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -210,6 +211,49 @@ public class NLP {
 		}else{ // no preposition
 			return msg.replace(groupText, "");
 		}
+	}
+	
+	/**
+	 * Read indexes from a string
+	 * @param str
+	 * @return array list of integers
+	 */
+	private static ArrayList<Integer> readIndexList(String str){
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		String delimiter = " ";
+		str = str.trim();
+		
+		// Matching delimiter in the string. "," -> "/"
+		if (str.contains(",")){
+			delimiter = ",";
+		}else if (str.contains("/")){
+			delimiter = "/";
+		}
+
+		String[] arr = str.split(delimiter);
+		for (String s: arr){
+			s = s.trim();
+			if (StringUtil.isInteger(s)){
+				// Discrete indexes
+				int newValue = Integer.valueOf(s);
+				if(!result.contains(newValue)){
+					result.add(newValue);
+				}
+			}else if (s.contains("-")){
+				// Continuous indexes
+				String[] subArr = s.split("-");
+				if (StringUtil.isInteger(subArr[0]) && StringUtil.isInteger(subArr[1]) 
+					&& Integer.valueOf(subArr[0]) < Integer.valueOf(subArr[1])){
+					for (int i = Integer.valueOf(subArr[0]); i < (Integer.valueOf(subArr[1])+1); i++){
+						if(!result.contains(i)){
+							result.add(i);
+						}
+					}
+				}
+			}
+		}
+		Collections.sort(result);
+		return result;
 	}
 	
 }

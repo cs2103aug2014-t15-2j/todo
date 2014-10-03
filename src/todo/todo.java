@@ -19,15 +19,17 @@ import todo.library.StringUtil;
 import todo.model.Item;
 import todo.model.ItemList;
 
+import javax.swing.JFrame;
+
 public class todo {
 	
 	private static Scanner scanner;
-	private static String userInput;
 	
 	private static ItemList mItemList;
 	private static boolean fastUpdate;
 	
 	public static void main(String arg[]) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException, TransformerException{
+		
 		
 		CommandType mCommandType;
 		scanner = new Scanner(System.in);
@@ -35,23 +37,25 @@ public class todo {
 		// read date from data file
 		mItemList = FileUtil.readDataFromFile();
 
-		userInput = requeatForCommand();
+		createAndShowGUI();
+		
+		String userInput = requeatForCommand();
 		mCommandType = getCommandType(StringUtil.getFirstWord(userInput));
 		
 		while (mCommandType != CommandType.EXIT){
-			executeCommand(mCommandType);
+			executeCommand(mCommandType, userInput);
 			userInput = requeatForCommand();
 			mCommandType = getCommandType(StringUtil.getFirstWord(userInput));
 		}
 		scanner.close();
 	}
 	
-	private static String requeatForCommand(){
+	static String requeatForCommand(){
 		System.out.print("command: ");
 		return scanner.nextLine().trim();
 	}
 	
-	private static CommandType getCommandType(String commandTypeString){
+	public static CommandType getCommandType(String commandTypeString){
 		CommandType result;
 		// if the first word is an integer, then command type is update
 		// otherwise, parse the command
@@ -71,19 +75,19 @@ public class todo {
 	 * @throws TransformerException 
 	 * @throws ParserConfigurationException 
 	 */
-	public static void executeCommand(CommandType commandType) throws ParserConfigurationException, TransformerException {
+	public static void executeCommand(CommandType commandType, String userInput) throws ParserConfigurationException, TransformerException {
 		switch (commandType) {
 			case CREATE:
-				add();
+				add(userInput);
 				break;
 			case READ:
 				read();
 				break;
 			case UPDATE:
-				update();
+				update(userInput);
 				break;
 			case DELETE:
-				delete();
+				delete(userInput);
 				break;
 			case INVALID:
 				System.out.println("Invalid command");
@@ -93,7 +97,7 @@ public class todo {
 		}
 	}
 	
-	public static void add() throws ParserConfigurationException, TransformerException{
+	public static void add(String userInput) throws ParserConfigurationException, TransformerException{
 		String content;
 		String [] arr = userInput.split(" ", 2);
 		if (arr.length > 1){
@@ -111,7 +115,7 @@ public class todo {
 		mItemList.displayList();
 	}
 	
-	public static void update() throws ParserConfigurationException, TransformerException{
+	public static void update(String userInput) throws ParserConfigurationException, TransformerException{
 		String updateInfo = "";
 		String [] arr;
 		int updateIndex = -1;
@@ -138,7 +142,7 @@ public class todo {
 		save();
 	}
 	
-	public static void delete() throws ParserConfigurationException, TransformerException{
+	public static void delete(String userInput) throws ParserConfigurationException, TransformerException{
 		int index;
 		String [] arr = userInput.split(" ", 2);
 		if (arr.length > 1){
@@ -155,4 +159,25 @@ public class todo {
 		FileUtil.saveDataToFile(mItemList);
 	}
 	
+	
+	private static void createAndShowGUI() {
+        //Create and set up the window.
+        JFrame frame = new JFrame("TextDemo");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+ 
+        //Add contents to the window.
+        GUI mGUI = new GUI();
+        frame.add(mGUI);
+ 
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
+        
+        mGUI.textArea.setText(todo.getListString());
+    }
+	
+	// For GUI testing purpose
+	public static String getListString(){
+		return mItemList.toString();
+	}
 }

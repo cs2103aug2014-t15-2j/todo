@@ -55,6 +55,19 @@ public class ItemList {
 			}
 		}
 		
+		// Display the whole itemList
+		public String toString(){
+			String result = "";
+			if (this.size() == 0){
+				return "Empty";
+			}else{
+				for (int i = 0; i < this.size(); i++){
+					result += ((i+1) + ". " + this.getItem(i).toString()+"\n");
+				}
+			}
+			return result;
+		}
+		
 		// Clear the whole itemList
 		public void clear(){
 			itemList.clear();
@@ -62,16 +75,16 @@ public class ItemList {
 		
 		// Sort the itemList according to alphabetical order of description
 		public void sortByFirstAlphabet(){
-		Collections.sort(itemList, new Comparator<Item>(){
-			public int compare(Item item1, Item item2){
-				return item1.getDescription().compareToIgnoreCase(item2.getDescription());
-			}
-		});
+			Collections.sort(itemList, new Comparator<Item>(){
+				public int compare(Item item1, Item item2){
+					return item1.getDescription().compareToIgnoreCase(item2.getDescription());
+				}
+			});
 		}
 		
 		// Sort the itemList from early to later times
 		public void sortByTimeIncreasing(){
-ArrayList<Item> listWithoutStartDateTime = new ArrayList<Item>();
+			ArrayList<Item> listWithoutStartDateTime = new ArrayList<Item>();
 			
 			for(int i=0; i < itemList.size(); i++){
 				if (itemList.get(i).getStartDateTime() == null){
