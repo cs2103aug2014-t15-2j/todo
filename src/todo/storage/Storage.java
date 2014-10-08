@@ -28,7 +28,11 @@ import org.xml.sax.SAXException;
 import todo.model.Item;
 import todo.model.ItemList;
 import todo.model.DateTime;
-
+/**
+ *  This class provides two static methods for storing and retrieving data from todo.xml
+ * @author Lui Yu Yao
+ *
+ */
 public class Storage {
 	// Related to FileIO
 	public static final String FILE_DESTINATION = "todo.xml";

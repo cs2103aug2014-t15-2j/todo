@@ -22,37 +22,50 @@ public class ItemList {
 		}
 		
 		// Add item
-		public void add(Item item){
+		public String add(Item item){
+			String itemDescription = item.getDescription();
+			String result  = "\"" + itemDescription + "\"" + "is added.";
 			itemList.add(item);
+			
+			return result;
 		}
 		
 		// Delete item
-		public void delete(int index){
+		public String delete(int index){
 			try{
 				String removedItemDescription = itemList.get(index - 1).getDescription();
+				String result = "\"" + removedItemDescription + "\"" + " is deleted.";
 				itemList.remove(index - 1);
-				System.out.println("\"" + removedItemDescription + "\"" + " is deleted.");
 				Item.setItemQtyAfterDeletion();
+				
+				return result;
 			}catch(IndexOutOfBoundsException e){
+				String returnErrorMessage = null;
 				if(itemList.size() == 0){
-					System.out.println("Fail to delete, the list is empty.");
+					returnErrorMessage =  "Fail to delete, the list is empty.";
 				}else if(index > itemList.size()){
-					System.out.println("Fail to delete, invalid index used.");
+					returnErrorMessage =  "Fail to delete, invalid index used.";
 				}
+				
+				return returnErrorMessage;
 			}
 				
 		}
 		
 		// Display the whole itemList
-		public void displayList(){
+		public String displayList(){
 			int i = 1;
+			String result = "";
 			for (Item item : itemList){
-				System.out.println(i + ". " + item.toString());
+				String appendString = i + ". " + item.toString() + "\n";
+				result += appendString;
 				i++;
 			}
 			if(itemList.size() == 0){
-				System.out.println("The list is empty");
+				result = "The list is empty.";
 			}
+			
+			return result;
 		}
 		
 		// Display the whole itemList
@@ -69,8 +82,11 @@ public class ItemList {
 		}
 		
 		// Clear the whole itemList
-		public void clear(){
+		public String clear(){
 			itemList.clear();
+			String result = "All tasks are cleared.";
+			
+			return result;
 		}
 		
 		// Sort the itemList according to alphabetical order of description
@@ -127,13 +143,16 @@ public class ItemList {
 		}  
 		
 		// Search certain key word in itemList
-		public void search(String searchKey){
-
+		public String search(String searchKey){
+			String result = "";
 			for(Item i : itemList){
 				if (i.getDescription().contains(searchKey)){
-					System.out.println(i.getDescription() + " " + i.getStartDateTime());
+					String appendString = i.getDescription() + " " + i.getStartDateTime();
+					result += appendString;
 				}
 			}
+			
+			return result;
 		}
 		
 }

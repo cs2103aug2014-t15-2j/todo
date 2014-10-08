@@ -39,11 +39,12 @@ public class todo {
 
 		createAndShowGUI();
 		
+		//can be simplified by using do-while loop?- yuyao
 		String userInput = requeatForCommand();
 		mCommandType = getCommandType(StringUtil.getFirstWord(userInput));
 		
 		while (mCommandType != CommandType.EXIT){
-			executeCommand(mCommandType, userInput);
+			System.out.println(executeCommand(mCommandType, userInput));
 			userInput = requeatForCommand();
 			mCommandType = getCommandType(StringUtil.getFirstWord(userInput));
 		}
@@ -75,51 +76,66 @@ public class todo {
 	 * @throws TransformerException 
 	 * @throws ParserConfigurationException 
 	 */
-	public static void executeCommand(CommandType commandType, String userInput) throws ParserConfigurationException, TransformerException {
+	public static String executeCommand(CommandType commandType, String userInput) throws ParserConfigurationException, TransformerException {
+		String result = "";
+		
 		switch (commandType) {
 			case CREATE:
-				add(userInput);
+				result = add(userInput);
 				break;
 			case READ:
-				read();
+				result = read();
 				break;
 			case UPDATE:
-				update(userInput);
+				result = update(userInput);
 				break;
 			case DELETE:
-				delete(userInput);
+				result = delete(userInput);
 				break;
 			case INVALID:
-				System.out.println("Invalid command");
+				result = "Invalid command.";
 				break;
 			default:
+				// shouldn't reach here.
 				break;
 		}
+		return result;
 	}
 	
-	public static void add(String userInput) throws ParserConfigurationException, TransformerException{
+	public static String add(String userInput) throws ParserConfigurationException, TransformerException{
 		String content;
 		String [] arr = userInput.split(" ", 2);
+		String result = "";
+		
 		if (arr.length > 1){
 			content = arr[1];
 			Item newItem = NLP.addParser(content);
-			mItemList.add(newItem);
+			result = mItemList.add(newItem);
 		}else{
-			System.out.println("add a new event or task");
-			System.out.println("e.g. add project meeting next monday #project");
+			result += "add a new event or task.\n";
+			result += "e.g. add project meeting next monday #project";
 		}
+		
 		save();
+		return result;
 	}
 	
-	public static void read(){
-		mItemList.displayList();
+	public static String read(){
+		String result = "";
+		result = mItemList.displayList();
+		
+		return result;
 	}
 	
-	public static void update(String userInput) throws ParserConfigurationException, TransformerException{
+	public static String update(String userInput) throws ParserConfigurationException, TransformerException{
 		String updateInfo = "";
 		String [] arr;
 		int updateIndex = -1;
 		int arrLen;
+		
+		//i need a dummy return value. idk how update works - yuyao.
+		String result = "";
+		
 		if (fastUpdate){
 			// start with item index
 			arr = userInput.split(" ",2);
@@ -135,24 +151,34 @@ public class todo {
 			updateInfo = arr[arrLen-1];
 			updateIndex = Integer.valueOf(arr[arrLen-2]);
 		}else{
-			System.out.println("update an event or task");
+			result += "update an event or task";
 		}
 
 		NLP.updateParser(mItemList.getItem(updateIndex-1), updateInfo);
 		save();
+		
+		
+		//dummy return string right now.
+		result = "update's successful.";
+		return result;
 	}
 	
-	public static void delete(String userInput) throws ParserConfigurationException, TransformerException{
+	public static String delete(String userInput) throws ParserConfigurationException, TransformerException{
 		int index;
 		String [] arr = userInput.split(" ", 2);
-		if (arr.length > 1){
+		String result = "";
+		
+		// why arr.length > 1? cater for batch operation? right now it handles only one delete operation
+		if (arr.length > 1 && StringUtil.isInteger(arr[1])){
 			index = Integer.valueOf(arr[1]);
-			mItemList.delete(index);
+			result = mItemList.delete(index);
 		}else{
-			System.out.println("delete a new event or task");
-			System.out.println("e.g. "); //TODO
+			result += "delete a existing event or task.\n";
+			result += "e.g. delete 3";
 		}
+		
 		save();
+		return result;
 	}
 	
 	private static void save() throws ParserConfigurationException, TransformerException{
