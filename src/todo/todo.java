@@ -25,13 +25,10 @@ import javax.swing.JFrame;
 public class todo {
 	
 	private static Scanner scanner;
-	
 	private static ItemList mItemList;
 	private static boolean fastUpdate;
 	
 	public static void main(String arg[]) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException, TransformerException{
-		
-		
 		CommandType mCommandType;
 		scanner = new Scanner(System.in);
 		
@@ -40,15 +37,11 @@ public class todo {
 
 		createAndShowGUI();
 		
-		//can be simplified by using do-while loop?- yuyao
-		String userInput = requeatForCommand();
-		mCommandType = getCommandType(StringUtil.getFirstWord(userInput));
-		
-		while (mCommandType != CommandType.EXIT){
-			System.out.println(executeCommand(mCommandType, userInput));
-			userInput = requeatForCommand();
+		do{
+			String userInput = requeatForCommand();
 			mCommandType = getCommandType(StringUtil.getFirstWord(userInput));
-		}
+			System.out.println(executeCommand(mCommandType, userInput));
+		}while(mCommandType != CommandType.EXIT);
 		scanner.close();
 	}
 	
@@ -133,8 +126,6 @@ public class todo {
 		String [] arr;
 		int updateIndex = -1;
 		int arrLen;
-		
-		//i need a dummy return value. idk how update works - yuyao.
 		String result = "";
 		
 		if (fastUpdate){
