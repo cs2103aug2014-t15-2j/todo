@@ -155,12 +155,13 @@ public class todo {
 			result += "update an event or task";
 		}
 
-		NLP.updateParser(mItemList.getItem(updateIndex-1), updateInfo);
-		save();
-		
-		
-		//dummy return string right now.
-		result = "update's successful.";
+		if(NLP.updateParser(mItemList.getItem(updateIndex-1), updateInfo)){
+			save();
+			result = "update's successful.";
+		}else{
+			result = "update's failed.";
+		}
+
 		return result;
 	}
 	
