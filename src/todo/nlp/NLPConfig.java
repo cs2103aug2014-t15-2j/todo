@@ -1,4 +1,4 @@
-package nlp;
+package todo.nlp;
 
 public class NLPConfig {
 	public static final String[] filterOut = {"eve"};

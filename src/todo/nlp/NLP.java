@@ -1,4 +1,4 @@
-package nlp;
+package todo.nlp;
 
 import java.util.ArrayList;
 import java.util.Arrays;

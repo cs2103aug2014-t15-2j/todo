@@ -8,8 +8,6 @@ import java.util.Scanner;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import nlp.NLP;
-
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
@@ -19,6 +17,7 @@ import todo.library.FileUtil;
 import todo.library.StringUtil;
 import todo.model.Item;
 import todo.model.ItemList;
+import todo.nlp.NLP;
 
 import javax.swing.JFrame;
 
