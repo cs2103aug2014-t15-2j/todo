@@ -13,15 +13,13 @@ public class testTemp {
 		myList.add(new Item("finish homework"));
 		myList.add(new Item("Doing X", new DateTime(new Date(1404273600000L))));
 		
-
-				
+        myList.delete(5);
+        myList.delete(4);
+        myList.delete(3);
+        myList.delete(1);
+        
 		myList.displayList();
-		myList.delete(1);
-		myList.delete(1);
-		myList.delete(1);
-		myList.delete(1);
-		myList.delete(3);
-	//	myList.sortByTimeIncreasing();
+		myList.sortByTimeIncreasing();
 		myList.displayList();
 
 		
