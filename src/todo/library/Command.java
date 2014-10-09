@@ -69,7 +69,8 @@ public class Command {
 		case "cancel":
 			return CommandType.DELETE;
 			
-		// ----------Possible cases of 'delete'-----------
+			
+		// ----------Possible cases of 'exit'-----------
 		case "exit":
 			return CommandType.EXIT;
 		case "quit":
