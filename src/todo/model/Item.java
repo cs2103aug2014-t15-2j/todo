@@ -197,8 +197,10 @@ public class Item {
 		}
 		
 		if (tags != null) {
+			if(!tags.isEmpty()){
 			result = result.concat(" Tags: ");
 			result = result.concat(getTags().toString());
+			}
 		}
 		
 		result = result.concat(" Priority: ");
