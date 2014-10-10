@@ -88,6 +88,9 @@ public class todo {
 			case DELETE:
 				result = delete(userInput);
 				break;
+			case CLEAR:
+				result = clear();
+				break;
 			case INVALID:
 				result = "Invalid command.";
 				break;
@@ -123,6 +126,12 @@ public class todo {
 		return result;
 	}
 	
+	public static String clear() {
+		String result = "";
+		result = mItemList.clear();
+		
+		return result;
+	}
 	public static String update(String userInput) throws ParserConfigurationException, TransformerException{
 		String updateInfo = "";
 		String [] arr;
