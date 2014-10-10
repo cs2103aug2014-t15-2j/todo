@@ -11,6 +11,12 @@ import org.xml.sax.SAXException;
 
 import todo.model.ItemList;
 
+/**
+ * Facade class
+ * 
+ * @author Lui
+ *
+ */
 public class Storage {
 	
 	private XMLWriter writer;

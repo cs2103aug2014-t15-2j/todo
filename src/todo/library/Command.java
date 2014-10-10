@@ -79,6 +79,8 @@ public class Command {
 			return CommandType.EXIT;
 		case "quit":
 			return CommandType.EXIT;
+		case "close":
+			return CommandType.EXIT;
 				
 		// ----------otherwise, 'invalid'-----------
 		default:
