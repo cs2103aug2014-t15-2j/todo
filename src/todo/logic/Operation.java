@@ -1,5 +1,7 @@
 package todo.logic;
 
+import java.util.ArrayList;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -134,9 +136,21 @@ public class Operation {
 		String result = "";
 		
 		// why arr.length > 1? cater for batch operation? right now it handles only one delete operation
-		if (arr.length > 1 && StringUtil.isInteger(arr[1])){
-			index = Integer.valueOf(arr[1]);
-			result = Data.mItemList.delete(index);
+		if (arr.length > 1){
+			if (StringUtil.isInteger(arr[1])){
+				index = Integer.valueOf(arr[1]);
+				result = Data.mItemList.delete(index);
+			}else{ 
+				ArrayList<Integer> indexList = NLP.batchIndexParser(arr[1]);
+				if(!indexList.isEmpty()){
+					while(!indexList.isEmpty()){
+						Integer toDelete = indexList.remove(indexList.size() - 1);
+						result += Data.mItemList.delete(toDelete);
+					}
+				}else{
+					result += "Invalid parameter";
+				}
+			}
 		}else{
 			result += "delete a existing event or task.\n";
 			result += "e.g. delete 3";

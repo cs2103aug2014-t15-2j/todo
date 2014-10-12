@@ -109,5 +109,9 @@ public class NLP {
 		}
 		return true;
 	}
+	
+	public static ArrayList<Integer> batchIndexParser(String indices){
+		return NLPUtil.readIndexList(indices);
+	}
 
 }

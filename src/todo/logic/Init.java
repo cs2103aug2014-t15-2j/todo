@@ -17,6 +17,4 @@ public class Init {
 		// read date from data file
 		Data.mItemList = Data.storage.readDataFromFile();
 	}
-	
-	
 }
