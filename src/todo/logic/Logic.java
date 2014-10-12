@@ -1,29 +1,72 @@
 package todo.logic;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
+
 import todo.library.Command;
 import todo.library.StringUtil;
 import todo.library.Command.CommandType;
 import todo.model.Item;
+import todo.model.ItemList;
 import todo.nlp.NLP;
+import todo.storage.Storage;
 
-public class Operation {
+public class Logic {
 	
+	private static Logic logicSingleton;
+	private Storage storage;
+	private ItemList mItemList;
+	private boolean fastUpdate;
 	
-	public static CommandType getCommandType(String commandTypeString){
+	/**
+	 * Private constructor for singleton Logic
+	 * 
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
+	 * @throws DOMException 
+	 */
+	private Logic() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
+		storage = new Storage();
+		mItemList = storage.readDataFromFile();
+	}
+	
+	/**
+	 * Method to get the Logic singleton 
+	 * 
+	 * @return
+	 * @throws DOMException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public static Logic getInstanceLogic() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
+		if(logicSingleton == null){
+			logicSingleton = new Logic();
+		}
+		
+		return logicSingleton;
+	}
+	
+	public CommandType getCommandType(String commandTypeString){
 		CommandType result;
 		// if the first word is an integer, then command type is update
 		// otherwise, parse the command
 		if(StringUtil.isInteger(commandTypeString)){
 			result = CommandType.UPDATE;
-			Data.fastUpdate = true;
+			fastUpdate = true;
 		}else{
 			result = Command.determineCommandType(commandTypeString);
-			Data.fastUpdate = false;
+			fastUpdate = false;
 		}
 		return result;
 	}
@@ -34,7 +77,7 @@ public class Operation {
 	 * @throws TransformerException 
 	 * @throws ParserConfigurationException 
 	 */
-	public static String executeCommand(CommandType commandType, String userInput) throws ParserConfigurationException, TransformerException {
+	public String executeCommand(CommandType commandType, String userInput) throws ParserConfigurationException, TransformerException {
 		String result = "";
 		
 		switch (commandType) {
@@ -51,10 +94,10 @@ public class Operation {
 				result = simpleOperation(CommandType.DELETE, userInput);
 				break;
 			case DONE:
-				result = simpleOperation(CommandType.DONE,userInput);
+				result = simpleOperation(CommandType.DONE, userInput);
 				break;
 			case UNDONE:
-				result = simpleOperation(CommandType.UNDONE,userInput);
+				result = simpleOperation(CommandType.UNDONE, userInput);
 				break;
 			case CLEAR:
 				result = clear();
@@ -70,7 +113,7 @@ public class Operation {
 	}
 	
 	
-	public static String add(String userInput) throws ParserConfigurationException, TransformerException{
+	public String add(String userInput) throws ParserConfigurationException, TransformerException{
 		String content;
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
@@ -78,7 +121,7 @@ public class Operation {
 		if (arr.length > 1){
 			content = arr[1];
 			Item newItem = NLP.addParser(content);
-			result = Data.mItemList.add(newItem);
+			result = mItemList.add(newItem);
 		}else{
 			result += "add a new event or task.\n";
 			result += "e.g. add project meeting next monday #project";
@@ -88,27 +131,27 @@ public class Operation {
 		return result;
 	}
 	
-	public static String read(){
+	public String read(){
 		String result = "";
-		result = Data.mItemList.displayList();
+		result = mItemList.displayList();
 		
 		return result;
 	}
 	
-	public static String clear() {
+	public String clear() {
 		String result = "";
-		result = Data.mItemList.clear();
+		result = mItemList.clear();
 		
 		return result;
 	}
-	public static String update(String userInput) throws ParserConfigurationException, TransformerException{
+	public String update(String userInput) throws ParserConfigurationException, TransformerException{
 		String updateInfo = "";
 		String [] arr;
 		int updateIndex = -1;
 		int arrLen;
 		String result = "";
 		
-		if (Data.fastUpdate){
+		if (fastUpdate){
 			// start with item index
 			arr = userInput.split(" ",2);
 			arrLen = 2;
@@ -126,7 +169,7 @@ public class Operation {
 			result += "update an event or task";
 		}
 
-		if(NLP.updateParser(Data.mItemList.getItem(updateIndex-1), updateInfo)){
+		if(NLP.updateParser(mItemList.getItem(updateIndex-1), updateInfo)){
 			save();
 			result = "update's successful.";
 		}else{
@@ -146,7 +189,7 @@ public class Operation {
 	 * @throws TransformerException 
 	 * @throws ParserConfigurationException 
 	 */
-	public static String simpleOperation(CommandType type, String userInput) throws ParserConfigurationException, TransformerException{
+	public String simpleOperation(CommandType type, String userInput) throws ParserConfigurationException, TransformerException{
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
 		
@@ -155,13 +198,13 @@ public class Operation {
 				int index = Integer.valueOf(arr[1]);
 				switch (type){
 					case DELETE:
-						result = Data.mItemList.delete(index);
+						result = mItemList.delete(index);
 						break;
 					case DONE:
-						result = Data.mItemList.done(index);
+						result = mItemList.done(index);
 						break;
 					case UNDONE:
-						result = Data.mItemList.undone(index);
+						result = mItemList.undone(index);
 						break;
 					default:
 						result = "Invalid command type.";
@@ -173,13 +216,13 @@ public class Operation {
 						Integer thisIndex = indexList.remove(indexList.size() - 1);
 						switch (type){
 							case DELETE:
-								result = Data.mItemList.delete(thisIndex);
+								result = mItemList.delete(thisIndex);
 								break;
 							case DONE:
-								result = Data.mItemList.done(thisIndex);
+								result = mItemList.done(thisIndex);
 								break;
 							case UNDONE:
-								result = Data.mItemList.undone(thisIndex);
+								result = mItemList.undone(thisIndex);
 								break;
 							default:
 								result = "Invalid command type.";
@@ -208,8 +251,13 @@ public class Operation {
 		return result;
 	}
 	
-	private static void save() throws ParserConfigurationException, TransformerException{
-		Data.storage.saveDataToFile(Data.mItemList);
+	private void save() throws ParserConfigurationException, TransformerException{
+		storage.saveDataToFile(mItemList);
+	}
+	
+	// For GUI testing purpose
+	public String getListString(){
+			return mItemList.toString();
 	}
 	
 }

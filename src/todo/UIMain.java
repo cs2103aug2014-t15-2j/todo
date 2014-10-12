@@ -13,23 +13,23 @@ import org.xml.sax.SAXException;
 
 import todo.library.Command.CommandType;
 import todo.library.StringUtil;
-import todo.logic.Init;
-import todo.logic.Operation;
+import todo.logic.Logic;
 
 public class UIMain {
 	
 	private static Scanner scanner;
+	private static Logic logic;
 
 	public static void main(String arg[]) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException, TransformerException{
 		
 		CommandType mCommandType;
 		scanner = new Scanner(System.in);
-		Init.init();
+		logic = Logic.getInstanceLogic();
 		
 		do{
 			String userInput = requeatForCommand();
-			mCommandType = Operation.getCommandType(StringUtil.getFirstWord(userInput));
-			System.out.println(Operation.executeCommand(mCommandType, userInput));
+			mCommandType = logic.getCommandType(StringUtil.getFirstWord(userInput));
+			System.out.println(logic.executeCommand(mCommandType, userInput));
 		}while(mCommandType != CommandType.EXIT);
 		scanner.close();
 	}

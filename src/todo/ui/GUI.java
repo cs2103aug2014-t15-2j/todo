@@ -2,24 +2,31 @@ package todo.ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.text.ParseException;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import todo.GUIMain;
-import todo.UIMain;
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
+
 import todo.library.StringUtil;
 import todo.library.Command.CommandType;
-import todo.logic.Operation;
+import todo.logic.Logic;
 
 public class GUI extends JPanel implements ActionListener{
 	
+	private Logic logic;
 	protected JTextField textField;
     public JTextArea textArea;
 	
-	public GUI() {
+	public GUI() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException {
 		super(new GridBagLayout());
+		
+		logic = Logic.getInstanceLogic();
+		
         textField = new JTextField(50);
         textField.addActionListener(this);
  
@@ -38,7 +45,8 @@ public class GUI extends JPanel implements ActionListener{
         
         c.fill = GridBagConstraints.HORIZONTAL;
         add(textField, c);
- 
+        
+        textArea.setText(logic.getListString());
 	}
 	
 	public void actionPerformed(ActionEvent evt) {
@@ -50,18 +58,18 @@ public class GUI extends JPanel implements ActionListener{
         //was a selection in the text area.
         textArea.setCaretPosition(textArea.getDocument().getLength());
 
-        CommandType mCommandType = Operation.getCommandType(StringUtil.getFirstWord(userInput));
+        CommandType mCommandType = logic.getCommandType(StringUtil.getFirstWord(userInput));
 		
 		if (mCommandType != CommandType.EXIT){
 			try {
-				Operation.executeCommand(mCommandType, userInput);
+				logic.executeCommand(mCommandType, userInput);
 			} catch (ParserConfigurationException | TransformerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
-		textArea.setText(GUIMain.getListString());
+		textArea.setText(logic.getListString());
     }
 
 }
