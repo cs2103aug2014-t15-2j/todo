@@ -1,15 +1,23 @@
 package todo.nlp;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
+
 import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.Parser;
 
 import todo.library.StringUtil;
+import todo.logic.Logic;
 import todo.model.DateTime;
 
 public class NLPUtil {
@@ -31,17 +39,29 @@ public class NLPUtil {
 	 * Read indexes from a string
 	 * @param str
 	 * @return array list of integers
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
+	 * @throws DOMException 
 	 */
-	static ArrayList<Integer> readIndexList(String str){
+	static ArrayList<Integer> readIndexList(String str) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
 		ArrayList<Integer> result = new ArrayList<Integer>();
-		String delimiter = " ";
+		String delimiter;
 		str = str.trim();
+		if (str.equalsIgnoreCase(NLPConfig.keywordAll)){
+			str = "1-"+Logic.getInstanceLogic().getItemListSize();
+		}
 		
 		// Matching delimiter in the string. "," -> "/"
 		if (str.contains(",")){
 			delimiter = ",";
+			str = StringUtil.trimString(str);
 		}else if (str.contains("/")){
 			delimiter = "/";
+			str = StringUtil.trimString(str);
+		}else{
+			delimiter = " ";
 		}
 
 		String[] arr = str.split(delimiter);
@@ -56,7 +76,7 @@ public class NLPUtil {
 			}else if (s.contains("-")){
 				// Continuous indexes
 				String[] subArr = s.split("-");
-				if (StringUtil.isInteger(subArr[0]) && StringUtil.isInteger(subArr[1]) 
+				if (subArr.length == 2 && StringUtil.isInteger(subArr[0]) && StringUtil.isInteger(subArr[1]) 
 					&& Integer.valueOf(subArr[0]) < Integer.valueOf(subArr[1])){
 					for (int i = Integer.valueOf(subArr[0]); i < (Integer.valueOf(subArr[1])+1); i++){
 						if(!result.contains(i)){

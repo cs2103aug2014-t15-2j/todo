@@ -1,8 +1,15 @@
 package todo.nlp;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
 
 import todo.library.StringUtil;
 import todo.model.DateTime;
@@ -110,7 +117,7 @@ public class NLP {
 		return true;
 	}
 	
-	public static ArrayList<Integer> batchIndexParser(String indices){
+	public static ArrayList<Integer> batchIndexParser(String indices) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
 		return NLPUtil.readIndexList(indices);
 	}
 

@@ -66,6 +66,18 @@ public class GUI extends JPanel implements ActionListener{
 			} catch (ParserConfigurationException | TransformerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (DOMException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		

@@ -57,6 +57,10 @@ public class Logic {
 		return logicSingleton;
 	}
 	
+	public int getItemListSize(){
+		return this.mItemList.size();
+	}
+	
 	public CommandType getCommandType(String commandTypeString){
 		CommandType result;
 		// if the first word is an integer, then command type is update
@@ -76,8 +80,12 @@ public class Logic {
 	 * @param commandType
 	 * @throws TransformerException 
 	 * @throws ParserConfigurationException 
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws SAXException 
+	 * @throws DOMException 
 	 */
-	public String executeCommand(CommandType commandType, String userInput) throws ParserConfigurationException, TransformerException {
+	public String executeCommand(CommandType commandType, String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException {
 		String result = "";
 		
 		switch (commandType) {
@@ -188,8 +196,12 @@ public class Logic {
 	 * @return string
 	 * @throws TransformerException 
 	 * @throws ParserConfigurationException 
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws SAXException 
+	 * @throws DOMException 
 	 */
-	public String simpleOperation(CommandType type, String userInput) throws ParserConfigurationException, TransformerException{
+	public String simpleOperation(CommandType type, String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException{
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
 		
@@ -198,16 +210,16 @@ public class Logic {
 				int index = Integer.valueOf(arr[1]);
 				switch (type){
 					case DELETE:
-						result = mItemList.delete(index);
+						result += mItemList.delete(index);
 						break;
 					case DONE:
-						result = mItemList.done(index);
+						result += mItemList.done(index);
 						break;
 					case UNDONE:
-						result = mItemList.undone(index);
+						result += mItemList.undone(index);
 						break;
 					default:
-						result = "Invalid command type.";
+						result += "Invalid command type.";
 				}
 			}else{ 
 				ArrayList<Integer> indexList = NLP.batchIndexParser(arr[1]);
@@ -216,16 +228,16 @@ public class Logic {
 						Integer thisIndex = indexList.remove(indexList.size() - 1);
 						switch (type){
 							case DELETE:
-								result = mItemList.delete(thisIndex);
+								result += mItemList.delete(thisIndex)+"\n";
 								break;
 							case DONE:
-								result = mItemList.done(thisIndex);
+								result += mItemList.done(thisIndex)+"\n";
 								break;
 							case UNDONE:
-								result = mItemList.undone(thisIndex);
+								result += mItemList.undone(thisIndex)+"\n";
 								break;
 							default:
-								result = "Invalid command type.";
+								result += "Invalid command type.";
 						}
 					}
 				}else{
