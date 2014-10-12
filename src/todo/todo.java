@@ -13,7 +13,7 @@ import org.xml.sax.SAXException;
 
 import todo.library.Command;
 import todo.library.Command.CommandType;
-import todo.library.FileUtil;
+import todo.storage.Storage;
 import todo.library.StringUtil;
 import todo.model.Item;
 import todo.model.ItemList;
@@ -26,13 +26,15 @@ public class todo {
 	private static Scanner scanner;
 	private static ItemList mItemList;
 	private static boolean fastUpdate;
+	private static Storage storage;
 	
 	public static void main(String arg[]) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException, TransformerException{
 		CommandType mCommandType;
 		scanner = new Scanner(System.in);
+		storage = new Storage();
 		
 		// read date from data file
-		mItemList = FileUtil.readDataFromFile();
+		mItemList = storage.readDataFromFile();
 
 		createAndShowGUI();
 		
@@ -85,6 +87,9 @@ public class todo {
 			case DELETE:
 				result = delete(userInput);
 				break;
+			case CLEAR:
+				result = clear();
+				break;
 			case INVALID:
 				result = "Invalid command.";
 				break;
@@ -120,6 +125,12 @@ public class todo {
 		return result;
 	}
 	
+	public static String clear() {
+		String result = "";
+		result = mItemList.clear();
+		
+		return result;
+	}
 	public static String update(String userInput) throws ParserConfigurationException, TransformerException{
 		String updateInfo = "";
 		String [] arr;
@@ -174,7 +185,7 @@ public class todo {
 	}
 	
 	private static void save() throws ParserConfigurationException, TransformerException{
-		FileUtil.saveDataToFile(mItemList);
+		storage.saveDataToFile(mItemList);
 	}
 	
 	

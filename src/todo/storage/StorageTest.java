@@ -17,7 +17,7 @@ import todo.model.ItemList;
 
 public class StorageTest {
 	public static void main(String[] args) throws ParserConfigurationException, TransformerException, SAXException, IOException, DOMException, ParseException{
-		
+		Storage storage = new Storage();
 		//the start Creation of dummy ItemList---------------
 		Item item1 = new Item("meet yy", new DateTime(new Date()), new DateTime(new Date()), "clementi", 0, new ArrayList<String>());
 		
@@ -38,10 +38,10 @@ public class StorageTest {
 		il.add(new Item());
 		//the end Creation of dummy ItemList---------------
 		
-		Storage.storeIntoXML(il);
+		storage.saveDataToFile(il);
 		
 	/*
-		ItemList il = Storage.readFromXML();
+		ItemList il = storage.readDataFromFile();
 		il.displayList();
 		*/
 	}
