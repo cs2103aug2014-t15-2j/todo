@@ -1,55 +1,16 @@
-package todo;
-
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.Scanner;
+package todo.logic;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.DOMException;
-import org.xml.sax.SAXException;
-
 import todo.library.Command;
-import todo.library.Command.CommandType;
-import todo.storage.Storage;
 import todo.library.StringUtil;
+import todo.library.Command.CommandType;
 import todo.model.Item;
-import todo.model.ItemList;
 import todo.nlp.NLP;
 
-import javax.swing.JFrame;
-
-public class todo {
+public class Operation {
 	
-	private static Scanner scanner;
-	private static ItemList mItemList;
-	private static boolean fastUpdate;
-	private static Storage storage;
-	
-	public static void main(String arg[]) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException, TransformerException{
-		CommandType mCommandType;
-		scanner = new Scanner(System.in);
-		storage = new Storage();
-		
-		// read date from data file
-		mItemList = storage.readDataFromFile();
-
-		createAndShowGUI();
-		
-		do{
-			String userInput = requeatForCommand();
-			mCommandType = getCommandType(StringUtil.getFirstWord(userInput));
-			System.out.println(executeCommand(mCommandType, userInput));
-		}while(mCommandType != CommandType.EXIT);
-		scanner.close();
-	}
-	
-	static String requeatForCommand(){
-		System.out.print("command: ");
-		return scanner.nextLine().trim();
-	}
 	
 	public static CommandType getCommandType(String commandTypeString){
 		CommandType result;
@@ -57,10 +18,10 @@ public class todo {
 		// otherwise, parse the command
 		if(StringUtil.isInteger(commandTypeString)){
 			result = CommandType.UPDATE;
-			fastUpdate = true;
+			Data.fastUpdate = true;
 		}else{
 			result = Command.determineCommandType(commandTypeString);
-			fastUpdate = false;
+			Data.fastUpdate = false;
 		}
 		return result;
 	}
@@ -100,6 +61,7 @@ public class todo {
 		return result;
 	}
 	
+	
 	public static String add(String userInput) throws ParserConfigurationException, TransformerException{
 		String content;
 		String [] arr = userInput.split(" ", 2);
@@ -108,7 +70,7 @@ public class todo {
 		if (arr.length > 1){
 			content = arr[1];
 			Item newItem = NLP.addParser(content);
-			result = mItemList.add(newItem);
+			result = Data.mItemList.add(newItem);
 		}else{
 			result += "add a new event or task.\n";
 			result += "e.g. add project meeting next monday #project";
@@ -120,14 +82,14 @@ public class todo {
 	
 	public static String read(){
 		String result = "";
-		result = mItemList.displayList();
+		result = Data.mItemList.displayList();
 		
 		return result;
 	}
 	
 	public static String clear() {
 		String result = "";
-		result = mItemList.clear();
+		result = Data.mItemList.clear();
 		
 		return result;
 	}
@@ -138,7 +100,7 @@ public class todo {
 		int arrLen;
 		String result = "";
 		
-		if (fastUpdate){
+		if (Data.fastUpdate){
 			// start with item index
 			arr = userInput.split(" ",2);
 			arrLen = 2;
@@ -156,7 +118,7 @@ public class todo {
 			result += "update an event or task";
 		}
 
-		if(NLP.updateParser(mItemList.getItem(updateIndex-1), updateInfo)){
+		if(NLP.updateParser(Data.mItemList.getItem(updateIndex-1), updateInfo)){
 			save();
 			result = "update's successful.";
 		}else{
@@ -174,7 +136,7 @@ public class todo {
 		// why arr.length > 1? cater for batch operation? right now it handles only one delete operation
 		if (arr.length > 1 && StringUtil.isInteger(arr[1])){
 			index = Integer.valueOf(arr[1]);
-			result = mItemList.delete(index);
+			result = Data.mItemList.delete(index);
 		}else{
 			result += "delete a existing event or task.\n";
 			result += "e.g. delete 3";
@@ -185,28 +147,7 @@ public class todo {
 	}
 	
 	private static void save() throws ParserConfigurationException, TransformerException{
-		storage.saveDataToFile(mItemList);
+		Data.storage.saveDataToFile(Data.mItemList);
 	}
 	
-	
-	private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("TextDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
- 
-        //Add contents to the window.
-        GUI mGUI = new GUI();
-        frame.add(mGUI);
- 
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-        
-        mGUI.textArea.setText(todo.getListString());
-    }
-	
-	// For GUI testing purpose
-	public static String getListString(){
-		return mItemList.toString();
-	}
 }

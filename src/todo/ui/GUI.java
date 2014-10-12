@@ -1,4 +1,4 @@
-package todo;
+package todo.ui;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -7,14 +7,16 @@ import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import todo.GUIMain;
+import todo.UIMain;
 import todo.library.StringUtil;
 import todo.library.Command.CommandType;
+import todo.logic.Operation;
 
 public class GUI extends JPanel implements ActionListener{
 	
 	protected JTextField textField;
-    protected JTextArea textArea;
-    private final static String newline = "\n";
+    public JTextArea textArea;
 	
 	public GUI() {
 		super(new GridBagLayout());
@@ -48,18 +50,18 @@ public class GUI extends JPanel implements ActionListener{
         //was a selection in the text area.
         textArea.setCaretPosition(textArea.getDocument().getLength());
 
-        CommandType mCommandType = todo.getCommandType(StringUtil.getFirstWord(userInput));
+        CommandType mCommandType = Operation.getCommandType(StringUtil.getFirstWord(userInput));
 		
 		if (mCommandType != CommandType.EXIT){
 			try {
-				todo.executeCommand(mCommandType, userInput);
+				Operation.executeCommand(mCommandType, userInput);
 			} catch (ParserConfigurationException | TransformerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
-		textArea.setText(todo.getListString());
+		textArea.setText(GUIMain.getListString());
     }
 
 }
