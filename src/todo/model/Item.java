@@ -178,35 +178,35 @@ public class Item {
 	//Display item
 	public String toString() {
 		String result = "";
-		result = result.concat("Description: ");
+		result = result.concat("");
 		result = result.concat(description);
 		
 		if(startDateTime != null) {
-			result = result.concat(" Start: ");
+			result = result.concat(" |Start: ");
 			result = result.concat(getStartDateTime().toString());
 		}
 		
 		if(dueDateTime != null) {
-			result = result.concat(" Due: ");
+			result = result.concat(" |Due: ");
 			result = result.concat(getDueDateTime().toString());
 		}
 		
 		if (location != null){
-			result = result.concat(" Location: ");
+			result = result.concat(" |Location: ");
 			result = result.concat(getLocation());
 		}
 		
 		if (tags != null) {
 			if(!tags.isEmpty()){
-			result = result.concat(" Tags: ");
+			result = result.concat(" |Tags: ");
 			result = result.concat(getTags().toString());
 			}
 		}
 		
-		result = result.concat(" Priority: ");
+		result = result.concat(" |Priority: ");
 		result = result.concat(Integer.toString(getPriority()));
 		
-		result = result.concat(" Status: ");
+		result = result.concat(" |Status: ");
 		if(getStatus()){
 			result = result.concat("Completed");
 		}

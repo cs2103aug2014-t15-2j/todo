@@ -3,7 +3,7 @@ package todo.library;
 public class Command {
 	public static enum CommandType {
 		// four basic CRUD operations
-		CREATE, READ, UPDATE, DELETE, CLEAR, INVALID, EXIT
+		CREATE, READ, UPDATE, DELETE, DONE, UNDONE, CLEAR, INVALID, EXIT
 	};
 
 	/**
@@ -68,6 +68,18 @@ public class Command {
 			return CommandType.DELETE;
 		case "cancel":
 			return CommandType.DELETE;
+		// ---------Possible cases of 'done'------------
+		case "done":
+			return CommandType.DONE;
+		case "finish":
+			return CommandType.DONE;
+		case "finished":
+			return CommandType.DONE;
+		case "complete":
+			return CommandType.DONE;
+		// ---------Possible cases of 'undone'------------
+		case "undone":
+			return CommandType.UNDONE;
 		// ---------Possible cases of 'clear'-----------
 		case "clear" :
 			return CommandType.CLEAR;

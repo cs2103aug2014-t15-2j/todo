@@ -48,7 +48,13 @@ public class Operation {
 				result = update(userInput);
 				break;
 			case DELETE:
-				result = delete(userInput);
+				result = simpleOperation(CommandType.DELETE, userInput);
+				break;
+			case DONE:
+				result = simpleOperation(CommandType.DONE,userInput);
+				break;
+			case UNDONE:
+				result = simpleOperation(CommandType.UNDONE,userInput);
 				break;
 			case CLEAR:
 				result = clear();
@@ -130,32 +136,74 @@ public class Operation {
 		return result;
 	}
 	
-	public static String delete(String userInput) throws ParserConfigurationException, TransformerException{
-		int index;
+	/**
+	 * simple operations
+	 * include delete, done, undone
+	 * takes in only index numbers
+	 * @param type
+	 * @param userInput
+	 * @return string
+	 * @throws TransformerException 
+	 * @throws ParserConfigurationException 
+	 */
+	public static String simpleOperation(CommandType type, String userInput) throws ParserConfigurationException, TransformerException{
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
 		
-		// why arr.length > 1? cater for batch operation? right now it handles only one delete operation
 		if (arr.length > 1){
 			if (StringUtil.isInteger(arr[1])){
-				index = Integer.valueOf(arr[1]);
-				result = Data.mItemList.delete(index);
+				int index = Integer.valueOf(arr[1]);
+				switch (type){
+					case DELETE:
+						result = Data.mItemList.delete(index);
+						break;
+					case DONE:
+						result = Data.mItemList.done(index);
+						break;
+					case UNDONE:
+						result = Data.mItemList.undone(index);
+						break;
+					default:
+						result = "Invalid command type.";
+				}
 			}else{ 
 				ArrayList<Integer> indexList = NLP.batchIndexParser(arr[1]);
 				if(!indexList.isEmpty()){
 					while(!indexList.isEmpty()){
-						Integer toDelete = indexList.remove(indexList.size() - 1);
-						result += Data.mItemList.delete(toDelete);
+						Integer thisIndex = indexList.remove(indexList.size() - 1);
+						switch (type){
+							case DELETE:
+								result = Data.mItemList.delete(thisIndex);
+								break;
+							case DONE:
+								result = Data.mItemList.done(thisIndex);
+								break;
+							case UNDONE:
+								result = Data.mItemList.undone(thisIndex);
+								break;
+							default:
+								result = "Invalid command type.";
+						}
 					}
 				}else{
 					result += "Invalid parameter";
 				}
 			}
 		}else{
-			result += "delete a existing event or task.\n";
-			result += "e.g. delete 3";
+			switch (type){
+				case DELETE:
+					result += "delete a existing event or task.\ne.g. delete 3";
+					break;
+				case DONE:
+					result += "set an item as done.\ne.g. done 3";
+					break;
+				case UNDONE:
+					result += "set an item as undone.\ne.g. undone 3";
+					break;
+				default:
+					result = "Invalid command type.";
+			}
 		}
-		
 		save();
 		return result;
 	}

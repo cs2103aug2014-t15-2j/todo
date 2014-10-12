@@ -52,6 +52,44 @@ public class ItemList {
 				
 		}
 		
+		// Done item
+		public String done(int index){
+			try{
+				String doneItemDescription = itemList.get(index - 1).getDescription();
+				String result = "\"" + doneItemDescription + "\"" + " is done.";
+				itemList.get(index - 1).setStatusDone();;
+				return result;
+			}catch(IndexOutOfBoundsException e){
+				String returnErrorMessage = null;
+				if(itemList.size() == 0){
+					returnErrorMessage =  "Fail to set done, the list is empty.";
+				}else if(index > itemList.size()){
+					returnErrorMessage =  "Fail to set done, invalid index used.";
+				}
+				
+				return returnErrorMessage;
+			}	
+		}
+		
+		// Undone item
+		public String undone(int index){
+			try{
+				String undoneItemDescription = itemList.get(index - 1).getDescription();
+				String result = "\"" + undoneItemDescription + "\"" + " is undone.";
+				itemList.get(index - 1).setStatusUndone();;
+				return result;
+			}catch(IndexOutOfBoundsException e){
+				String returnErrorMessage = null;
+				if(itemList.size() == 0){
+					returnErrorMessage =  "Fail to set undone, the list is empty.";
+				}else if(index > itemList.size()){
+					returnErrorMessage =  "Fail to set undone, invalid index used.";
+				}
+				
+				return returnErrorMessage;
+			}	
+		}
+		
 		// Display the whole itemList
 		public String displayList(){
 			int i = 1;
