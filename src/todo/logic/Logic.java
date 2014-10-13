@@ -177,7 +177,7 @@ public class Logic {
 			result += "update an event or task";
 		}
 
-		if(NLP.updateParser(mItemList.getItem(updateIndex-1), updateInfo)){
+		if(!updateInfo.isEmpty() && mItemList.validIndex(updateIndex-1) && NLP.updateParser(mItemList.getItem(updateIndex-1), updateInfo)){
 			save();
 			result = "update's successful.";
 		}else{

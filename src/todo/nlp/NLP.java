@@ -31,8 +31,10 @@ public class NLP {
 		dateTimeList.add(null);
 		dateTimeList.add(null);
 		
+		// step1 remove quoted content & get date groups
 		groups = NLPUtil.getDateGroups(StringUtil.removeQuoted(msg));
-		// find possible date time
+		
+		// step2 find possible date time
 		if (groups.size() != 0){
 			DateGroup group = groups.get(0);
 			String groupText = group.getText();
@@ -46,7 +48,7 @@ public class NLP {
 			msg = NLPUtil.deletePreposition(msg, wordBeforeDate, groupText);
 		}
 		
-		// find long location
+		// step3 find long location
 		String locationString = StringUtil.getBracketLocation(msg);
 		if (locationString.length() > 0){
 			location = locationString.substring(2, locationString.length()-1);
@@ -54,7 +56,7 @@ public class NLP {
 			msg = StringUtil.trimString(msg);
 		}
 
-		// find out one word location and all the tags
+		// step4 find out one word location and all the tags
 		msg = StringUtil.trimString(msg);
 		strArray = msg.split(" ");
 		for(int i = strArray.length-1; i >= 0 ; i--){
@@ -68,11 +70,11 @@ public class NLP {
 			}
 		}
 		
-		// delete all the escape characters
+		// step5 delete all the escape characters
 		msg = msg.replaceAll("\\\\#", "#");
 		msg = msg.replaceAll("\\\\@", "@");
 		
-		//if the whole sentence is quoted, then delete the quotation marks
+		// step6 if the whole sentence is quoted, then delete the quotation marks
 		msg = StringUtil.trimString(StringUtil.removeFullQuote(msg));
 		
 		//print out for testing
@@ -119,6 +121,10 @@ public class NLP {
 	
 	public static ArrayList<Integer> batchIndexParser(String indices) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
 		return NLPUtil.readIndexList(indices);
+	}
+	
+	public static String generalParser(String input){
+		return input;
 	}
 
 }

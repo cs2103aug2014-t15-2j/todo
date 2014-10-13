@@ -21,6 +21,11 @@ public class ItemList {
 			return itemList.get(index);
 		}
 		
+		// check if a index valid
+		public boolean validIndex(int index){
+			return index < (size()+2) && index > 0;
+		}
+		
 		// Add item
 		public String add(Item item){
 			String itemDescription = item.getDescription();
