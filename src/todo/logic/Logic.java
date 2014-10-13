@@ -121,7 +121,7 @@ public class Logic {
 	}
 	
 	
-	public String add(String userInput) throws ParserConfigurationException, TransformerException{
+	private String add(String userInput) throws ParserConfigurationException, TransformerException{
 		String content;
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
@@ -139,20 +139,20 @@ public class Logic {
 		return result;
 	}
 	
-	public String read(){
+	private String read(){
 		String result = "";
 		result = mItemList.displayList();
 		
 		return result;
 	}
 	
-	public String clear() {
+	private String clear() {
 		String result = "";
 		result = mItemList.clear();
 		
 		return result;
 	}
-	public String update(String userInput) throws ParserConfigurationException, TransformerException{
+	private String update(String userInput) throws ParserConfigurationException, TransformerException{
 		String updateInfo = "";
 		String [] arr;
 		int updateIndex = -1;
@@ -201,7 +201,7 @@ public class Logic {
 	 * @throws SAXException 
 	 * @throws DOMException 
 	 */
-	public String simpleOperation(CommandType type, String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException{
+	private String simpleOperation(CommandType type, String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException{
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
 		
