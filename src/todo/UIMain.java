@@ -27,14 +27,14 @@ public class UIMain {
 		logic = Logic.getInstanceLogic();
 		
 		do{
-			String userInput = requeatForCommand();
+			String userInput = requestForCommand();
 			mCommandType = logic.getCommandType(StringUtil.getFirstWord(userInput));
 			System.out.println(logic.executeCommand(mCommandType, userInput));
 		}while(mCommandType != CommandType.EXIT);
 		scanner.close();
 	}
 	
-	private static String requeatForCommand(){
+	private static String requestForCommand(){
 		System.out.print("command: ");
 		return scanner.nextLine().trim();
 	}

@@ -111,7 +111,7 @@ public class Logic {
 				result = clear();
 				break;
 			case INVALID:
-				result = "Invalid command.";
+				result = "Command not recognised.";
 				break;
 			default:
 				// shouldn't reach here.
