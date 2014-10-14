@@ -22,6 +22,7 @@ public class Logic {
 	
 	private static Logic logicSingleton;
 	private Storage storage;
+	private Command command;
 	private ItemList mItemList;
 	private boolean fastUpdate;
 	
@@ -36,6 +37,7 @@ public class Logic {
 	 */
 	private Logic() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
 		storage = new Storage();
+		command = new Command();
 		mItemList = storage.readDataFromFile();
 	}
 	
@@ -69,7 +71,7 @@ public class Logic {
 			result = CommandType.UPDATE;
 			fastUpdate = true;
 		}else{
-			result = Command.determineCommandType(commandTypeString);
+			result = command.determineCommandType(commandTypeString);
 			fastUpdate = false;
 		}
 		return result;
@@ -149,6 +151,8 @@ public class Logic {
 	private String clear() {
 		String result = "";
 		result = mItemList.clear();
+		
+		//TODO didn't save 
 		
 		return result;
 	}
