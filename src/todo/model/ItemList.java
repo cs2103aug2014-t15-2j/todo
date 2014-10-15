@@ -49,9 +49,11 @@ public class ItemList {
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
 				if(itemList.size() == 0){
-					returnErrorMessage =  "Fail to delete, the list is empty.";
+					returnErrorMessage =  "Fail to delete, the list is empty. ";
 				}else if(index > itemList.size()){
-					returnErrorMessage =  "Fail to delete, invalid index used.";
+					returnErrorMessage =  "Fail to delete, invalid index used. ";
+				}else if(index <= 0){
+					returnErrorMessage = "Fail to delete, invalid index used. ";
 				}
 				
 				return returnErrorMessage;
