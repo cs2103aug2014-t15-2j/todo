@@ -148,9 +148,10 @@ public class Logic {
 		return result;
 	}
 	
-	private String clear() {
+	private String clear() throws ParserConfigurationException, TransformerException {
 		String result = "";
 		result = mItemList.clear();
+		save();
 		
 		//TODO didn't save 
 		
