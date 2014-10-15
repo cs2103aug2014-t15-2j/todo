@@ -23,11 +23,13 @@ public class ItemList {
 		
 		// check if a index valid
 		public boolean validIndex(int index){
+			assert index>0;
 			return index < (size()+2) && index > 0;
 		}
 		
 		// Add item
 		public String add(Item item){
+			assert item.getDescription() != null;
 			String itemDescription = item.getDescription();
 			String result  = "\"" + itemDescription + "\"" + "is added.";
 			itemList.add(item);

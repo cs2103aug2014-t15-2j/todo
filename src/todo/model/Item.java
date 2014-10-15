@@ -133,14 +133,17 @@ public class Item {
 	
 	public static void setItemQtyAfterDeletion(){
 		Item.itemQty = itemQty--;
+		assert itemQty >=0;
 	}
 	
 	public static void setLastItemID(int lastItemID){
 		Item.lastItemId = lastItemID;
+		assert lastItemID >0;
 	}
 	
 	public void setItemID (int lastItemId){
 		itemId = lastItemId+1;
+		assert itemId>0;
 	}
 	
 	public void setDescription(String description){
@@ -161,6 +164,7 @@ public class Item {
 	
 	public void setPriority(int newPriority) {
 		this.priority = newPriority;
+		assert priority >= 0;
 	}
 	
 	public void setTags(ArrayList<String> tagList){
