@@ -137,6 +137,8 @@ public class ItemTest {
 		myList.sortByTimeDecreasing();
 		myList.displayList();
 		System.out.println();
+		System.out.println("Test itemlist tag search");
+		System.out.println(myList.searchTag("homework").displayList());
 	}
 	
 }

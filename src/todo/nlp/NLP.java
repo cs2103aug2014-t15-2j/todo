@@ -1,18 +1,42 @@
-package nlp;
+package todo.nlp;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
+
 import todo.library.StringUtil;
+import todo.logic.Logic;
 import todo.model.DateTime;
 import todo.model.Item;
+import todo.util.LogUtil;
 
 import com.joestelmach.natty.DateGroup;
 
 public class NLP {
+	
+	private static NLP NLPSingpleton;
+	private static String TAG = "NLP";
 
-	public static Item addParser(String msg){		
+	public static NLP getInstance(){
+		if(NLPSingpleton == null){
+			NLPSingpleton = new NLP();
+		}
+		return NLPSingpleton;
+	}
+	
+	/**
+	 *  Add Parser
+	 * @param msg
+	 * @return
+	 */
+	public Item addParser(String msg){		
 		
 		List<DateGroup> groups;
 		ArrayList<String> tagList = new ArrayList<String>();
@@ -20,12 +44,16 @@ public class NLP {
 		List<DateTime> dateTimeList = new ArrayList<DateTime>();
 		String location = "";
 		
+		LogUtil.Log(TAG, "Start NLP add parser");
+		
 		// add empty start and due date time
 		dateTimeList.add(null);
 		dateTimeList.add(null);
 		
+		// step1 remove quoted content & get date groups
 		groups = NLPUtil.getDateGroups(StringUtil.removeQuoted(msg));
-		// find possible date time
+		
+		// step2 find possible date time
 		if (groups.size() != 0){
 			DateGroup group = groups.get(0);
 			String groupText = group.getText();
@@ -37,9 +65,11 @@ public class NLP {
 			}
 			
 			msg = NLPUtil.deletePreposition(msg, wordBeforeDate, groupText);
+		}else{
+			LogUtil.Log(TAG, "No date time detected");
 		}
 		
-		// find long location
+		// step3 find long location
 		String locationString = StringUtil.getBracketLocation(msg);
 		if (locationString.length() > 0){
 			location = locationString.substring(2, locationString.length()-1);
@@ -47,7 +77,7 @@ public class NLP {
 			msg = StringUtil.trimString(msg);
 		}
 
-		// find out one word location and all the tags
+		// step4 find out one word location and all the tags
 		msg = StringUtil.trimString(msg);
 		strArray = msg.split(" ");
 		for(int i = strArray.length-1; i >= 0 ; i--){
@@ -61,11 +91,11 @@ public class NLP {
 			}
 		}
 		
-		// delete all the escape characters
+		// step5 delete all the escape characters
 		msg = msg.replaceAll("\\\\#", "#");
 		msg = msg.replaceAll("\\\\@", "@");
 		
-		//if the whole sentence is quoted, then delete the quotation marks
+		// step6 if the whole sentence is quoted, then delete the quotation marks
 		msg = StringUtil.trimString(StringUtil.removeFullQuote(msg));
 		
 		//print out for testing
@@ -82,11 +112,19 @@ public class NLP {
 			System.out.println("tags: " + tagList.toString());
 		*/
 		
-		
+		assert msg != "";
 		return new Item(msg, dateTimeList.get(0), dateTimeList.get(1), location, 1, tagList);
 	}
 	
-	public static boolean updateParser(Item item, String msg){
+	/**
+	 * Update Parser
+	 * @param item
+	 * @param msg
+	 * @return
+	 */
+	public boolean updateParser(Item item, String msg){
+		
+		LogUtil.Log(TAG, "Start NLP update parser");
 		if (StringUtil.isFullQuote(msg)){
 			item.setDescription(StringUtil.removeFullQuote(msg));
 		}else if (msg.charAt(0) == '@'){
@@ -108,6 +146,31 @@ public class NLP {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Index Parser
+	 * @param indices
+	 * @return
+	 * @throws DOMException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public ArrayList<Integer> batchIndexParser(String indices) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
+		LogUtil.Log(TAG, "Start NLP index parser");
+		return NLPUtil.readIndexList(indices);
+	}
+	
+	/**
+	 * General Parser
+	 * @param input
+	 * @return
+	 */
+	public String generalParser(String input){
+		LogUtil.Log(TAG, "Start NLP general parser");
+		return input;
 	}
 
 }

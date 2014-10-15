@@ -2,17 +2,23 @@ package todo.library;
 
 public class Command {
 	public static enum CommandType {
-		// four basic CRUD operations
-		CREATE, READ, UPDATE, DELETE, INVALID, EXIT
+		CREATE, READ, UPDATE, DELETE, DONE, UNDONE, CLEAR, INVALID, EXIT
 	};
 
 	/**
-	 * This method takes in user input and determine the command type
+	 * Default constructor for Command
+	 */
+	public Command(){
+	
+	}
+	
+	/**
+	 * This method takes in user input and determines the command type
 	 * 
-	 * @param entire line of user input
+	 * @param String containing command
 	 * @return predefined CommandType enum
 	 */
-	public static CommandType determineCommandType(String commandString) {
+	public CommandType determineCommandType(String commandString) {
 
 		switch (commandString.toLowerCase()) {
 		// ----------Possible cases of 'create'-----------
@@ -68,11 +74,30 @@ public class Command {
 			return CommandType.DELETE;
 		case "cancel":
 			return CommandType.DELETE;
+		// ---------Possible cases of 'done'------------
+		case "done":
+			return CommandType.DONE;
+		case "finish":
+			return CommandType.DONE;
+		case "finished":
+			return CommandType.DONE;
+		case "complete":
+			return CommandType.DONE;
+		// ---------Possible cases of 'undone'------------
+		case "undone":
+			return CommandType.UNDONE;
+		// ---------Possible cases of 'clear'-----------
+		case "clear" :
+			return CommandType.CLEAR;
+		case "empty" :
+			return CommandType.CLEAR;
 			
-		// ----------Possible cases of 'delete'-----------
+		// ----------Possible cases of 'exit'-----------
 		case "exit":
 			return CommandType.EXIT;
 		case "quit":
+			return CommandType.EXIT;
+		case "close":
 			return CommandType.EXIT;
 				
 		// ----------otherwise, 'invalid'-----------

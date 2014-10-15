@@ -1,23 +1,32 @@
-package todo;
+package todo.ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.text.ParseException;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
+
 import todo.library.StringUtil;
 import todo.library.Command.CommandType;
+import todo.logic.Logic;
 
 public class GUI extends JPanel implements ActionListener{
 	
+	private Logic logic;
 	protected JTextField textField;
-    protected JTextArea textArea;
-    private final static String newline = "\n";
+    public JTextArea textArea;
 	
-	public GUI() {
+	public GUI() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException {
 		super(new GridBagLayout());
+		
+		logic = Logic.getInstanceLogic();
+		
         textField = new JTextField(50);
         textField.addActionListener(this);
  
@@ -36,7 +45,8 @@ public class GUI extends JPanel implements ActionListener{
         
         c.fill = GridBagConstraints.HORIZONTAL;
         add(textField, c);
- 
+        
+        textArea.setText(logic.getListString());
 	}
 	
 	public void actionPerformed(ActionEvent evt) {
@@ -48,18 +58,30 @@ public class GUI extends JPanel implements ActionListener{
         //was a selection in the text area.
         textArea.setCaretPosition(textArea.getDocument().getLength());
 
-        CommandType mCommandType = todo.getCommandType(StringUtil.getFirstWord(userInput));
+        CommandType mCommandType = logic.getCommandType(StringUtil.getFirstWord(userInput));
 		
 		if (mCommandType != CommandType.EXIT){
 			try {
-				todo.executeCommand(mCommandType, userInput);
+				logic.executeCommand(mCommandType, userInput);
 			} catch (ParserConfigurationException | TransformerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DOMException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
-		textArea.setText(todo.getListString());
+		textArea.setText(logic.getListString());
     }
 
 }
