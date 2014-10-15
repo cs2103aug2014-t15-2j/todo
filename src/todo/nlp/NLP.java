@@ -15,6 +15,7 @@ import todo.library.StringUtil;
 import todo.logic.Logic;
 import todo.model.DateTime;
 import todo.model.Item;
+import todo.util.LogUtil;
 
 import com.joestelmach.natty.DateGroup;
 
@@ -43,6 +44,8 @@ public class NLP {
 		List<DateTime> dateTimeList = new ArrayList<DateTime>();
 		String location = "";
 		
+		LogUtil.Log(TAG, "Start NLP add parser");
+		
 		// add empty start and due date time
 		dateTimeList.add(null);
 		dateTimeList.add(null);
@@ -62,6 +65,8 @@ public class NLP {
 			}
 			
 			msg = NLPUtil.deletePreposition(msg, wordBeforeDate, groupText);
+		}else{
+			LogUtil.Log(TAG, "No date time detected");
 		}
 		
 		// step3 find long location
@@ -107,7 +112,7 @@ public class NLP {
 			System.out.println("tags: " + tagList.toString());
 		*/
 		
-		
+		assert msg != "";
 		return new Item(msg, dateTimeList.get(0), dateTimeList.get(1), location, 1, tagList);
 	}
 	
@@ -118,6 +123,8 @@ public class NLP {
 	 * @return
 	 */
 	public boolean updateParser(Item item, String msg){
+		
+		LogUtil.Log(TAG, "Start NLP update parser");
 		if (StringUtil.isFullQuote(msg)){
 			item.setDescription(StringUtil.removeFullQuote(msg));
 		}else if (msg.charAt(0) == '@'){
@@ -152,6 +159,7 @@ public class NLP {
 	 * @throws ParseException
 	 */
 	public ArrayList<Integer> batchIndexParser(String indices) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
+		LogUtil.Log(TAG, "Start NLP index parser");
 		return NLPUtil.readIndexList(indices);
 	}
 	
@@ -161,6 +169,7 @@ public class NLP {
 	 * @return
 	 */
 	public String generalParser(String input){
+		LogUtil.Log(TAG, "Start NLP general parser");
 		return input;
 	}
 
