@@ -21,6 +21,7 @@ import com.joestelmach.natty.DateGroup;
 public class NLP {
 	
 	private static NLP NLPSingpleton;
+	private static String TAG = "NLP";
 
 	public static NLP getInstance(){
 		if(NLPSingpleton == null){
