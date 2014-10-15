@@ -130,7 +130,7 @@ public class Logic {
 		
 		if (arr.length > 1){
 			content = arr[1];
-			Item newItem = NLP.addParser(content);
+			Item newItem = NLP.getInstance().addParser(content);
 			result = mItemList.add(newItem);
 		}else{
 			result += "add a new event or task.\n";
@@ -181,7 +181,9 @@ public class Logic {
 			result += "update an event or task";
 		}
 
-		if(!updateInfo.isEmpty() && mItemList.validIndex(updateIndex-1) && NLP.updateParser(mItemList.getItem(updateIndex-1), updateInfo)){
+		if(!updateInfo.isEmpty() 
+				&& mItemList.validIndex(updateIndex-1) 
+				&& NLP.getInstance().updateParser(mItemList.getItem(updateIndex-1), updateInfo)){
 			save();
 			result = "update's successful.";
 		}else{
@@ -226,7 +228,7 @@ public class Logic {
 						result += "Invalid command type.";
 				}
 			}else{ 
-				ArrayList<Integer> indexList = NLP.batchIndexParser(arr[1]);
+				ArrayList<Integer> indexList = NLP.getInstance().batchIndexParser(arr[1]);
 				if(!indexList.isEmpty()){
 					while(!indexList.isEmpty()){
 						Integer thisIndex = indexList.remove(indexList.size() - 1);

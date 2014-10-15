@@ -12,14 +12,29 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 import todo.library.StringUtil;
+import todo.logic.Logic;
 import todo.model.DateTime;
 import todo.model.Item;
 
 import com.joestelmach.natty.DateGroup;
 
 public class NLP {
+	
+	private static NLP NLPSingpleton;
 
-	public static Item addParser(String msg){		
+	public static NLP getInstance(){
+		if(NLPSingpleton == null){
+			NLPSingpleton = new NLP();
+		}
+		return NLPSingpleton;
+	}
+	
+	/**
+	 *  Add Parser
+	 * @param msg
+	 * @return
+	 */
+	public Item addParser(String msg){		
 		
 		List<DateGroup> groups;
 		ArrayList<String> tagList = new ArrayList<String>();
@@ -95,7 +110,13 @@ public class NLP {
 		return new Item(msg, dateTimeList.get(0), dateTimeList.get(1), location, 1, tagList);
 	}
 	
-	public static boolean updateParser(Item item, String msg){
+	/**
+	 * Update Parser
+	 * @param item
+	 * @param msg
+	 * @return
+	 */
+	public boolean updateParser(Item item, String msg){
 		if (StringUtil.isFullQuote(msg)){
 			item.setDescription(StringUtil.removeFullQuote(msg));
 		}else if (msg.charAt(0) == '@'){
@@ -119,11 +140,26 @@ public class NLP {
 		return true;
 	}
 	
-	public static ArrayList<Integer> batchIndexParser(String indices) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
+	/**
+	 * Index Parser
+	 * @param indices
+	 * @return
+	 * @throws DOMException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public ArrayList<Integer> batchIndexParser(String indices) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
 		return NLPUtil.readIndexList(indices);
 	}
 	
-	public static String generalParser(String input){
+	/**
+	 * General Parser
+	 * @param input
+	 * @return
+	 */
+	public String generalParser(String input){
 		return input;
 	}
 
