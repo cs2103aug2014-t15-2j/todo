@@ -26,6 +26,11 @@ public class Logic {
 	private ItemList mItemList;
 	private boolean fastUpdate;
 	
+	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
+	
+	private static final String MESSAGE_ADD_TIP ="add a new event or task.\n";
+	private static final String MESSAGE_ADD_EXAMPLE ="eg add project meeting tomorrow @utown #cs2103 .";
+	
 	/**
 	 * Private constructor for singleton Logic
 	 * 
@@ -113,7 +118,7 @@ public class Logic {
 				result = clear();
 				break;
 			case INVALID:
-				result = "Command not recognised.";
+				result = ERROR_UNRECOGNISED_COMMAND;
 				break;
 			default:
 				// shouldn't reach here.
@@ -133,8 +138,8 @@ public class Logic {
 			Item newItem = NLP.getInstance().addParser(content);
 			result = mItemList.add(newItem);
 		}else{
-			result += "add a new event or task.\n";
-			result += "e.g. add project meeting next monday #project";
+			result += MESSAGE_ADD_TIP;
+			result += MESSAGE_ADD_EXAMPLE;
 		}
 		
 		save();
@@ -153,7 +158,7 @@ public class Logic {
 		result = mItemList.clear();
 		save();
 		
-		//TODO didn't save 
+		//TODO add comfirmation before clearing
 		
 		return result;
 	}
