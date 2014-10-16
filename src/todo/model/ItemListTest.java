@@ -29,5 +29,20 @@ public class ItemListTest {
 		assertEquals(myList.size(), 2);
 		
 	}
+	
+	@Test
+	public void testGetItem(){
+		Item itemA = new Item(item1);
+		Item itemB = new Item(item2);
+		
+		ItemList myList = new ItemList();
+		
+		myList.add(itemA);
+		myList.add(itemB);
+		
+		assertEquals(myList.getItem(1), itemA);
+		assertEquals(myList.getItem(2), itemB);
+		
+	}
 
 }
