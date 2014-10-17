@@ -16,9 +16,9 @@ import org.xml.sax.SAXException;
 import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.Parser;
 
-import todo.library.StringUtil;
 import todo.logic.Logic;
 import todo.model.DateTime;
+import todo.util.StringUtil;
 
 public class NLPUtil {
 

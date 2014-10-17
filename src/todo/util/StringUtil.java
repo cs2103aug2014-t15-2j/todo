@@ -1,4 +1,4 @@
-package todo.library;
+package todo.util;
 
 public class StringUtil {
 

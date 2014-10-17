@@ -12,9 +12,9 @@ import javax.xml.transform.TransformerException;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
-import todo.library.StringUtil;
 import todo.library.Command.CommandType;
 import todo.logic.Logic;
+import todo.util.StringUtil;
 
 public class GUI extends JPanel implements ActionListener{
 	

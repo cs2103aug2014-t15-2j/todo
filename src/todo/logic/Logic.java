@@ -11,12 +11,12 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 import todo.library.Command;
-import todo.library.StringUtil;
 import todo.library.Command.CommandType;
 import todo.model.Item;
 import todo.model.ItemList;
 import todo.nlp.NLP;
 import todo.storage.Storage;
+import todo.util.StringUtil;
 
 public class Logic {
 	

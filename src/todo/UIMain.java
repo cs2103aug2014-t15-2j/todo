@@ -12,8 +12,8 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 import todo.library.Command.CommandType;
-import todo.library.StringUtil;
 import todo.logic.Logic;
+import todo.util.StringUtil;
 
 public class UIMain {
 	

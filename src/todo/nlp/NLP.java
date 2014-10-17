@@ -11,11 +11,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
-import todo.library.StringUtil;
 import todo.logic.Logic;
 import todo.model.DateTime;
 import todo.model.Item;
 import todo.util.LogUtil;
+import todo.util.StringUtil;
 
 import com.joestelmach.natty.DateGroup;
 
@@ -129,6 +129,34 @@ public class NLP {
 			item.setDescription(StringUtil.removeFullQuote(msg));
 		}else if (msg.charAt(0) == '@'){
 			item.setLocation(msg.substring(1));
+		}else if (StringUtil.getFirstWord(msg).equals(NLPConfig.addTagCommand)){
+			// add tags
+			String[] strArray = msg.split(" ");
+			ArrayList<String>  tagList = item.getTags();
+			for(int i = 0; i < strArray.length ; i++){
+				if (strArray[i].length() > 1 && strArray[i].charAt(0) == '#'){
+					tagList.add(strArray[i].substring(1));
+					msg = msg.replace(strArray[i], "");
+				}
+			}
+			item.setTags(tagList);
+		}else if (StringUtil.getFirstWord(msg).equals(NLPConfig.deleteTagCommand)){
+			// delete tags
+			String[] strArray = msg.split(" ");
+			ArrayList<String>  tagList = item.getTags();
+			for(int i = 0; i < strArray.length ; i++){
+				if (strArray[i].length() > 1 && strArray[i].charAt(0) == '#'){
+					String toRemove = strArray[i].substring(1);
+					for ( int j = 0;  j < tagList.size(); j++){
+			            String tempName = tagList.get(j);
+			            if(tempName.equals(toRemove)){
+			            	tagList.remove(j);
+			            }
+			        }
+					msg = msg.replace(strArray[i], "");
+				}
+			}
+			item.setTags(tagList);
 		}else{
 			List<DateGroup> groups = NLPUtil.getDateGroups(msg);
 			List<DateTime> dateTimeList = new ArrayList<DateTime>();
