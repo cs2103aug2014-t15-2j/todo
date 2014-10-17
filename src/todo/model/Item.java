@@ -6,7 +6,7 @@ public class Item {
 	private static int itemQty = 0;
 	private int itemId = 0;
 	private static int lastItemId = 0;
-	private int priority = 0;
+	private int priority = 1;
 	private String description;
 	private DateTime startDateTime = null;
 	private DateTime dueDateTime = null;
