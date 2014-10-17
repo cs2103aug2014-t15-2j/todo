@@ -1,18 +1,35 @@
 import static org.junit.Assert.*;
 
+import java.util.Date;
+import java.lang.String;
+
 import org.junit.Test;
 
 import todo.nlp.NLP;
+import todo.model.DateTime;
 import todo.model.Item;
-import todo.model.ItemList;
+
 
 public class NLPtest {
 
-	String test1 = "add something";
-	Item abc = new Item (test1);
+	String addbasicdescription = "something";
+	String test2 = "do homework by 9pm 17/10/2014";
+	
+	Date now = new Date();
+	Date currentDate1 = new Date(17/10/2014);
+	DateTime basicday1 = new DateTime(currentDate1);
+	
+	Item addbasic = new Item (addbasicdescription);
+	Item addbasictime = new Item ("do homework",basicday1);
 	@Test
-	public void testadd() {
-		assertEquals(abc,NLP.getInstance().addParser(test1));
+	public void testaddbasic() {
+		assertEquals(addbasic.toString(),NLP.getInstance().addParser(addbasicdescription).toString());
+		
+	}
+	
+	@Test
+	public void testaddwithtime() {
+		assertEquals(addbasictime,NLP.getInstance().addParser(test2));
 	}
 
 }

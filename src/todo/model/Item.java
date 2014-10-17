@@ -10,7 +10,7 @@ public class Item {
 	private String description;
 	private DateTime startDateTime = null;
 	private DateTime dueDateTime = null;
-	private String location = null;
+	private String location = "";
 	private ArrayList<String> tags = new ArrayList<String>();
 	private boolean isCompleted = false;
 	
@@ -195,7 +195,7 @@ public class Item {
 			result = result.concat(getDueDateTime().toString());
 		}
 		
-		if (location != null){
+		if (location !=""){
 			result = result.concat(" |Location: ");
 			result = result.concat(getLocation());
 		}
