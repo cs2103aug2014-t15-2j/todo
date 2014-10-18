@@ -68,4 +68,15 @@ public class StateHistory {
 	public ItemList redo() {
 		return future.pop();
 	}
+	
+	public boolean popAllFromFuture(){
+		try{
+			while(!future.empty()){
+				future.pop();	
+			}
+			return true;
+		}catch(Exception e){
+			return false;
+		}
+	}
 }

@@ -136,10 +136,6 @@ public class Logic {
 		return result;
 	}
 	
-	/**
-	 * Brings you back to the previous state before the last modifying operation
-	 * @return undo status
-	 */
 	private String undo() {
 		String result = "";
 		
@@ -154,10 +150,6 @@ public class Logic {
 		return result;
 	}
 	
-	/**
-	 * Brings you back to the previous state before the last undo
-	 * @return redo status
-	 */
 	private String redo() {
 		String result = "";
 		
@@ -175,6 +167,7 @@ public class Logic {
 
 	private String add(String userInput) throws ParserConfigurationException, TransformerException{
 		stateHistory.saveStateToHistory(mItemList);
+		stateHistory.popAllFromFuture();
 		String content;
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
@@ -201,6 +194,7 @@ public class Logic {
 	
 	private String clear() throws ParserConfigurationException, TransformerException {
 		stateHistory.saveStateToHistory(mItemList);
+		stateHistory.popAllFromFuture();
 		String result = "";
 		result = mItemList.clear();
 		
@@ -209,8 +203,10 @@ public class Logic {
 		save();		
 		return result;
 	}
+	
 	private String update(String userInput) throws ParserConfigurationException, TransformerException{
 		stateHistory.saveStateToHistory(mItemList);
+		stateHistory.popAllFromFuture();
 		String updateInfo = "";
 		String [] arr;
 		int updateIndex = -1;
@@ -263,6 +259,7 @@ public class Logic {
 	 */
 	private String simpleOperation(CommandType type, String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException{
 		stateHistory.saveStateToHistory(mItemList);
+		stateHistory.popAllFromFuture();
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
 		
