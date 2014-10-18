@@ -136,6 +136,10 @@ public class Logic {
 		return result;
 	}
 	
+	/**
+	 * Brings you back to the previous state before the last modifying operation
+	 * @return undo status
+	 */
 	private String undo() {
 		String result = "";
 		
@@ -150,6 +154,10 @@ public class Logic {
 		return result;
 	}
 	
+	/**
+	 * Brings you back to the previous state before the last undo
+	 * @return redo status
+	 */
 	private String redo() {
 		String result = "";
 		

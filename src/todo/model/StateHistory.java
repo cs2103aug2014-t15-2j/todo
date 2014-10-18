@@ -39,6 +39,7 @@ public class StateHistory {
 
 			future.push(newItemList);
 		} catch (Exception e) {
+			// Something is wrong, saveHistory has failed
 			return false;
 		}
 		return true;
@@ -60,7 +61,7 @@ public class StateHistory {
 		return false;
 	}
 
-	public ItemList undo() { 
+	public ItemList undo() {
 		return history.pop();
 	}
 
