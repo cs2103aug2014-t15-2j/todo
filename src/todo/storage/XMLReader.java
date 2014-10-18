@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,6 +26,8 @@ import todo.model.ItemList;
 import todo.model.DateTime;
 
 public class XMLReader {
+	// Logger
+	private final static Logger LOGGER = Logger.getLogger(XMLReader.class .getName());
 	
 	// Related to FileIO
 	public static final String FILE_DESTINATION = "todo.xml";
@@ -80,11 +84,24 @@ public class XMLReader {
 		if(!newFile.exists()){
 			return new ItemList();
 		}
-		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		Document doc = docBuilder.parse(newFile);
-		doc.getDocumentElement().normalize();
-		ItemList newItemList = traverseNodesToRead(doc);
-	
+		DocumentBuilder docBuilder = null;
+		Document doc = null;
+		ItemList newItemList = null;
+		try{
+			//FileHandler fh = new FileHandler("MyLogFile.log");  
+			//LOGGER.addHandler(fh);
+	       // SimpleFormatter formatter = new SimpleFormatter();  
+	        //fh.setFormatter(formatter);  
+	        docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+	        doc = docBuilder.parse(newFile);
+	        doc.getDocumentElement().normalize();
+	        newItemList = traverseNodesToRead(doc);
+		}catch(Exception e){
+			// SEVERE/WARNING/INFO/CONFIG/FINE/FINER/FINEST
+			LOGGER.setLevel(Level.INFO);
+			LOGGER.info("Error related to external file");
+		}
+		
 		// There only one ITEM_QUANTITY to set for Item
 		Node itemQty = doc.getElementsByTagName(ITEM_QUANTITY).item(ZERO);
 		Item.setItemQty(Integer.parseInt(itemQty.getTextContent()));

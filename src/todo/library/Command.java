@@ -2,7 +2,7 @@ package todo.library;
 
 public class Command {
 	public static enum CommandType {
-		CREATE, READ, UPDATE, DELETE, DONE, UNDONE, CLEAR, INVALID, EXIT
+		CREATE, READ, UPDATE, DELETE, DONE, UNDONE, CLEAR, INVALID, UNDO, REDO, EXIT
 	};
 
 	/**
@@ -98,6 +98,12 @@ public class Command {
 			return CommandType.CLEAR;
 		case "empty" :
 			return CommandType.CLEAR;
+		// ----------Possible cases of 'undo'-----------
+		case "undo":
+			return CommandType.UNDO;
+		// ----------Possible cases of 'redo'-----------
+		case "redo":
+			return CommandType.REDO;
 		// ----------Possible cases of 'exit'-----------
 		case "exit":
 			return CommandType.EXIT;
@@ -105,7 +111,6 @@ public class Command {
 			return CommandType.EXIT;
 		case "close":
 			return CommandType.EXIT;
-				
 		// ----------otherwise, 'invalid'-----------
 		default:
 			return CommandType.INVALID;

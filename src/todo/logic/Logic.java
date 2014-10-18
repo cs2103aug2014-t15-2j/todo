@@ -14,6 +14,7 @@ import todo.library.Command;
 import todo.library.Command.CommandType;
 import todo.model.Item;
 import todo.model.ItemList;
+import todo.model.StateHistory;
 import todo.nlp.NLP;
 import todo.storage.Storage;
 import todo.util.StringUtil;
@@ -24,6 +25,7 @@ public class Logic {
 	private Storage storage;
 	private Command command;
 	private ItemList mItemList;
+	private StateHistory stateHistory;
 	private boolean fastUpdate;
 	
 	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
@@ -44,6 +46,7 @@ public class Logic {
 		storage = new Storage();
 		command = new Command();
 		mItemList = storage.readDataFromFile();
+		stateHistory = new StateHistory();
 	}
 	
 	/**
@@ -117,6 +120,12 @@ public class Logic {
 			case CLEAR:
 				result = clear();
 				break;
+			case UNDO:
+				result = undo();
+				break;
+			case REDO:
+				result = redo();
+				break;
 			case INVALID:
 				result = ERROR_UNRECOGNISED_COMMAND;
 				break;
@@ -127,8 +136,37 @@ public class Logic {
 		return result;
 	}
 	
+	private String undo() {
+		String result = "";
+		
+		if(stateHistory.canUndo() && stateHistory.saveStateToFuture(mItemList)){
+			mItemList = stateHistory.undo();
+			
+			result = "you have successfully undo the previous action.";
+		}else{
+			result = "no action can be undo.";
+		}
+		
+		return result;
+	}
 	
+	private String redo() {
+		String result = "";
+		
+		if(stateHistory.canRedo() && stateHistory.saveStateToHistory(mItemList)){
+			mItemList = stateHistory.redo();
+			
+			result = "you have successfully redo the previous action.";
+		}else{
+			result = "no action can be redo.";
+		}
+		
+		return result;
+	}
+
+
 	private String add(String userInput) throws ParserConfigurationException, TransformerException{
+		stateHistory.saveStateToHistory(mItemList);
 		String content;
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
@@ -154,15 +192,17 @@ public class Logic {
 	}
 	
 	private String clear() throws ParserConfigurationException, TransformerException {
+		stateHistory.saveStateToHistory(mItemList);
 		String result = "";
 		result = mItemList.clear();
-		save();
 		
 		//TODO add comfirmation before clearing
 		
+		save();		
 		return result;
 	}
 	private String update(String userInput) throws ParserConfigurationException, TransformerException{
+		stateHistory.saveStateToHistory(mItemList);
 		String updateInfo = "";
 		String [] arr;
 		int updateIndex = -1;
@@ -214,6 +254,7 @@ public class Logic {
 	 * @throws DOMException 
 	 */
 	private String simpleOperation(CommandType type, String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException{
+		stateHistory.saveStateToHistory(mItemList);
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
 		
@@ -271,6 +312,7 @@ public class Logic {
 					result = "Invalid command type.";
 			}
 		}
+		
 		save();
 		return result;
 	}
