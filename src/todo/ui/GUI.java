@@ -12,7 +12,7 @@ import javax.xml.transform.TransformerException;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
-import todo.library.Command.CommandType;
+import todo.util.CommandType;
 import todo.logic.Logic;
 import todo.util.StringUtil;
 

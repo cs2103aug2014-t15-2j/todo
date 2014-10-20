@@ -10,8 +10,7 @@ import javax.xml.transform.TransformerException;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
-import todo.library.Command;
-import todo.library.Command.CommandType;
+import todo.util.CommandType;
 import todo.model.Item;
 import todo.model.ItemList;
 import todo.model.StateHistory;

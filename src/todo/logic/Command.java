@@ -1,9 +1,8 @@
-package todo.library;
+package todo.logic;
+
+import todo.util.CommandType;
 
 public class Command {
-	public static enum CommandType {
-		CREATE, READ, UPDATE, DELETE, DONE, UNDONE, CLEAR, INVALID, UNDO, REDO, EXIT
-	};
 
 	/**
 	 * Default constructor for Command
