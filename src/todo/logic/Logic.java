@@ -131,7 +131,7 @@ public class Logic {
 				break;
 			default:
 				// shouldn't reach here.
-				break;
+				break;    
 		}
 		return result;
 	}
@@ -175,7 +175,9 @@ public class Logic {
 		if (arr.length > 1){
 			content = arr[1];
 			Item newItem = NLP.getInstance().addParser(content);
-			result = mItemList.add(newItem);
+			if (newItem != null){
+				result = mItemList.add(newItem);
+			}
 		}else{
 			result += MESSAGE_ADD_TIP;
 			result += MESSAGE_ADD_EXAMPLE;

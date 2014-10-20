@@ -24,6 +24,10 @@ public class NLP {
 	private static NLP NLPSingpleton;
 	private static String TAG = "NLP";
 
+	private NLP(){
+		
+	}
+	
 	public static NLP getInstance(){
 		if(NLPSingpleton == null){
 			NLPSingpleton = new NLP();
@@ -57,6 +61,7 @@ public class NLP {
 		if (groups.size() != 0){
 			DateGroup group = groups.get(0);
 			String groupText = group.getText();
+			LogUtil.Log(TAG, "Detect data/time: "+groupText);
 			dateTimeList = NLPUtil.getDateTime(group);
 			String wordBeforeDate = StringUtil.getWordBeforeSubstring(msg,groupText);
 			if (Arrays.asList(NLPConfig.preDue).contains(wordBeforeDate)){
@@ -111,6 +116,11 @@ public class NLP {
 		if (tagList.size() != 0)
 			System.out.println("tags: " + tagList.toString());
 		*/
+		
+		if (msg.equals("")){
+			LogUtil.Log(TAG, "Item description is empty, please consider using quotation marks");
+			return null;
+		}
 		
 		assert msg != "";
 		return new Item(msg, dateTimeList.get(0), dateTimeList.get(1), location, 1, tagList);

@@ -18,10 +18,13 @@ import com.joestelmach.natty.Parser;
 
 import todo.logic.Logic;
 import todo.model.DateTime;
+import todo.util.LogUtil;
 import todo.util.StringUtil;
 
 public class NLPUtil {
 
+	private static String TAG = "NLPUtil";
+	
 	public static Parser parser = new Parser();
 	
 	
@@ -145,13 +148,22 @@ public class NLPUtil {
 	 */
 	static List<DateGroup> getDateGroups(String msgToDetectDate){
 		List<DateGroup> groups = parser.parse(msgToDetectDate);
+		String tempTextToDetect = "";
 		
 		// escape wrong date time parse by Natty
 		// skip when the date text is an integer
 		// or a word in the filterOut list
 		while (groups.size() > 0 && (StringUtil.isInteger(groups.get(0).getText())
 				|| Arrays.asList(NLPConfig.filterOut).contains(groups.get(0).getText()))){
-			 msgToDetectDate = msgToDetectDate.replace(groups.get(0).getText(), "");
+			String currentTextToDetect = groups.get(0).getText();
+			LogUtil.Log(TAG, "Text to detect data/time: "+currentTextToDetect);
+			if (currentTextToDetect.equals(tempTextToDetect)){
+				groups.clear();
+				break;
+			}
+			// prevent infinite loop
+			tempTextToDetect = currentTextToDetect;
+			msgToDetectDate = msgToDetectDate.replace(groups.get(0).getText(), "");
 			if(msgToDetectDate.equals("")){
 				groups.clear();
 				break;
