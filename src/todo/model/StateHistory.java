@@ -46,19 +46,11 @@ public class StateHistory {
 	}
 
 	public boolean canUndo() {
-		if (!history.empty()) {
-			return true;
-		}
-
-		return false;
+		return history.empty()? false : true;
 	}
 
 	public boolean canRedo() {
-		if (!future.empty()) {
-			return true;
-		}
-
-		return false;
+		return future.empty()? false : true;
 	}
 
 	public ItemList undo() {

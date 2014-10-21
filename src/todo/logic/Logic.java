@@ -174,8 +174,7 @@ public class Logic {
 
 
 	private String add(String userInput) throws ParserConfigurationException, TransformerException{
-		stateHistory.saveStateToHistory(mItemList);
-		stateHistory.popAllFromFuture();
+		saveState();
 		String content;
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
@@ -191,7 +190,7 @@ public class Logic {
 			result += MESSAGE_ADD_EXAMPLE;
 		}
 		
-		save();
+		saveFile();
 		return result;
 	}
 	
@@ -214,20 +213,18 @@ public class Logic {
 	}
 	
 	private String clear() throws ParserConfigurationException, TransformerException {
-		stateHistory.saveStateToHistory(mItemList);
-		stateHistory.popAllFromFuture();
+		saveState();
 		String result = "";
 		result = mItemList.clear();
 		
 		//TODO add comfirmation before clearing
 		
-		save();		
+		saveFile();		
 		return result;
 	}
 	
 	private String update(String userInput) throws ParserConfigurationException, TransformerException{
-		stateHistory.saveStateToHistory(mItemList);
-		stateHistory.popAllFromFuture();
+		saveState();
 		String updateInfo = "";
 		String [] arr;
 		int updateIndex = -1;
@@ -255,7 +252,7 @@ public class Logic {
 		if(!updateInfo.isEmpty() 
 				&& mItemList.validIndex(updateIndex-1) 
 				&& NLP.getInstance().updateParser(mItemList.getItem(updateIndex-1), updateInfo)){
-			save();
+			saveFile();
 			result = "update's successful.";
 		}else{
 			result = "update's failed.";
@@ -279,8 +276,7 @@ public class Logic {
 	 * @throws DOMException 
 	 */
 	private String simpleOperation(CommandType type, String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException{
-		stateHistory.saveStateToHistory(mItemList);
-		stateHistory.popAllFromFuture();
+		saveState();
 		String [] arr = userInput.split(" ", 2);
 		String result = "";
 		
@@ -339,11 +335,16 @@ public class Logic {
 			}
 		}
 		
-		save();
+		saveFile();
 		return result;
 	}
 	
-	private void save() throws ParserConfigurationException, TransformerException{
+	private void saveState(){
+		stateHistory.saveStateToHistory(mItemList);
+		stateHistory.popAllFromFuture();
+	}
+	
+	private void saveFile() throws ParserConfigurationException, TransformerException{
 		storage.saveDataToFile(mItemList);
 	}
 	
