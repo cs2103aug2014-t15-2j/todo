@@ -147,5 +147,32 @@ public class StringUtil {
 		String firstWord = str.trim().split("\\s+")[0];
 		return firstWord;
 	}
+	
+	/**
+	 * Change dd/mm format to mm/dd
+	 * @param String with posible dd/mm or dd/mm/yy date
+	 * @return String with posible mm/dd or mm/dd/yy date
+	 */
+	public static String correctDateFormat(String str){
+		String[] arr = str.split(" ");
+		for(int i = 0; i < arr.length; i++){
+			String[] arr2 = arr[i].split("/");
+			if (arr2.length == 3
+			&& isInteger(arr2[0])
+			&& isInteger(arr2[1])
+			&& isInteger(arr2[2])){
+				if(Integer.valueOf(arr2[0]) > 12){
+					str = str.replace(arr[i], arr2[1]+"/"+arr2[0]+"/"+arr2[2]);
+				}
+			}else if (arr2.length == 2
+			&& isInteger(arr2[0])
+			&& isInteger(arr2[1])){
+				if(Integer.valueOf(arr2[0]) > 12){
+					str = str.replace(arr[i], arr2[1]+"/"+arr2[0]);
+				}
+			}
+		}
+		return str;
+	}
 
 }

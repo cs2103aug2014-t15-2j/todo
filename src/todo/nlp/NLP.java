@@ -54,8 +54,11 @@ public class NLP {
 		dateTimeList.add(null);
 		dateTimeList.add(null);
 		
-		// step1 remove quoted content & get date groups
+		// step1 remove quoted content & correct date format
+		// & get date groups
+		msg = StringUtil.correctDateFormat(msg);
 		groups = NLPUtil.getDateGroups(StringUtil.removeQuoted(msg));
+
 		
 		// step2 find possible date time
 		if (groups.size() != 0){
