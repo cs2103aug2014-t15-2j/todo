@@ -102,7 +102,7 @@ public class Logic {
 				result = add(userInput);
 				break;
 			case READ:
-				result = read();
+				result = read(userInput);
 				break;
 			case UPDATE:
 				result = update(userInput);
@@ -125,6 +125,8 @@ public class Logic {
 			case REDO:
 				result = redo();
 				break;
+
+			
 			case INVALID:
 				result = ERROR_UNRECOGNISED_COMMAND;
 				break;
@@ -186,11 +188,21 @@ public class Logic {
 		return result;
 	}
 	
-	private String read(){
+	private String read(String userInput){
 		String result = "";
-		result = mItemList.displayList();
+		if(userInput ==  "" ){
+			result = mItemList.displayList();
+			return result;
+		}else{		
+			if(userInput.contains("#")){
+				int hashTagPosition = userInput.indexOf("#");
+			    return "position = " + hashTagPosition;
+			    
+		    }else{
+		    	return "Invalid command!!!!!";
+		    }
+		}
 		
-		return result;
 	}
 	
 	private String clear() throws ParserConfigurationException, TransformerException {

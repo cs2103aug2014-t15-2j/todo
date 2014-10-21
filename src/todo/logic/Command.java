@@ -103,6 +103,7 @@ public class Command {
 		// ----------Possible cases of 'redo'-----------
 		case "redo":
 			return CommandType.REDO;
+			
 		// ----------Possible cases of 'exit'-----------
 		case "exit":
 			return CommandType.EXIT;

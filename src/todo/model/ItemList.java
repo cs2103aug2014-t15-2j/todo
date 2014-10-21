@@ -200,27 +200,7 @@ public class ItemList {
 			}
 			
 			return result;
-		}
-		
-		public ItemList searchDescription (String searchTerm){
-			ItemList itemListResult = new ItemList();
-			for(Item i : itemList){
-			if(!i.getTags().isEmpty()){
-				
-				int size = i.getTags().size();
-				for (int j= 0; j< size; j++) {
-					if(i.getTags().get(j).contains(searchTerm)) {
-						itemListResult.add(i);
-					}
-				}
-					
-					
-				//System.out.println(itemListResult.toString());
-				
-				}
-			}
-			return itemListResult;
-			}
+		}		
 		
 		public String filterByTags(String tagString){
 			String[] splitedTags = tagString.split("\\W+");
