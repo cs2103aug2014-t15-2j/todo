@@ -204,7 +204,6 @@ public class ItemList {
 		
 		public String filterByTags(String tagString){
 			String[] splitedTags = tagString.split("\\W+");
-			System.out.println("number is = " + splitedTags.length);
 			String filteredList = "";
 			int matchNumber = splitedTags.length;
 			int currentMatchNumber;
@@ -221,7 +220,6 @@ public class ItemList {
 						}
 					}
 				}
-				System.out.println("current = "+ currentMatchNumber);
 				if(currentMatchNumber == matchNumber){
 					String appendString = i.toString();
 					filteredList += appendString;

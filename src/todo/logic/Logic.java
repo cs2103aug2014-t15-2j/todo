@@ -190,19 +190,20 @@ public class Logic {
 	
 	private String read(String userInput){
 		String result = "";
-		if(userInput ==  "" ){
-			result = mItemList.displayList();
-			return result;
-		}else{		
-			if(userInput.contains("#")){
-				int hashTagPosition = userInput.indexOf("#");
-			    return "position = " + hashTagPosition;
-			    
-		    }else{
-		    	return "Invalid command!!!!!";
-		    }
-		}
-		
+	    if((userInput.contains("#"))){
+	    	int hashTagPosition = userInput.indexOf("#");
+	    	String tagString = "";
+	    	tagString = userInput.substring(hashTagPosition+1, userInput.length());
+	    	if(tagString.isEmpty()){
+	    		return "Invalid: Missing Tag Names.";
+	    	}else{
+	    		result = mItemList.filterByTags(tagString);
+	    		return result;
+	    	}
+	    }else {
+	    		result = mItemList.displayList();
+			    return result;
+	    }
 	}
 	
 	private String clear() throws ParserConfigurationException, TransformerException {
