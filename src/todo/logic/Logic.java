@@ -96,7 +96,8 @@ public class Logic {
 	 * @throws SAXException 
 	 * @throws DOMException 
 	 */
-	public String executeCommand(CommandType commandType, String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException {
+	public String executeCommand(String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException {
+		CommandType commandType = getCommandType(StringUtil.getFirstWord(userInput));
 		String result = "";
 		
 		switch (commandType) {
@@ -127,8 +128,6 @@ public class Logic {
 			case REDO:
 				result = redo();
 				break;
-
-			
 			case INVALID:
 				result = ERROR_UNRECOGNISED_COMMAND;
 				LogUtil.Log(TAG, "invalid command, invoke NLP general parser");
@@ -193,11 +192,12 @@ public class Logic {
 	
 	private String read(String userInput){
 		String result = "";
-		if(userInput ==  "" ){
+		String [] arr = userInput.split(" ", 2);
+		if(arr.length ==  1){
 			result = mItemList.displayList();
 			return result;
-		}else{		
-			if(userInput.contains("#")){
+		}else{
+			if(arr[1].contains("#")){
 				int hashTagPosition = userInput.indexOf("#");
 			    return "position = " + hashTagPosition;
 			    
