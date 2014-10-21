@@ -202,7 +202,7 @@ public class ItemList {
 			return result;
 		}
 		
-		public ItemList searchTag(String searchTerm){
+		public ItemList searchDescription (String searchTerm){
 			ItemList itemListResult = new ItemList();
 			for(Item i : itemList){
 			if(!i.getTags().isEmpty()){
@@ -221,6 +221,35 @@ public class ItemList {
 			}
 			return itemListResult;
 			}
+		
+		public String filterByTags(String tagString){
+			String[] splitedTags = tagString.split("\\W+");
+			System.out.println("number is = " + splitedTags.length);
+			String filteredList = "";
+			int matchNumber = splitedTags.length;
+			int currentMatchNumber;
+			
+			for(Item i : itemList){
+				currentMatchNumber = 0;
+				String tagCompared = "";
+				for(int j = 0; j < i.getTags().size(); j++){
+					for(int k = 0; k <splitedTags.length; k++){
+						tagCompared = splitedTags[k];
+						if(i.getTags().get(j).equals(tagCompared)){
+							currentMatchNumber++;
+							break;
+						}
+					}
+				}
+				System.out.println("current = "+ currentMatchNumber);
+				if(currentMatchNumber == matchNumber){
+					String appendString = i.toString();
+					filteredList += appendString;
+					filteredList += "\n";
+				}
+			}
+			return filteredList;			
+		}
 		
 			
 }		
