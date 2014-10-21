@@ -11,6 +11,7 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 import todo.util.CommandType;
+import todo.util.LogUtil;
 import todo.model.Item;
 import todo.model.ItemList;
 import todo.model.StateHistory;
@@ -20,6 +21,7 @@ import todo.util.StringUtil;
 
 public class Logic {
 	
+	private static String TAG = "Logic";
 	private static Logic logicSingleton;
 	private Storage storage;
 	private Command command;
@@ -127,6 +129,7 @@ public class Logic {
 				break;
 			case INVALID:
 				result = ERROR_UNRECOGNISED_COMMAND;
+				LogUtil.Log(TAG, "invalid command, invoke NLP general parser");
 				break;
 			default:
 				// shouldn't reach here.

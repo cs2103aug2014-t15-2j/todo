@@ -106,20 +106,6 @@ public class NLP {
 		// step6 if the whole sentence is quoted, then delete the quotation marks
 		msg = StringUtil.trimString(StringUtil.removeFullQuote(msg));
 		
-		//print out for testing
-		/*
-		System.out.println("description: " + msg);
-		DateFormat mDateFormate = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-		if (startDate != null)
-			System.out.println("start time: " + mDateFormate.format(startDate) + "  " + startDateHasTime);
-		if (dueDate != null)
-			System.out.println("due time: " + mDateFormate.format(dueDate) + "  " + dueDateHasTime);
-		if (!location.equals(""))
-			System.out.println("location: " + location);
-		if (tagList.size() != 0)
-			System.out.println("tags: " + tagList.toString());
-		*/
-		
 		if (msg.equals("")){
 			LogUtil.Log(TAG, "Item description is empty, please consider using quotation marks");
 			return null;
@@ -207,11 +193,11 @@ public class NLP {
 	/**
 	 * General Parser
 	 * @param input
-	 * @return
+	 * @return if the input is in library, return standard command, otherwise, return original string
 	 */
 	public String generalParser(String input){
 		LogUtil.Log(TAG, "Start NLP general parser");
-		return input;
+		return NLPLibrary.getInstance().parse(input);
 	}
 
 }
