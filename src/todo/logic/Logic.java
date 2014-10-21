@@ -129,8 +129,13 @@ public class Logic {
 				result = redo();
 				break;
 			case INVALID:
-				result = ERROR_UNRECOGNISED_COMMAND;
 				LogUtil.Log(TAG, "invalid command, invoke NLP general parser");
+				String standardInput = NLP.getInstance().generalParser(userInput);
+				if (userInput != standardInput){
+					executeCommand(standardInput);
+				}else{
+					result = ERROR_UNRECOGNISED_COMMAND;
+				}
 				break;
 			default:
 				// shouldn't reach here.

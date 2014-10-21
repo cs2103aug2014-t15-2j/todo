@@ -22,7 +22,7 @@ public class NLPLibrary {
 	private static void initLibrary(){
 		library.put("Just did everything", "done all");
 		library.put("delete the whole shit", "delete all");
-		library.put("wtf did it do", "undo");
+		library.put("wtf did i do", "undo");
 	}
 	
 	public String parse(String str){
