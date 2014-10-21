@@ -11,6 +11,7 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 import todo.util.CommandType;
+import todo.util.LogUtil;
 import todo.model.Item;
 import todo.model.ItemList;
 import todo.model.StateHistory;
@@ -20,6 +21,7 @@ import todo.util.StringUtil;
 
 public class Logic {
 	
+	private static String TAG = "Logic";
 	private static Logic logicSingleton;
 	private Storage storage;
 	private Command command;
@@ -94,7 +96,8 @@ public class Logic {
 	 * @throws SAXException 
 	 * @throws DOMException 
 	 */
-	public String executeCommand(CommandType commandType, String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException {
+	public String executeCommand(String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException {
+		CommandType commandType = getCommandType(StringUtil.getFirstWord(userInput));
 		String result = "";
 		
 		switch (commandType) {
@@ -125,10 +128,14 @@ public class Logic {
 			case REDO:
 				result = redo();
 				break;
-
-			
 			case INVALID:
-				result = ERROR_UNRECOGNISED_COMMAND;
+				LogUtil.Log(TAG, "invalid command, invoke NLP general parser");
+				String standardInput = NLP.getInstance().generalParser(userInput);
+				if (userInput != standardInput){
+					executeCommand(standardInput);
+				}else{
+					result = ERROR_UNRECOGNISED_COMMAND;
+				}
 				break;
 			default:
 				// shouldn't reach here.

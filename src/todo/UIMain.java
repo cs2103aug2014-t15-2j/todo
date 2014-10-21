@@ -12,11 +12,13 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 import todo.util.CommandType;
+import todo.util.LogUtil;
 import todo.logic.Logic;
 import todo.util.StringUtil;
 
 public class UIMain {
 	
+	private static String TAG = "UIMain";
 	private static Scanner scanner;
 	private static Logic logic;
 
@@ -28,8 +30,10 @@ public class UIMain {
 		
 		do{
 			String userInput = requestForCommand();
+			LogUtil.Log(TAG, userInput);
 			mCommandType = logic.getCommandType(StringUtil.getFirstWord(userInput));
-			System.out.println(logic.executeCommand(mCommandType, userInput));
+			LogUtil.Log(TAG, mCommandType.toString());
+			System.out.println(logic.executeCommand(userInput));
 		}while(mCommandType != CommandType.EXIT);
 		scanner.close();
 	}

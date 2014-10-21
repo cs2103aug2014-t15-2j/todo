@@ -58,27 +58,23 @@ public class GUI extends JPanel implements ActionListener{
         //was a selection in the text area.
         textArea.setCaretPosition(textArea.getDocument().getLength());
 
-        CommandType mCommandType = logic.getCommandType(StringUtil.getFirstWord(userInput));
-		
-		if (mCommandType != CommandType.EXIT){
-			try {
-				logic.executeCommand(mCommandType, userInput);
-			} catch (ParserConfigurationException | TransformerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (DOMException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			logic.executeCommand(userInput);
+		} catch (ParserConfigurationException | TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		textArea.setText(logic.getListString());
