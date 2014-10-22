@@ -26,24 +26,24 @@ public class StateHistoryTest {
 		tl3.add("last lecture");
 		Item item3 = new Item("go to lecture", new DateTime(new Date()), new DateTime(new Date()), "lt19", 3, tl3);
 				
-		ItemList itemList1 = new ItemList();
-		itemList1.add(item1);
-		itemList1.add(item2);
-		itemList1.add(item3);
+		ItemList newItemList = new ItemList();
+		newItemList.add(item1);
+		newItemList.add(item2);
+		newItemList.add(item3);
 		//the end Creation of dummy ItemList---------------
 
 		StateHistory newStateHistory = new StateHistory();
 		
 		//save once to history stack
-		newStateHistory.saveStateToHistory(itemList1);
+		newStateHistory.saveStateToHistory(newItemList);
 		//once i save, i should be able to undo, but not redo
 		assertEquals(true, newStateHistory.canUndo());
 		assertEquals(false, newStateHistory.canRedo());
 		
 		//save several same ItemList to future stack, then pop all
-		newStateHistory.saveStateToFuture(itemList1);
-		newStateHistory.saveStateToFuture(itemList1);
-		newStateHistory.saveStateToFuture(itemList1);
+		newStateHistory.saveStateToFuture(newItemList);
+		newStateHistory.saveStateToFuture(newItemList);
+		newStateHistory.saveStateToFuture(newItemList);
 		newStateHistory.popAllFromFuture();
 		//since ItemList in future were all popped, redo shouldn't be allowed
 		assertEquals(false, newStateHistory.canRedo());
@@ -66,6 +66,12 @@ public class StateHistoryTest {
 		assertEquals(savedItem3.getTags().get(1), "last lecture");
 		assertEquals(savedItem3.getDescription(), "go to lecture");
 		assertEquals(savedItem3.getLocation(), "lt19");
+		
+		
+		 /* This is a boundary case for the ¡®null¡¯ partition */
+		assertEquals(newStateHistory.saveStateToFuture(null), false);
+		/* This is a boundary case for the ¡®non-null¡¯ partition */
+		assertEquals(newStateHistory.saveStateToFuture(newItemList), true);
 	}
 
 }
