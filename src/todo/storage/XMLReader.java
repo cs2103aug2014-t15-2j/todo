@@ -28,38 +28,9 @@ import todo.model.DateTime;
 public class XMLReader {
 	// Logger
 	private final static Logger LOGGER = Logger.getLogger(XMLReader.class .getName());
-	
-	// Related to FileIO
-	public static final String FILE_DESTINATION = "todo.xml";
 
-	// Related to XML tags
-	public static final String ITEM_LIST = "ItemList";
-	public static final String ITEM_QUANTITY = "itemQty";
-	public static final String LAST_ITEM_ID = "lastItemId";
-	public static final String ITEM = "Item";
-	public static final String ITEM_ID = "itemId";
-	public static final String PRIORITY = "priority";
-	public static final String DESCRIPTION = "description";
-	public static final String START_DATE_TIME = "startDateTime";
-	public static final String HAS_TIME = "hasTime";
-	public static final String DATE_TIME = "DateTime";
-	public static final String DUE_DATE_TIME = "dueDateTime";
-	public static final String LOCATION = "location";
-	public static final String TAGS = "tags";
-	public static final String TAG = "tag";
-	public static final String IS_COMPLETED = "isCompleted";
-
-	// Related to date and time
-	public static final String DATE_WITH_TIME = "MM/dd/yyyy HH:mm:ss";
-	public static final String DATE_WITHOUT_TIME = "MM/dd/yyyy";
-
-	// Other miscellaneous constant string and integer
-	public static final String EMPTY = "";
-	public static final String TRUE = "true";
-	public static final int ZERO = 0;
-
-	private static DateFormat dateWithTime = new SimpleDateFormat(DATE_WITH_TIME);
-	private static DateFormat dateWithoutTime = new SimpleDateFormat(DATE_WITHOUT_TIME);
+	private DateFormat dateWithTime = new SimpleDateFormat(Storage.DATE_WITH_TIME);
+	private DateFormat dateWithoutTime = new SimpleDateFormat(Storage.DATE_WITHOUT_TIME);
 
 	/**
 	 * Default constructor
@@ -80,7 +51,7 @@ public class XMLReader {
 	 * @throws DOMException 
 	 */
 	public ItemList readFromXML() throws ParserConfigurationException, SAXException, IOException, DOMException, ParseException{
-		File newFile = new File(FILE_DESTINATION);
+		File newFile = new File(Storage.FILE_DESTINATION);
 		if(!newFile.exists()){
 			return new ItemList();
 		}
@@ -103,11 +74,11 @@ public class XMLReader {
 		}
 		
 		// There only one ITEM_QUANTITY to set for Item
-		Node itemQty = doc.getElementsByTagName(ITEM_QUANTITY).item(ZERO);
+		Node itemQty = doc.getElementsByTagName(Storage.ITEM_QUANTITY).item(Storage.ZERO);
 		Item.setItemQty(Integer.parseInt(itemQty.getTextContent()));
 	
 		// There only one LAST_ITEM_ID to set for Item
-		Node lastItemId = doc.getElementsByTagName(LAST_ITEM_ID).item(ZERO);
+		Node lastItemId = doc.getElementsByTagName(Storage.LAST_ITEM_ID).item(Storage.ZERO);
 		Item.setLastItemID(Integer.parseInt(lastItemId.getTextContent()));
 		
 		return newItemList;
@@ -124,29 +95,29 @@ public class XMLReader {
 	private ItemList traverseNodesToRead(Document doc) throws DOMException, ParseException{
 		ItemList newItemList = new ItemList();
 		
-		NodeList items = doc.getElementsByTagName(ITEM);
+		NodeList items = doc.getElementsByTagName(Storage.ITEM);
 		
 		for(int i = 0; i < items.getLength(); i++){
 			Item newItem = new Item();
 			
-			Node itemId = doc.getElementsByTagName(ITEM_ID).item(i);
+			Node itemId = doc.getElementsByTagName(Storage.ITEM_ID).item(i);
 			// -1 here because setItemId always + 1 before itemId is set
 			newItem.setItemID(Integer.parseInt(itemId.getTextContent()) - 1);
 			
-			Node priority = doc.getElementsByTagName(PRIORITY).item(i);
+			Node priority = doc.getElementsByTagName(Storage.PRIORITY).item(i);
 			newItem.setPriority(Integer.parseInt(priority.getTextContent()));
 			
-			Node description = doc.getElementsByTagName(DESCRIPTION).item(i);
+			Node description = doc.getElementsByTagName(Storage.DESCRIPTION).item(i);
 			newItem.setDescription(description.getTextContent());
 
 			//------------------Retrieving of startDateTime---------------------
-			Node startDateTime = doc.getElementsByTagName(START_DATE_TIME).item(i);
+			Node startDateTime = doc.getElementsByTagName(Storage.START_DATE_TIME).item(i);
 			Element startDateTimeElement = (Element) startDateTime;
-			Node sHasTime = startDateTimeElement.getElementsByTagName(HAS_TIME).item(ZERO);
-			Node sDateTime = startDateTimeElement.getElementsByTagName(DATE_TIME).item(ZERO);
+			Node sHasTime = startDateTimeElement.getElementsByTagName(Storage.HAS_TIME).item(Storage.ZERO);
+			Node sDateTime = startDateTimeElement.getElementsByTagName(Storage.DATE_TIME).item(Storage.ZERO);
 			
-			if(sDateTime.getTextContent() != EMPTY){
-				if(sHasTime.getTextContent().equals(TRUE)){
+			if(sDateTime.getTextContent() != Storage.EMPTY){
+				if(sHasTime.getTextContent().equals(Storage.TRUE)){
 					Date sDate = dateWithTime.parse(sDateTime.getTextContent());
 					newItem.setStartDateTime(new DateTime(sDate, true));
 				}else{
@@ -157,13 +128,13 @@ public class XMLReader {
 			//------------------Retrieving of startDateTime---------------------
 			
 			//------------------Retrieving of DueDateTime-----------------------
-			Node dueDateTime = doc.getElementsByTagName(DUE_DATE_TIME).item(i);
+			Node dueDateTime = doc.getElementsByTagName(Storage.DUE_DATE_TIME).item(i);
 			Element dueDateTimeElement = (Element) dueDateTime;
-			Node dHasTime = dueDateTimeElement.getElementsByTagName(HAS_TIME).item(ZERO);
-			Node dDateTime = dueDateTimeElement.getElementsByTagName(DATE_TIME).item(ZERO);;
+			Node dHasTime = dueDateTimeElement.getElementsByTagName(Storage.HAS_TIME).item(Storage.ZERO);
+			Node dDateTime = dueDateTimeElement.getElementsByTagName(Storage.DATE_TIME).item(Storage.ZERO);;
 			
-			if(dDateTime.getTextContent() != EMPTY){
-				if(dHasTime.getTextContent().equals(TRUE)){
+			if(dDateTime.getTextContent() != Storage.EMPTY){
+				if(dHasTime.getTextContent().equals(Storage.TRUE)){
 					Date dDate = dateWithTime.parse(dDateTime.getTextContent());
 					newItem.setDueDateTime(new DateTime(dDate, true));
 				}else{
@@ -173,12 +144,12 @@ public class XMLReader {
 			}
 			//------------------Retrieving of DueDateTime-----------------------
 			
-			Node location = doc.getElementsByTagName(LOCATION).item(i);
+			Node location = doc.getElementsByTagName(Storage.LOCATION).item(i);
 			newItem.setLocation(location.getTextContent());
 
-			Node tags = doc.getElementsByTagName(TAGS).item(i);
+			Node tags = doc.getElementsByTagName(Storage.TAGS).item(i);
 			Element tagsElement = (Element) tags;
-			NodeList allTags = tagsElement.getElementsByTagName(TAG);
+			NodeList allTags = tagsElement.getElementsByTagName(Storage.TAG);
 			
 			ArrayList<String> newTags = new ArrayList<String>();
 			for(int j = 0; j < allTags.getLength(); j++){
@@ -186,8 +157,8 @@ public class XMLReader {
 			}
 			newItem.setTags(newTags);
 			
-			Node isActive = doc.getElementsByTagName(IS_COMPLETED).item(i);
-			if(isActive.getTextContent().equals(TRUE)){
+			Node isActive = doc.getElementsByTagName(Storage.IS_COMPLETED).item(i);
+			if(isActive.getTextContent().equals(Storage.TRUE)){
 				newItem.setStatusDone();
 			}else{
 				newItem.setStatusUndone();
