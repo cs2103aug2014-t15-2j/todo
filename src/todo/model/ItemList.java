@@ -19,6 +19,20 @@ public class ItemList {
 		
 		// Return a specific item from the itemList
 		public Item getItem(int index){
+				if(index < 0){
+					IndexOutOfBoundsException exObj1 = 
+							new IndexOutOfBoundsException("Invalid index for getItem():"
+									+ "negative index.");
+					throw exObj1;
+				}
+				
+				if(index >= itemList.size()){
+					IndexOutOfBoundsException exObj2 = 
+							new IndexOutOfBoundsException("Invalid index for getItem(): "
+									+ "exceeds list range.");
+					throw exObj2;
+				}
+				
 			return itemList.get(index);
 		}
 		

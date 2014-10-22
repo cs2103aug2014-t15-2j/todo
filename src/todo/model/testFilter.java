@@ -29,10 +29,9 @@ public class testFilter {
 		myList.add(item4);
 		myList.add(item5);
 		
+		myList.getItem(-5);
 		//myList.filterByDateTime(new Date(1409544000));
-		System.out.println(myList.filterByDateTime(new Date((long)1409544000000.0)));
-		
-		
+		//System.out.println(myList.filterByDateTime(new Date((long)1409544000000.0)));
 		//System.out.println(myList.filterByTags("work % fun"));
 		
 	}
