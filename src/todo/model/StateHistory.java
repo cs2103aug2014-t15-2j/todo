@@ -15,10 +15,9 @@ public class StateHistory {
 
 	private Stack<ItemList> history;
 	private Stack<ItemList> future;
-
-	private static DateFormat dateWithTime = new SimpleDateFormat(
+	private DateFormat dateWithTime = new SimpleDateFormat(
 			DATE_WITH_TIME);
-	private static DateFormat dateWithoutTime = new SimpleDateFormat(
+	private DateFormat dateWithoutTime = new SimpleDateFormat(
 			DATE_WITHOUT_TIME);
 
 	/**
@@ -32,7 +31,6 @@ public class StateHistory {
 	public boolean saveStateToHistory(ItemList il) {
 		try {
 			ItemList newItemList = new ItemList();
-
 			copyItemList(il, newItemList);
 
 			history.push(newItemList);
@@ -48,7 +46,6 @@ public class StateHistory {
 	public boolean saveStateToFuture(ItemList il) {
 		try {
 			ItemList newItemList = new ItemList();
-
 			copyItemList(il, newItemList);
 
 			future.push(newItemList);
@@ -59,6 +56,13 @@ public class StateHistory {
 		return true;
 	}
 
+	/**
+	 * This method copies the il into a newItemList that is going 
+	 * to be push into either history or future stack
+	 * @param il
+	 * @param newItemList
+	 * @throws ParseException
+	 */
 	private void copyItemList(ItemList il, ItemList newItemList)
 			throws ParseException {
 		for (int i = 0; i < il.size(); i++) {
