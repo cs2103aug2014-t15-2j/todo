@@ -231,13 +231,7 @@ public class ItemList {
 		}
 		
 		public String filterByDateTime(Date dateTimeFiltered){
-			Date sampleDate = new Date(1413950400);
-			if (sampleDate.equals(dateTimeFiltered)){
-				System.out.println("they are equal.");
-			}else{
-				System.out.println("No, not equal!");
-			}
-			
+
 			String filteredList = "";
 			for(int i = 0; i < itemList.size(); i++ ){
 				DateTime dateTime = itemList.get(i).getStartDateTime();
