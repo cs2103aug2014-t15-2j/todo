@@ -31,7 +31,7 @@ public class ItemTest {
 		
 		assertEquals(abc.getDescription(),def.getDescription());
 		assertEquals(abc.getStartDateTime(),def.getStartDateTime());
-		assertEquals(Item.getItemQty(),2);
+		
 		
 	}
 	
