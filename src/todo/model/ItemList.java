@@ -111,7 +111,7 @@ public class ItemList {
 				int toRemoveIndex = searchByIndex(completedList,itemList.get(index -1).getItemId());
 				assert toRemoveIndex >-1;
 				completedList.remove(toRemoveIndex);
-				System.println("item set to undone");
+				System.out.println("item set to undone");
 				return result;
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
