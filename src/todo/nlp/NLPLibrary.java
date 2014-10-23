@@ -20,9 +20,10 @@ public class NLPLibrary {
 	}
 	
 	private static void initLibrary(){
-		library.put("Just did everything", "done all");
-		library.put("delete the whole shit", "delete all");
+		library.put("just did everything", "done all");
+		library.put("kill the whole shit", "delete all");
 		library.put("wtf did i do", "undo");
+		library.put("go back", "undo");
 	}
 	
 	public String parse(String str){
