@@ -21,9 +21,12 @@ public class Item {
 		setItemID(getLastItemId());
 		itemQty++;
 		lastItemId++;
-	}
+	} 
 	
-	//Constructor with only description 
+	/**
+	 * This method is a constructor that creates an item object with only description
+	 * @param description
+	 */
 	public Item(String description) {
 		setDescription(description);
 		setItemID(getLastItemId());
@@ -32,6 +35,12 @@ public class Item {
 	}
 	
 	//Constructor with description and start time.
+	
+	/**
+	 * This method is a constructor that creates an item object with only description and startDateTime
+	 * @param description
+	 * @param startDateTime
+	 */
 	public Item(String description, DateTime startDateTime){
 		setDescription(description);
 		setStartDateTime(startDateTime);
@@ -40,7 +49,12 @@ public class Item {
 		lastItemId++;
 	}
 	
-	//Constructor with priority and tags
+	/**
+	 *This method is a constructor that creates an item object with only description, priority and tags
+	 * @param description
+	 * @param priority
+	 * @param tags
+	 */
 	public Item(String description, int priority, ArrayList<String> tags){
 		setDescription(description);
 		setPriority(priority);
@@ -49,7 +63,15 @@ public class Item {
 		itemQty++;
 		lastItemId++;
 	}
-	//Constructor with start,due,priority,tags
+	
+	/**
+	 * This method is a constructor that creates an item object with start,due,priority,tags
+	 * @param description
+	 * @param startDateTime
+	 * @param dueDateTime
+	 * @param priority
+	 * @param tags
+	 */
 	public Item(String description, DateTime startDateTime, DateTime dueDateTime, int priority, ArrayList<String> tags){
 		setDescription(description);
 		setStartDateTime(startDateTime);
@@ -61,7 +83,13 @@ public class Item {
 		lastItemId++;
 	}
 	
-	//Constructor with tags, priority, location
+	/**
+	 * This method is a constructor that creates an item object with description location,priority,tags
+	 * @param description
+	 * @param location
+	 * @param priority
+	 * @param tags
+	 */
 	public Item(String description, String location, int priority, ArrayList<String> tags){
 		setDescription(description);
 		setLocation(location);
@@ -72,7 +100,15 @@ public class Item {
 		lastItemId++;
 	}
 	
-	//Constructor with all attributes
+	/**
+	 * This method is a constructor that creates an item object with all attributes
+	 * @param description
+	 * @param startDateTime
+	 * @param dueDateTime
+	 * @param location
+	 * @param priority
+	 * @param tags
+	 */
 	public Item(String description, DateTime startDateTime, DateTime dueDateTime, String location, int priority, ArrayList<String> tags){
 		setDescription(description);
 		setStartDateTime(startDateTime);
@@ -86,6 +122,7 @@ public class Item {
 	}
 	
 	//Accessors
+	
 	public static int getItemQty() {
 		return itemQty;
 	}
