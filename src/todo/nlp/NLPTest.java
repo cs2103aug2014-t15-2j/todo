@@ -31,8 +31,14 @@ public class NLPTest {
 
 	@Test
 	public void addParserTest() {
-		// corrent date format -> remove quoted content -> get first word before substring
+		// correct date format -> remove quoted content -> get first word before substring
 		// -> get bracket location -> remove full quotation
+		// step1 remove quoted content & correct date format & get date groups
+		// step2 find possible date time
+		// step3 find long location
+		// step4 find out one word location and all the tags
+		// step5 delete all the escape characters
+		// step6 if the whole sentence is quoted, then delete the quotation marks
 		NLP nlp = NLP.getInstance();
 		String input = "Finish homework by next monday";
 		Item add = nlp.addParser(input);
@@ -92,7 +98,11 @@ public class NLPTest {
 		assertEquals(StringUtil.correctDateFormat("25/7/14"), "7/25/14");
 	}
 	
-
+	/**
+	 *  For index Parser Test
+	 * @param integers
+	 * @return
+	 */
 	public static int[] convertIntegers(List<Integer> integers)
 	{
 	    int[] ret = new int[integers.size()];

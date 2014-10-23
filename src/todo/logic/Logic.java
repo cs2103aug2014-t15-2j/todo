@@ -196,6 +196,7 @@ public class Logic {
 	
 	private String read(String userInput){
 		String result = "";
+		//Filter by tags
 	    if((userInput.contains("#"))){
 	    	int hashTagPosition = userInput.indexOf("#");
 	    	String tagString = "";
@@ -206,6 +207,7 @@ public class Logic {
 	    		result = mItemList.filterByTags(tagString);
 	    		return result;
 	    	}
+	    //Filter by completed/uncompleted	
 	    }else if((userInput.contains("completed") ||userInput.contains("done")) && !(userInput.contains("undone") ||userInput.contains("uncompleted")) ){
 	    	result = mItemList.showCompletedListString();
 	    	return result;

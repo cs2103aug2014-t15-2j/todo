@@ -116,7 +116,7 @@ public class StringUtil {
 			int idx = str.indexOf("@(");
 			
 			// if there is an escape character
-			if (str.charAt(idx-1) == '\\'){
+			if (idx-1 >=0 && str.charAt(idx-1) == '\\'){
 				return getBracketLocation(str.substring(idx+1, str.length()));
 			}
 			idx++;

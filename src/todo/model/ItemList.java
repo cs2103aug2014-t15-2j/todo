@@ -85,10 +85,6 @@ public class ItemList {
 				String doneItemDescription = itemList.get(index - 1).getDescription();
 				String result = "\"" + doneItemDescription + "\"" + " is done.";
 				itemList.get(index - 1).setStatusDone();;
-				completedList.add(itemList.get(index -1));
-				int toRemoveIndex = searchByIndex(uncompletedList,itemList.get(index -1).getItemId());
-				assert toRemoveIndex >-1;
-				uncompletedList.remove(toRemoveIndex);
 				return result;
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
@@ -108,9 +104,6 @@ public class ItemList {
 				String undoneItemDescription = itemList.get(index - 1).getDescription();
 				String result = "\"" + undoneItemDescription + "\"" + " is undone.";
 				itemList.get(index - 1).setStatusUndone();;
-				int toRemoveIndex = searchByIndex(completedList,itemList.get(index -1).getItemId());
-				assert toRemoveIndex >-1;
-				completedList.remove(toRemoveIndex);
 				System.out.println("item set to undone");
 				return result;
 			}catch(IndexOutOfBoundsException e){
@@ -275,15 +268,18 @@ public class ItemList {
 		}
 		
 		public ArrayList<Item> showCompletedList() {
+			checkStatus();
 			return completedList;
 		}
 		
 		public ArrayList<Item> showUncompletedList() {
+			checkStatus();
 			return uncompletedList;
 		}
 		
 		public String showCompletedListString(){
 			String result = "";
+			checkStatus();
 			if (completedList.size() == 0){
 				return "Empty";
 			}else{
@@ -296,6 +292,7 @@ public class ItemList {
 		
 		public String showUncompletedListString(){
 			String result = "";
+			checkStatus();
 			if (uncompletedList.size() == 0){
 				return "Empty";
 			}else{
@@ -306,22 +303,10 @@ public class ItemList {
 			return result;
 		}
 		
-		//Returns the index of the item with the input itemID
-		public int searchByIndex(ArrayList<Item> searchList , int itemID) {
-			int founditemID = -1;
-			for(int i =0 ; i < searchList.size() ; i++) {
-				if(searchList.get(i).getItemId()==(itemID)) {
-					founditemID =searchList.get(i).getItemId(); 
-					break;
-				}
-			}
-			
-			return founditemID;
-		}
-		
-		
-		//To run at the initial launch of JustDidIt
-		public void checkStatus() {
+		//Check for item status and add it to the completed/uncompleted list
+		private void checkStatus() {
+			completedList.clear();
+			uncompletedList.clear();
 			for (int i =0; i < itemList.size(); i++ ) {
 				if(itemList.get(i).getStatus() == true) {
 					completedList.add(itemList.get(i));
