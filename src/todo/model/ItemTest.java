@@ -31,19 +31,9 @@ public class ItemTest {
 		
 		assertEquals(abc.getDescription(),def.getDescription());
 		assertEquals(abc.getStartDateTime(),def.getStartDateTime());
-		assertEquals(Item.getItemQty(),2);
+		
 		
 	}
-	
-	
-	public void testStaticAttributes() {
-		
-		Item ghi = new Item(item2,testDateTime2);
-		
-		assertEquals(3,Item.getItemQty());
-		assertEquals(3,Item.getLastItemId());
-	}
-	
 	
 	public void testTagsInput() {
 		ArrayList<String> tagList = new ArrayList<String>();

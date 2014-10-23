@@ -6,13 +6,23 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+
 public class ItemList {
-	    // Data attributes
+		//Error Messages
+		private static final String ERROR_INDEX_NEGATIVE = "Invalid index used - Negative Index";
+		private static final String ERROR_INDEX_EXCEEDED = "Invalid index used - Index out of range";
+		private static final String ERROR_LIST_EMPTY = "Fail to delete, the list is empty. ";
+		//System Messages
+		private static final String MESSAGE_ADDED ="%1$s"+" "+"is added.";
+		private static final String MESSAGE_DELETED = "\"" + "%1$s" + "\"" + " is deleted.";
+		private static final String MESSAGE_COMPLETED = "\"" + "%1$s" + "\"" + " is marked as completed.";
+		private static final String MESSAGE_UNCOMPLETED = "\"" + "%1$s" + "\"" + " is marked as uncompleted.";
+		private static final String MESSAGE_CLEARED ="All tasks are cleared.";
+	
+		//Attributes
 		private ArrayList <Item> itemList = new ArrayList <Item> ();
 		private ArrayList <Item> completedList = new ArrayList <Item> ();
 		private ArrayList <Item> uncompletedList = new ArrayList <Item> ();
-		
-		// Constructor
 		
 		// Return the size of itemList
 		public int size(){
@@ -23,15 +33,13 @@ public class ItemList {
 		public Item getItem(int index){
 				if(index < 0){
 					IndexOutOfBoundsException exObj1 = 
-							new IndexOutOfBoundsException("Invalid index for getItem():"
-									+ "negative index.");
+							new IndexOutOfBoundsException(ERROR_INDEX_NEGATIVE);
 					throw exObj1;
 				}
 				
 				if(index >= itemList.size()){
 					IndexOutOfBoundsException exObj2 = 
-							new IndexOutOfBoundsException("Invalid index for getItem(): "
-									+ "exceeds list range.");
+							new IndexOutOfBoundsException(ERROR_INDEX_EXCEEDED);
 					throw exObj2;
 				}
 				
@@ -48,7 +56,8 @@ public class ItemList {
 		public String add(Item item){
 			assert item.getDescription() != null;
 			String itemDescription = item.getDescription();
-			String result  = "\"" + itemDescription + "\"" + "is added.";
+			String result  = String.format(MESSAGE_ADDED, itemDescription);
+					
 			itemList.add(item);
 			uncompletedList.add(item);
 			
@@ -59,7 +68,7 @@ public class ItemList {
 		public String delete(int index){
 			try{
 				String removedItemDescription = itemList.get(index - 1).getDescription();
-				String result = "\"" + removedItemDescription + "\"" + " is deleted.";
+				String result = String.format(MESSAGE_DELETED, removedItemDescription);
 				itemList.remove(index - 1);
 				Item.setItemQtyAfterDeletion();
 				
@@ -67,11 +76,11 @@ public class ItemList {
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
 				if(itemList.size() == 0){
-					returnErrorMessage =  "Fail to delete, the list is empty. ";
+					returnErrorMessage =  ERROR_LIST_EMPTY;
 				}else if(index > itemList.size()){
-					returnErrorMessage =  "Fail to delete, invalid index used. ";
+					returnErrorMessage = ERROR_INDEX_EXCEEDED;
 				}else if(index <= 0){
-					returnErrorMessage = "Fail to delete, invalid index used. ";
+					returnErrorMessage = ERROR_INDEX_NEGATIVE;
 				}
 				
 				return returnErrorMessage;
@@ -83,15 +92,15 @@ public class ItemList {
 		public String done(int index){
 			try{
 				String doneItemDescription = itemList.get(index - 1).getDescription();
-				String result = "\"" + doneItemDescription + "\"" + " is done.";
+				String result = String.format(MESSAGE_COMPLETED, doneItemDescription);
 				itemList.get(index - 1).setStatusDone();;
 				return result;
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
 				if(itemList.size() == 0){
-					returnErrorMessage =  "Fail to set done, the list is empty.";
+					returnErrorMessage =  ERROR_LIST_EMPTY;
 				}else if(index > itemList.size()){
-					returnErrorMessage =  "Fail to set done, invalid index used.";
+					returnErrorMessage =  ERROR_INDEX_EXCEEDED;
 				}
 				
 				return returnErrorMessage;
@@ -102,16 +111,15 @@ public class ItemList {
 		public String undone(int index){
 			try{
 				String undoneItemDescription = itemList.get(index - 1).getDescription();
-				String result = "\"" + undoneItemDescription + "\"" + " is undone.";
 				itemList.get(index - 1).setStatusUndone();;
-				System.out.println("item set to undone");
+				String result = String.format(MESSAGE_UNCOMPLETED, undoneItemDescription);
 				return result;
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
 				if(itemList.size() == 0){
-					returnErrorMessage =  "Fail to set undone, the list is empty.";
+					returnErrorMessage =  ERROR_LIST_EMPTY;
 				}else if(index > itemList.size()){
-					returnErrorMessage =  "Fail to set undone, invalid index used.";
+					returnErrorMessage =  ERROR_INDEX_EXCEEDED;
 				}
 				
 				return returnErrorMessage;
@@ -128,7 +136,7 @@ public class ItemList {
 				i++;
 			}
 			if(itemList.size() == 0){
-				result = "The list is empty.";
+				result = ERROR_LIST_EMPTY;;
 			}
 			
 			return result;
@@ -138,7 +146,7 @@ public class ItemList {
 		public String toString(){
 			String result = "";
 			if (this.size() == 0){
-				return "Empty";
+				return ERROR_LIST_EMPTY;
 			}else{
 				for (int i = 0; i < this.size(); i++){
 					result += ((i+1) + ". " + this.getItem(i).toString()+"\n");
@@ -152,7 +160,7 @@ public class ItemList {
 			itemList.clear();
 			completedList.clear();
 			uncompletedList.clear();
-			String result = "All tasks are cleared.";
+			String result = MESSAGE_CLEARED;
 			
 			return result;
 		}
@@ -281,7 +289,7 @@ public class ItemList {
 			String result = "";
 			checkStatus();
 			if (completedList.size() == 0){
-				return "Empty";
+				return ERROR_LIST_EMPTY;
 			}else{
 				for (int i = 0; i < completedList.size(); i++){
 					result += ((i+1) + ". " + completedList.get(i).toString()+"\n");
@@ -294,7 +302,7 @@ public class ItemList {
 			String result = "";
 			checkStatus();
 			if (uncompletedList.size() == 0){
-				return "Empty";
+				return ERROR_LIST_EMPTY;
 			}else{
 				for (int i = 0; i < uncompletedList.size(); i++){
 					result += ((i+1) + ". " + uncompletedList.get(i).toString()+"\n");
@@ -308,6 +316,7 @@ public class ItemList {
 			completedList.clear();
 			uncompletedList.clear();
 			for (int i =0; i < itemList.size(); i++ ) {
+				
 				if(itemList.get(i).getStatus() == true) {
 					completedList.add(itemList.get(i));
 				}

@@ -51,5 +51,23 @@ public class ItemListTest {
 		myList.getItem(-1);
 		myList.getItem(-2);
 	}
+	
+	@Test
+	public void testAdd(){
+		Item itemA = new Item(item1);
+		Item itemB = new Item(item2);
+		
+		ItemList myList = new ItemList();
+		
+		// This is a boundary case for the "valid index" partition
+		assertEquals(myList.size(), 0);
+		
+		myList.add(itemA);
+		assertEquals(myList.size(), 1);
+		
+		myList.add(itemB);
+		assertEquals(myList.size(), 2);
+		
+	}
 
 }
