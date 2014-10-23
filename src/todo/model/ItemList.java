@@ -9,8 +9,6 @@ import java.util.Date;
 public class ItemList {
 	    // Data attributes
 		private ArrayList <Item> itemList = new ArrayList <Item> ();
-		private ArrayList <Item> completedList = new ArrayList <Item> ();
-		private ArrayList <Item> uncompletedList = new ArrayList <Item> ();
 		
 		// Constructor
 		
@@ -50,7 +48,6 @@ public class ItemList {
 			String itemDescription = item.getDescription();
 			String result  = "\"" + itemDescription + "\"" + "is added.";
 			itemList.add(item);
-			uncompletedList.add(item);
 			
 			return result;
 		}
@@ -85,7 +82,6 @@ public class ItemList {
 				String doneItemDescription = itemList.get(index - 1).getDescription();
 				String result = "\"" + doneItemDescription + "\"" + " is done.";
 				itemList.get(index - 1).setStatusDone();;
-				completedList.add(itemList.get(index -1));
 				return result;
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
@@ -265,52 +261,6 @@ public class ItemList {
 			return filteredList;
 		}
 		
-		public ArrayList<Item> showCompletedList() {
-			return completedList;
-		}
-		
-		public ArrayList<Item> showUncompletedList() {
-			return uncompletedList;
-		}
-		
-		public String showCompletedListString(){
-			String result = "";
-			if (completedList.size() == 0){
-				return "Empty";
-			}else{
-				for (int i = 0; i < completedList.size(); i++){
-					result += ((i+1) + ". " + completedList.get(i).toString()+"\n");
-				}
-			}
-			return result;
-		}
-		
-		public String showUncompletedListString(){
-			String result = "";
-			if (uncompletedList.size() == 0){
-				return "Empty";
-			}else{
-				for (int i = 0; i < uncompletedList.size(); i++){
-					result += ((i+1) + ". " + uncompletedList.get(i).toString()+"\n");
-				}
-			}
-			return result;
-		}
-		
-		
-		//To run at the initial launch of JustDidIt
-		public void checkStatus() {
-			for (int i =0; i < itemList.size(); i++ ) {
-				if(itemList.get(i).getStatus() == true) {
-					completedList.add(itemList.get(i));
-				}
-				
-				if(itemList.get(i).getStatus() == false) {
-					uncompletedList.add(itemList.get(i));
-				}
-				
-			}
-		}
 			
 }		
 

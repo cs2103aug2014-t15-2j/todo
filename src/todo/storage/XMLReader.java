@@ -167,7 +167,6 @@ public class XMLReader {
 			newItemList.add(newItem);
 		}
 		
-		newItemList.checkStatus();
 		return newItemList;
 	}
 

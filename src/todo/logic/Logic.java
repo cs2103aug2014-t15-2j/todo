@@ -206,12 +206,6 @@ public class Logic {
 	    		result = mItemList.filterByTags(tagString);
 	    		return result;
 	    	}
-	    }else if((userInput.contains("completed"))){
-	    	result = mItemList.showCompletedListString();
-	    	return result;
-	    }else if((userInput.contains("undone"))){
-	    	result = mItemList.showUncompletedListString();
-	    	return result;
 	    }else {
 	    		result = mItemList.displayList();
 			    return result;
@@ -222,6 +216,8 @@ public class Logic {
 		saveState();
 		String result = "";
 		result = mItemList.clear();
+		
+		//TODO add comfirmation before clearing
 		
 		saveFile();		
 		return result;
