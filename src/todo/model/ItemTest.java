@@ -165,7 +165,7 @@ public class ItemTest {
 		myList.add(abc3);
 		myList.add(abc4);
 		myList.add(abc5);
-		myList.checkStatus();
+	
 		System.out.println("Completed: ");
 		System.out.println(myList.showCompletedListString());
 		System.out.println("UnCompleted: ");
