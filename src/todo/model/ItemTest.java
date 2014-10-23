@@ -35,16 +35,6 @@ public class ItemTest {
 		
 	}
 	
-	
-	public void testStaticAttributes() {
-		
-		Item ghi = new Item(item2,testDateTime2);
-		
-		assertEquals(3,Item.getItemQty());
-		assertEquals(3,Item.getLastItemId());
-	}
-	
-	
 	public void testTagsInput() {
 		ArrayList<String> tagList = new ArrayList<String>();
 		tagList.add("homework");
