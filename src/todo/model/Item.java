@@ -232,7 +232,7 @@ public class Item {
 			result = result.concat(getDueDateTime().toString());
 		}
 		
-		if (location !=""){
+		if (!location.equals("")){
 			result = result.concat(" |Location: ");
 			result = result.concat(getLocation());
 		}

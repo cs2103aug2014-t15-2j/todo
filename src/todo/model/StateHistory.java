@@ -36,7 +36,7 @@ public class StateHistory {
 			history.push(newItemList);
 		} catch (Exception e) {
 			e.printStackTrace();
-			// Something is wrong, saveHistory has failed
+			// Something is wrong, save history has failed
 			return false;
 		}
 
@@ -50,14 +50,14 @@ public class StateHistory {
 
 			future.push(newItemList);
 		} catch (Exception e) {
-			// Something is wrong, saveHistory has failed
+			// Something is wrong, save future has failed
 			return false;
 		}
 		return true;
 	}
 
 	/**
-	 * This method copies the il into a newItemList that is going 
+	 * This method copies the entire il into a newItemList that is going 
 	 * to be push into either history or future stack
 	 * @param il
 	 * @param newItemList
@@ -74,9 +74,16 @@ public class StateHistory {
 			// description
 			String description = new String(c.getDescription());
 
+			if(c.getLocation().equals("")){
+				System.out.println("c.getLocation() is empty" );
+			}
 			// location
 			String location = new String(c.getLocation());
-
+				
+			if(location.equals("")){
+				System.out.println("location is emtpy");
+			}
+			
 			// tagList
 			ArrayList<String> tags = new ArrayList<String>();
 			for (int j = 0; j < c.getTags().size(); j++) {
