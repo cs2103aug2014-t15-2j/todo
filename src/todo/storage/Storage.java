@@ -31,7 +31,7 @@ public class Storage {
 	public static final String LAST_ITEM_ID = "lastItemId";
 	public static final String ITEM = "Item";
 	public static final String ITEM_ID = "itemId";
-	public static final String PRIORITY = "priority";
+	public static final String IMPORTANCE = "importance";
 	public static final String DESCRIPTION = "description";
 	public static final String START_DATE_TIME = "startDateTime";
 	public static final String HAS_TIME = "hasTime";

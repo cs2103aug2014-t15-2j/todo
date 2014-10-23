@@ -68,8 +68,8 @@ public class StateHistory {
 		for (int i = 0; i < il.size(); i++) {
 			Item c = il.getItem(i);// for convenience
 
-			// priority
-			int priority = 1;// hard-coded 1 currently
+			// importance
+			boolean importance = c.getImportance();
 
 			// description
 			String description = new String(c.getDescription());
@@ -121,7 +121,7 @@ public class StateHistory {
 			}
 
 			Item newItem = new Item(description, startDateTime,
-					dueDateTime, location, priority, tags);
+					dueDateTime, location, importance, tags);
 
 			// status
 			if (c.getStatus()) {

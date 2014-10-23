@@ -2,11 +2,25 @@ package todo.model;
 
 import java.util.ArrayList;
 
+/**
+ * @author SAMSUNG
+ *
+ */
+/**
+ * @author SAMSUNG
+ *
+ */
+/**
+ * @author SAMSUNG
+ *
+ */
 public class Item {
+	
+	private static final boolean unImportant = false;
 	private static int itemQty = 0;
 	private int itemId = 0;
 	private static int lastItemId = 0;
-	private int priority = 1;
+	private boolean importance = unImportant;
 	private String description;
 	private DateTime startDateTime = null;
 	private DateTime dueDateTime = null;
@@ -50,14 +64,14 @@ public class Item {
 	}
 	
 	/**
-	 *This method is a constructor that creates an item object with only description, priority and tags
+	 * This method is a constructor that creates an item object with the following attributes
 	 * @param description
-	 * @param priority
+	 * @param importance
 	 * @param tags
 	 */
-	public Item(String description, int priority, ArrayList<String> tags){
+	public Item(String description, boolean importantance, ArrayList<String> tags){
 		setDescription(description);
-		setPriority(priority);
+		setImportance(importantance);
 		setTags(tags);
 		setItemID(getLastItemId());
 		itemQty++;
@@ -65,18 +79,18 @@ public class Item {
 	}
 	
 	/**
-	 * This method is a constructor that creates an item object with start,due,priority,tags
+	 * This method is a constructor that creates an item object with the following attributes
 	 * @param description
 	 * @param startDateTime
 	 * @param dueDateTime
-	 * @param priority
+	 * @param importance
 	 * @param tags
 	 */
-	public Item(String description, DateTime startDateTime, DateTime dueDateTime, int priority, ArrayList<String> tags){
+	public Item(String description, DateTime startDateTime, DateTime dueDateTime, boolean importantance, ArrayList<String> tags){
 		setDescription(description);
 		setStartDateTime(startDateTime);
 		setDueDateTime(dueDateTime);
-		setPriority(priority);
+		setImportance(importance);
 		setTags(tags);
 		setItemID(getLastItemId());
 		itemQty++;
@@ -84,21 +98,40 @@ public class Item {
 	}
 	
 	/**
-	 * This method is a constructor that creates an item object with description location,priority,tags
+	 * This method is a constructor that creates an item object with the following attributes
 	 * @param description
 	 * @param location
-	 * @param priority
+	 * @param importance
 	 * @param tags
 	 */
-	public Item(String description, String location, int priority, ArrayList<String> tags){
+	public Item(String description, String location, boolean importance, ArrayList<String> tags){
 		setDescription(description);
 		setLocation(location);
-		setPriority(priority);
+		setImportance(importance);
 		setTags(tags);
 		setItemID(getLastItemId());
 		itemQty++;
 		lastItemId++;
 	}
+	/**
+	 * This method is a constructor that creates an item object with the following attributes
+	 * @param description
+	 * @param startDateTime
+	 * @param dueDateTime
+	 * @param location
+	 * @param tags
+	 */
+	public Item(String description, DateTime startDateTime, DateTime dueDateTime, String location, ArrayList<String> tags){
+		setDescription(description);
+		setStartDateTime(startDateTime);
+		setDueDateTime(dueDateTime);
+		setLocation(location);
+		setTags(tags);
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+	}
+	
 	
 	/**
 	 * This method is a constructor that creates an item object with all attributes
@@ -106,15 +139,15 @@ public class Item {
 	 * @param startDateTime
 	 * @param dueDateTime
 	 * @param location
-	 * @param priority
+	 * @param importance
 	 * @param tags
 	 */
-	public Item(String description, DateTime startDateTime, DateTime dueDateTime, String location, int priority, ArrayList<String> tags){
+	public Item(String description, DateTime startDateTime, DateTime dueDateTime, String location, boolean importance, ArrayList<String> tags){
 		setDescription(description);
 		setStartDateTime(startDateTime);
 		setDueDateTime(dueDateTime);
 		setLocation(location);
-		setPriority(priority);
+		setImportance(importance);
 		setTags(tags);
 		setItemID(getLastItemId());
 		itemQty++;
@@ -151,8 +184,8 @@ public class Item {
 		return this.location;
 	}
 	
-	public int getPriority() {
-		return this.priority;
+	public boolean getImportance() {
+		return this.importance;
 	}
 	
 	public ArrayList<String> getTags() {
@@ -199,9 +232,8 @@ public class Item {
 		this.location = location;
 	}
 	
-	public void setPriority(int newPriority) {
-		this.priority = newPriority;
-		assert priority >= 0;
+	public void setImportance(boolean newImportance) {
+		this.importance = newImportance;
 	}
 	
 	public void setTags(ArrayList<String> tagList){
@@ -244,15 +276,15 @@ public class Item {
 			}
 		}
 		
-		result = result.concat(" |Priority: ");
-		result = result.concat(Integer.toString(getPriority()));
-		
 		result = result.concat(" |Status: ");
 		if(getStatus()){
 			result = result.concat("Completed");
 		}
 		if(!getStatus()){
 			result = result.concat("Uncompleted");
+		}
+		if(getImportance()){
+			result = result.concat("Important");
 		}
 		return result;
 		

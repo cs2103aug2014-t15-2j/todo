@@ -68,9 +68,10 @@ public class XMLWriter {
 			itemId.appendChild(doc.createTextNode(String.valueOf(currentItem.getItemId())));
 			item.appendChild(itemId);
 			
-			Element priority = doc.createElement(Storage.PRIORITY);
-			priority.appendChild(doc.createTextNode(String.valueOf(currentItem.getPriority())));
-			item.appendChild(priority);
+			Element importance = doc.createElement(Storage.IMPORTANCE);
+			importance.appendChild(doc.createTextNode(String.valueOf(currentItem.getImportance())));
+			
+			item.appendChild(importance);
 			
 			Element description = doc.createElement(Storage.DESCRIPTION);
 			if(currentItem.getDescription() == null){

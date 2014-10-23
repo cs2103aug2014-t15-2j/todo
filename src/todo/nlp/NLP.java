@@ -11,11 +11,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
-import todo.logic.Logic;
 import todo.model.DateTime;
 import todo.model.Item;
 import todo.util.LogUtil;
 import todo.util.StringUtil;
+import todo.logic.*;
 
 import com.joestelmach.natty.DateGroup;
 
@@ -112,7 +112,7 @@ public class NLP {
 		}
 		
 		assert msg != "";
-		return new Item(msg, dateTimeList.get(0), dateTimeList.get(1), location, 1, tagList);
+		return new Item(msg, dateTimeList.get(0), dateTimeList.get(1), location, tagList);
 	}
 	
 	/**

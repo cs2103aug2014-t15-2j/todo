@@ -100,13 +100,18 @@ public class XMLReader {
 		for(int i = 0; i < items.getLength(); i++){
 			Item newItem = new Item();
 			
+			//------------------Setting Item Object ID -------------------------
 			Node itemId = doc.getElementsByTagName(Storage.ITEM_ID).item(i);
 			// -1 here because setItemId always + 1 before itemId is set
 			newItem.setItemID(Integer.parseInt(itemId.getTextContent()) - 1);
 			
-			Node priority = doc.getElementsByTagName(Storage.PRIORITY).item(i);
-			newItem.setPriority(Integer.parseInt(priority.getTextContent()));
+			//------------------Setting Item Object Importance------------------
+			Node importance = doc.getElementsByTagName(Storage.IMPORTANCE).item(i);
+			if(importance.getTextContent().equals(Storage.TRUE)){
+				newItem.setImportance(true);
+			}
 			
+			//------------------Setting Item Object Description-----------------
 			Node description = doc.getElementsByTagName(Storage.DESCRIPTION).item(i);
 			newItem.setDescription(description.getTextContent());
 
