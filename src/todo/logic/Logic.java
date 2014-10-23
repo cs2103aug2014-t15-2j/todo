@@ -209,7 +209,7 @@ public class Logic {
 	    }else if((userInput.contains("completed") ||userInput.contains("done")) && !(userInput.contains("undone") ||userInput.contains("uncompleted")) ){
 	    	result = mItemList.showCompletedListString();
 	    	return result;
-	    }else if((userInput.contains("undone"))){
+	    }else if((userInput.contains("undone")||userInput.contains("uncompleted"))){
 	    	result = mItemList.showUncompletedListString();
 	    	return result;
 	    }else {

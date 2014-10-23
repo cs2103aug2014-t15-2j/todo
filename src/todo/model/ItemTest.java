@@ -136,7 +136,42 @@ public class ItemTest {
 		myList.sortByTimeDecreasing();
 		myList.displayList();
 		System.out.println();
-		System.out.println("Test itemlist tag search");
+		
 	}
 	
+	@Test
+	public void CompletedListDisplayTest() {
+		System.out.println("Currently testing: testItemListSort: ");
+		ItemList myList = new ItemList();
+		
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		
+		Item abc1 = new Item(item1);
+		abc1.setStatusDone();
+		
+		Item abc2 = new Item(item1,testDateTime1);
+	
+		Item abc3 = new Item(item1,priority1,tagList);
+		
+		Item abc4 = new Item(item1,location1, priority1, tagList);
+		abc4.setStatusDone();
+		
+		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
+
+		myList.add(abc1);
+		myList.add(abc2);
+		myList.add(abc3);
+		myList.add(abc4);
+		myList.add(abc5);
+		myList.checkStatus();
+		System.out.println("Completed: ");
+		System.out.println(myList.showCompletedListString());
+		System.out.println("UnCompleted: ");
+		System.out.println(myList.showUncompletedListString());
+		
+		
+		
+	}
 }

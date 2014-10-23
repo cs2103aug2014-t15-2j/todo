@@ -86,6 +86,9 @@ public class ItemList {
 				String result = "\"" + doneItemDescription + "\"" + " is done.";
 				itemList.get(index - 1).setStatusDone();;
 				completedList.add(itemList.get(index -1));
+				int toRemoveIndex = searchByIndex(uncompletedList,itemList.get(index -1).getItemId());
+				assert toRemoveIndex >-1;
+				uncompletedList.remove(toRemoveIndex);
 				return result;
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
@@ -105,6 +108,10 @@ public class ItemList {
 				String undoneItemDescription = itemList.get(index - 1).getDescription();
 				String result = "\"" + undoneItemDescription + "\"" + " is undone.";
 				itemList.get(index - 1).setStatusUndone();;
+				int toRemoveIndex = searchByIndex(completedList,itemList.get(index -1).getItemId());
+				assert toRemoveIndex >-1;
+				completedList.remove(toRemoveIndex);
+				System.println("item set to undone");
 				return result;
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
@@ -150,6 +157,8 @@ public class ItemList {
 		// Clear the whole itemList
 		public String clear(){
 			itemList.clear();
+			completedList.clear();
+			uncompletedList.clear();
 			String result = "All tasks are cleared.";
 			
 			return result;
@@ -295,6 +304,19 @@ public class ItemList {
 				}
 			}
 			return result;
+		}
+		
+		//Returns the index of the item with the input itemID
+		public int searchByIndex(ArrayList<Item> searchList , int itemID) {
+			int founditemID = -1;
+			for(int i =0 ; i < searchList.size() ; i++) {
+				if(searchList.get(i).getItemId()==(itemID)) {
+					founditemID =searchList.get(i).getItemId(); 
+					break;
+				}
+			}
+			
+			return founditemID;
 		}
 		
 		
