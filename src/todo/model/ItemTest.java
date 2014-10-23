@@ -1,5 +1,6 @@
 package todo.model;
 
+import todo.storage.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class ItemTest {
 	String item4 = "item-4";
 	String location1 = "SchoolOfComputing";
 	String locatin2 = "Utown";
-	int priority1 = 1;
+	boolean important = true;
 	Date currentDate1 = new Date();
 	DateTime testDateTime1 = new DateTime(currentDate1);
 	Date currentDate2 = new Date();
@@ -22,6 +23,9 @@ public class ItemTest {
 	DateTime testDateTime3 = new DateTime(currentDate3);
 	Date currentDate4 = new Date();
 	DateTime testDateTime4 = new DateTime(currentDate4);
+	
+	
+	
 	
 	@Test
 	public void testItemConstructor() {
@@ -59,11 +63,11 @@ public class ItemTest {
 		System.out.println(abc1.toString());
 		Item abc2 = new Item(item1,testDateTime1);
 		System.out.println(abc2.toString());
-		Item abc3 = new Item(item1,priority1,tagList);
+		Item abc3 = new Item(item1,important,tagList);
 		System.out.println(abc3.toString());
-		Item abc4 = new Item(item1,location1, priority1, tagList);
+		Item abc4 = new Item(item1,location1, important, tagList);
 		System.out.println(abc4.toString());
-		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
+		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, important, tagList);
 		System.out.println(abc5.toString());
 		System.out.println();
 		
@@ -82,11 +86,11 @@ public class ItemTest {
 		
 		Item abc2 = new Item(item1,testDateTime1);
 	
-		Item abc3 = new Item(item1,priority1,tagList);
+		Item abc3 = new Item(item1,important,tagList);
 		
-		Item abc4 = new Item(item1,location1, priority1, tagList);
+		Item abc4 = new Item(item1,location1,important, tagList);
 		
-		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
+		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, important, tagList);
 
 		myList.add(abc1);
 		myList.add(abc2);
@@ -110,11 +114,11 @@ public class ItemTest {
 		
 		Item abc2 = new Item(item1,testDateTime1);
 	
-		Item abc3 = new Item(item1,priority1,tagList);
+		Item abc3 = new Item(item1,important,tagList);
 		
-		Item abc4 = new Item(item1,location1, priority1, tagList);
+		Item abc4 = new Item(item1,location1, important, tagList);
 		
-		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, priority1, tagList);
+		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, important, tagList);
 
 		myList.add(abc1);
 		myList.add(abc2);
@@ -143,12 +147,12 @@ public class ItemTest {
 		
 		Item abc2 = new Item("item2",testDateTime1);
 	
-		Item abc3 = new Item("item3",priority1,tagList);
+		Item abc3 = new Item("item3",important,tagList);
 		
-		Item abc4 = new Item("item4",location1, priority1, tagList);
+		Item abc4 = new Item("item4",location1, important, tagList);
 		abc4.setStatusDone();
 		
-		Item abc5 = new Item("item5", testDateTime1, testDateTime2, location1, priority1, tagList);
+		Item abc5 = new Item("item5", testDateTime1, testDateTime2, location1, important, tagList);
 
 		myList.add(abc1);
 		myList.add(abc2);
@@ -163,6 +167,7 @@ public class ItemTest {
 		
 		
 		
-		
 	}
+	
+	
 }
