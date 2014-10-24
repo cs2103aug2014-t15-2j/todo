@@ -14,17 +14,17 @@ public class StateHistoryTest {
 	public void testCorrectnessOfSavedState() {
 		//the start Creation of dummy ItemList---------------
 		ArrayList<String> tl1 = new ArrayList<String>();
-		Item item1 = new Item("meet yy", new DateTime(new Date()), new DateTime(new Date()), "clementi", 0, tl1);
+		Item item1 = new Item("meet yy", new DateTime(new Date()), new DateTime(new Date()), "clementi", true, tl1);
 				
 		ArrayList<String> tl2 = new ArrayList<String>();
 		tl2.add("important");
 		tl2.add("Bring Laptop");
-		Item item2 = new Item("meet sw", new DateTime(new Date()), new DateTime(new Date()), "utown", 2, tl2);
+		Item item2 = new Item("meet sw", new DateTime(new Date()), new DateTime(new Date()), "utown", false, tl2);
 				
 		ArrayList<String> tl3 = new ArrayList<String>();
 		tl3.add("bring textbook");
 		tl3.add("last lecture");
-		Item item3 = new Item("go to lecture", new DateTime(new Date()), new DateTime(new Date()), "lt19", 3, tl3);
+		Item item3 = new Item("go to lecture", new DateTime(new Date()), new DateTime(new Date()), "lt19", false, tl3);
 				
 		ItemList newItemList = new ItemList();
 		newItemList.add(item1);

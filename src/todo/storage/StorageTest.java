@@ -28,20 +28,20 @@ public class StorageTest {
 			Storage storage = new Storage();
 			// the start Creation of dummy ItemList---------------
 			Item item1 = new Item("meet yy", new DateTime(new Date()),
-					new DateTime(new Date()), "clementi", 0,
+					new DateTime(new Date()), "clementi", true,
 					new ArrayList<String>());
 
 			ArrayList<String> al2 = new ArrayList<String>();
 			al2.add("Important");
 			al2.add("Bring Laptop");
 			Item item2 = new Item("meet sw", new DateTime(new Date()),
-					new DateTime(new Date()), "utown", 2, al2);
+					new DateTime(new Date()), "utown", true, al2);
 
 			ArrayList<String> al3 = new ArrayList<String>();
 			al3.add("bring textbook");
 			al3.add("last lecture");
 			Item item3 = new Item("go to lecture", new DateTime(new Date()),
-					new DateTime(new Date()), "lt19", 3, al3);
+					new DateTime(new Date()), "lt19", false, al3);
 
 			ItemList il = new ItemList();
 			il.add(item1);

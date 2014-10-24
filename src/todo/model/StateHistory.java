@@ -74,15 +74,8 @@ public class StateHistory {
 			// description
 			String description = new String(c.getDescription());
 
-			if(c.getLocation().equals("")){
-				System.out.println("c.getLocation() is empty" );
-			}
 			// location
 			String location = new String(c.getLocation());
-				
-			if(location.equals("")){
-				System.out.println("location is emtpy");
-			}
 			
 			// tagList
 			ArrayList<String> tags = new ArrayList<String>();
