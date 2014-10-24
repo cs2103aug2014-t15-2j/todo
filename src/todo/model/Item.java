@@ -14,6 +14,10 @@ import java.util.ArrayList;
  * @author SAMSUNG
  *
  */
+/**
+ * @author SAMSUNG
+ *
+ */
 public class Item {
 	
 	private static final boolean unImportant = false;
@@ -153,6 +157,32 @@ public class Item {
 		itemQty++;
 		lastItemId++;
 	}
+	/**
+	 * This method is a constructor that takes in an item object and clones it.
+	 * @param itemId
+	 * @param description
+	 * @param startDateTime
+	 * @param dueDateTime
+	 * @param location
+	 * @param importance
+	 * @param tags
+	 * @param status
+	 */
+	private Item(int itemId , String description, DateTime startDateTime, DateTime dueDateTime, String location, boolean importance, ArrayList<String> tags,boolean status) {
+		setDescription(description);
+		setStartDateTime(startDateTime);
+		setDueDateTime(dueDateTime);
+		setLocation(location);
+		setImportance(importance);
+		setTags(tags);
+		setItemID(itemId);
+		if(status) {
+			setStatusDone();
+		}
+		if(!status) {
+			setStatusUndone();
+		}
+	}
 	
 	//Accessors
 	
@@ -288,5 +318,19 @@ public class Item {
 		}
 		return result;
 		
+	}
+	
+	//Clone Item - Takes in an item and returns an exact copy of the item without changing the itemQty and item number
+	public Item clone(Item target) {
+		int itemId = target.getItemId();
+		String description = target.getDescription();
+		DateTime startDateTime =target.getStartDateTime();
+		DateTime dueDateTime = target.getDueDateTime();
+		String location = target.getLocation();
+		boolean importance = target.getImportance();
+		ArrayList<String> tags = target.getTags();
+		boolean status = target.getStatus();
+		Item clonned = new Item (itemId , description, startDateTime,dueDateTime, location, importance, tags,status);
+		return clonned;
 	}
 }
