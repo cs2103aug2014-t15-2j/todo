@@ -35,6 +35,7 @@ public class DateTime {
 		return this.hasTime;
 	}
 	
+
 	public String toString(){
 		DateFormat mDateFormate;
 		if (hasTime){
@@ -43,5 +44,15 @@ public class DateTime {
 			mDateFormate = new SimpleDateFormat("MM/dd/yyyy");
 		}
 		return mDateFormate.format(this.date);
+	}
+	
+	public DateTime cloneDateTime(DateTime target ) {
+		Date clonnedDate= target.getDate();
+		DateTime clonnedDateTime = new DateTime(clonnedDate,false);
+		if(target.hasTime()){
+			clonnedDateTime.setDate(clonnedDate, true);
+		}
+
+		return clonnedDateTime;
 	}
 }

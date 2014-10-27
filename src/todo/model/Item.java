@@ -324,13 +324,22 @@ public class Item {
 	public Item clone(Item target) {
 		int itemId = target.getItemId();
 		String description = target.getDescription();
-		DateTime startDateTime =target.getStartDateTime();
-		DateTime dueDateTime = target.getDueDateTime();
+		DateTime startDateTime =target.getStartDateTime().cloneDateTime(target.getStartDateTime());
+		DateTime dueDateTime = target.getDueDateTime().cloneDateTime(target.getDueDateTime());
 		String location = target.getLocation();
 		boolean importance = target.getImportance();
-		ArrayList<String> tags = target.getTags();
+		ArrayList<String> tags = cloneTags(target.getTags());
 		boolean status = target.getStatus();
 		Item clonned = new Item (itemId , description, startDateTime,dueDateTime, location, importance, tags,status);
 		return clonned;
+	} 
+	private ArrayList<String> cloneTags(ArrayList<String> tags){
+		ArrayList<String> clonnedTagList = new ArrayList<String>();
+		for (int j = 0; j < tags.size(); j++) {
+			String cloneTag = new String(tags.get(j));
+			clonnedTagList.add(cloneTag);	
+		}
+		return clonnedTagList;
 	}
+	
 }
