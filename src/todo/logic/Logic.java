@@ -99,6 +99,7 @@ public class Logic {
 	public String executeCommand(String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException {
 		CommandType commandType = getCommandType(StringUtil.getFirstWord(userInput));
 		String result = "";
+		userInput = StringUtil.trimString(userInput);
 		
 		switch (commandType) {
 			case CREATE:
@@ -260,6 +261,7 @@ public class Logic {
 				&& NLP.getInstance().updateParser(mItemList.getItem(updateIndex-1), updateInfo)){
 			saveFile();
 			result = "update's successful.";
+			LogUtil.Log(TAG, "update index "+(updateIndex-1));
 		}else{
 			result = "update's failed.";
 		}
