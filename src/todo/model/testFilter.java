@@ -16,8 +16,8 @@ public class testFilter {
 		
 		String location = new String("school");
 		
-		Item item1 = new Item("item1", location, 0, tagString1);
-		Item item2 = new Item("item2", location, 0, tagString2);
+		Item item1 = new Item("item1", location, true, tagString1);
+		Item item2 = new Item("item2", location, false, tagString2);
 		Item item3 = new Item("item3", new DateTime(new Date((long)1413950400000.0)));
 		Item item4 = new Item("item4", new DateTime(new Date((long)1409544000000.0)));
 		Item item5 = new Item("item5", new DateTime(new Date((long)1409544000000.0)));

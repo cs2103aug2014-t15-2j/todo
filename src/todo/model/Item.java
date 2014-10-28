@@ -1,5 +1,6 @@
 package todo.model;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 /**
@@ -321,18 +322,30 @@ public class Item {
 	}
 	
 	//Clone Item - Takes in an item and returns an exact copy of the item without changing the itemQty and item number
-	public Item clone(Item target) {
-		int itemId = target.getItemId();
-		String description = target.getDescription();
-		DateTime startDateTime =target.getStartDateTime().cloneDateTime(target.getStartDateTime());
-		DateTime dueDateTime = target.getDueDateTime().cloneDateTime(target.getDueDateTime());
-		String location = target.getLocation();
-		boolean importance = target.getImportance();
-		ArrayList<String> tags = cloneTags(target.getTags());
-		boolean status = target.getStatus();
-		Item clonned = new Item (itemId , description, startDateTime,dueDateTime, location, importance, tags,status);
+	public Item cloneItem() throws ParseException{
+		int itemId = this.getItemId();
+		String description = this.getDescription();
+		
+		DateTime startDateTime = null;
+		if(this.getStartDateTime() != null){
+			startDateTime = this.getStartDateTime().cloneDateTime();
+		}
+
+		DateTime dueDateTime = null;
+		if(this.getDueDateTime() != null){
+			dueDateTime = this.getDueDateTime().cloneDateTime();
+		}
+
+		String location = this.getLocation();
+		boolean importance = this.getImportance();
+		ArrayList<String> tags = cloneTags(this.getTags());
+		boolean status = this.getStatus();
+		
+		Item clonned = new Item (itemId, description, startDateTime, dueDateTime, location, importance, tags, status);
 		return clonned;
 	} 
+	
+	 
 	private ArrayList<String> cloneTags(ArrayList<String> tags){
 		ArrayList<String> clonnedTagList = new ArrayList<String>();
 		for (int j = 0; j < tags.size(); j++) {

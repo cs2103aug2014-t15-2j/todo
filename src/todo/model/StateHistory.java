@@ -1,10 +1,6 @@
 package todo.model;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Stack;
 
 public class StateHistory {
@@ -15,10 +11,6 @@ public class StateHistory {
 
 	private Stack<ItemList> history;
 	private Stack<ItemList> future;
-	private DateFormat dateWithTime = new SimpleDateFormat(
-			DATE_WITH_TIME);
-	private DateFormat dateWithoutTime = new SimpleDateFormat(
-			DATE_WITHOUT_TIME);
 
 	/**
 	 * Default constructor of StateHistory
@@ -66,6 +58,7 @@ public class StateHistory {
 	private void copyItemList(ItemList il, ItemList newItemList)
 			throws ParseException {
 		for (int i = 0; i < il.size(); i++) {
+			/*
 			Item c = il.getItem(i);// for convenience
 
 			// importance
@@ -127,6 +120,9 @@ public class StateHistory {
 			newItem.setItemID(c.getItemId() - 1);
 
 			newItemList.add(newItem);
+			*/
+			
+			newItemList.add(il.getItem(i).cloneItem());
 		}
 	}
 

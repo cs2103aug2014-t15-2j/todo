@@ -3,6 +3,7 @@ package todo.model;
 import todo.storage.*;
 import static org.junit.Assert.*;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -169,13 +170,13 @@ public class ItemTest {
 		
 	}
 	@Test
-	public void cloneTest() {
+	public void cloneTest() throws ParseException {
 		ArrayList<String> tagList = new ArrayList<String>();
 		tagList.add("homework");
 		tagList.add("school");
 		Item abc5 = new Item("item5", testDateTime1, testDateTime2, location1, important, tagList);
 
-	assertEquals(abc5.toString(),abc5.clone(abc5).toString());
+	assertEquals(abc5.toString(),abc5.cloneItem().toString());
 	}
 	
 	
