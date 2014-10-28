@@ -131,7 +131,7 @@ public class ItemList {
 			int i = 1;
 			String result = "";
 			for (Item item : itemList){
-				String appendString = i + ". " + item.toString() + "\n";
+				String appendString = i + ". " + item.toString() + "\n\n";
 				result += appendString;
 				i++;
 			}

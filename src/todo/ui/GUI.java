@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.text.ParseException;
 
 import javax.swing.*;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -26,11 +29,13 @@ public class GUI extends JPanel implements ActionListener{
 		super(new GridBagLayout());
 		
 		logic = Logic.getInstanceLogic();
-		
+
         textField = new JTextField(50);
+		textField.setFont(new Font("Verdana", Font.BOLD, 14));
         textField.addActionListener(this);
  
         textArea = new JTextArea(30, 50);
+		textArea.setFont(new Font("Verdana", Font.BOLD, 16));
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
  
