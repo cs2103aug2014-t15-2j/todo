@@ -22,7 +22,7 @@ public class UIMain {
 	private static Scanner scanner;
 	private static Logic logic;
 
-	public static void main(String arg[]) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException, TransformerException{
+	public static void main(String arg[]) throws Exception{
 		
 		CommandType mCommandType;
 		scanner = new Scanner(System.in);

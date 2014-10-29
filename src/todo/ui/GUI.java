@@ -80,6 +80,9 @@ public class GUI extends JPanel implements ActionListener{
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		textArea.setText(logic.getListString());

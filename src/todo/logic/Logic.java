@@ -89,14 +89,9 @@ public class Logic {
 	/**
 	 * This method executes whichever commandType it receives accordingly
 	 * @param commandType
-	 * @throws TransformerException 
-	 * @throws ParserConfigurationException 
-	 * @throws ParseException 
-	 * @throws IOException 
-	 * @throws SAXException 
-	 * @throws DOMException 
+	 * @throws Exception 
 	 */
-	public String executeCommand(String userInput) throws ParserConfigurationException, TransformerException, DOMException, SAXException, IOException, ParseException {
+	public String executeCommand(String userInput) throws Exception {
 		CommandType commandType = getCommandType(StringUtil.getFirstWord(userInput));
 		String result = "";
 		userInput = StringUtil.trimString(userInput);
@@ -174,7 +169,7 @@ public class Logic {
 	}
 
 
-	private String add(String userInput) throws ParserConfigurationException, TransformerException{
+	private String add(String userInput) throws Exception{
 		saveState();
 		String content;
 		String [] arr = userInput.split(" ", 2);

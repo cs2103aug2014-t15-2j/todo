@@ -22,13 +22,13 @@ public class NLPtest {
 	Item addbasic = new Item (addbasicdescription);
 	Item addbasictime = new Item ("do homework",basicday1);
 	@Test
-	public void testaddbasic() {
+	public void testaddbasic() throws Exception {
 		assertEquals(addbasic.toString(),NLP.getInstance().addParser(addbasicdescription).toString());
 		
 	}
 	
 	@Test
-	public void testaddwithtime() {
+	public void testaddwithtime() throws Exception {
 		assertEquals(addbasictime,NLP.getInstance().addParser(test2));
 	}
 

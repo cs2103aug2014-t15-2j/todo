@@ -13,106 +13,68 @@ import org.xml.sax.SAXException;
 
 import todo.model.DateTime;
 import todo.model.Item;
+import todo.model.Message;
 import todo.util.LogUtil;
 import todo.util.StringUtil;
-import todo.logic.*;
 
 import com.joestelmach.natty.DateGroup;
 
 public class NLP {
 	
-	private static NLP NLPSingpleton;
+	private static NLP NLPSingleton = null;
 	private static String TAG = "NLP";
+	private static String EMPTY_MESSAGE_EXCEPTION = "Empty message exception";
 
 	private NLP(){
-		
 	}
 	
+	/**
+	 * Singleton method for getting a NLP instance
+	 * @return NLP instance
+	 */
 	public static NLP getInstance(){
-		if(NLPSingpleton == null){
-			NLPSingpleton = new NLP();
+		if(NLPSingleton == null){
+			NLPSingleton = new NLP();
 		}
-		return NLPSingpleton;
+		return NLPSingleton;
 	}
 	
 	/**
 	 *  Add Parser
-	 * @param msg
-	 * @return
+	 *  extract date/time, location, tags, and description information from user input
+	 * @param msg: the content part of an add command, contains description, 
+	 * 				date/time (optional), location (optional), tags (optional)
+	 * @return a new item created
+	 * @throws Exception 
 	 */
-	public Item addParser(String msg){		
-		
-		List<DateGroup> groups;
-		ArrayList<String> tagList = new ArrayList<String>();
-		String[] strArray;
-		List<DateTime> dateTimeList = new ArrayList<DateTime>();
-		String location = "";
+	public Item addParser(String msg) throws Exception{		
+		ArrayList<String> tagList;
+		List<DateTime> dateTimeList;
+		String location;
 		
 		LogUtil.Log(TAG, "Start NLP add parser");
+		// Create a message object to go through info extraction process
+		Message message = new Message(msg);
 		
-		// add empty start and due date time
-		dateTimeList.add(null);
-		dateTimeList.add(null);
-		
-		// step1 remove quoted content & correct date format
-		// & get date groups
-		msg = StringUtil.correctDateFormat(msg);
-		groups = NLPUtil.getDateGroups(StringUtil.removeQuoted(msg));
-
-		
+		// step1 correct date format
+		message.correctDateFormat();
 		// step2 find possible date time
-		if (groups.size() != 0){
-			DateGroup group = groups.get(0);
-			String groupText = group.getText();
-			LogUtil.Log(TAG, "Detect data/time: "+groupText);
-			dateTimeList = NLPUtil.getDateTime(group);
-			String wordBeforeDate = StringUtil.getWordBeforeSubstring(msg,groupText);
-			if (Arrays.asList(NLPConfig.preDue).contains(wordBeforeDate)){
-				// exchange start time and due time
-				dateTimeList.add(dateTimeList.remove(0));
-			}
-			
-			msg = NLPUtil.deletePreposition(msg, wordBeforeDate, groupText);
-		}else{
-			LogUtil.Log(TAG, "No date time detected");
-		}
+		dateTimeList = NLPUtil.extractDateTime(message);
+		// step3 find location
+		location = NLPUtil.extractLocation(message);
+		// step4 find tags
+		tagList = NLPUtil.extractTags(message);
+		// step5 delete escape characters
+		message.deleteEscapeCharaster();
+		// step6 delete whole sentence quotation marks
+		message.deleteFullQuote();
 		
-		// step3 find long location
-		String locationString = StringUtil.getBracketLocation(msg);
-		if (locationString.length() > 0){
-			location = locationString.substring(2, locationString.length()-1);
-			msg = msg.replace(locationString, "");
-			msg = StringUtil.trimString(msg);
-		}
-
-		// step4 find out one word location and all the tags
-		msg = StringUtil.trimString(msg);
-		strArray = msg.split(" ");
-		for(int i = strArray.length-1; i >= 0 ; i--){
-			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '#'){
-				tagList.add(0, strArray[i].substring(1));
-				msg = msg.replace(strArray[i], "");
-			}
-			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '@'){
-				location = strArray[i].substring(1);
-				msg = msg.replace(strArray[i], "");
-			}
-		}
-		
-		// step5 delete all the escape characters
-		msg = msg.replaceAll("\\\\#", "#");
-		msg = msg.replaceAll("\\\\@", "@");
-		
-		// step6 if the whole sentence is quoted, then delete the quotation marks
-		msg = StringUtil.trimString(StringUtil.removeFullQuote(msg));
-		
-		if (msg.equals("")){
+		message.trim();
+		if (message.isEmpty()){
 			LogUtil.Log(TAG, "Item description is empty, please consider using quotation marks");
-			return null;
+			throw new Exception(EMPTY_MESSAGE_EXCEPTION);
 		}
-		
-		assert msg != "";
-		return new Item(msg, dateTimeList.get(0), dateTimeList.get(1), location, tagList);
+		return new Item(message.getText(), dateTimeList.get(0), dateTimeList.get(1), location, tagList);
 	}
 	
 	/**

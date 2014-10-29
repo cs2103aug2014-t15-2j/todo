@@ -30,7 +30,7 @@ public class NLPTest {
 	}
 
 	@Test
-	public void addParserTest() {
+	public void addParserTest() throws Exception {
 		// correct date format -> remove quoted content -> get first word before substring
 		// -> get bracket location -> remove full quotation
 		// step1 remove quoted content & correct date format & get date groups

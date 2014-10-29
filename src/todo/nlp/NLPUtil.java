@@ -18,6 +18,7 @@ import com.joestelmach.natty.Parser;
 
 import todo.logic.Logic;
 import todo.model.DateTime;
+import todo.model.Message;
 import todo.util.LogUtil;
 import todo.util.StringUtil;
 
@@ -28,7 +29,65 @@ public class NLPUtil {
 	public static Parser parser = new Parser();
 	
 	
-	static String deletePreposition(String msg, String wordBeforeDate, String groupText){
+	protected static List<DateTime> extractDateTime(Message msg){
+		List<DateTime> dateTimeList = new ArrayList<DateTime>();
+		List<DateGroup> groups = NLPUtil.getDateGroups(msg.withoutQuotation());
+		
+		// initialize start and due date time
+		dateTimeList.add(null);
+		dateTimeList.add(null);
+		
+		if (groups.size() != 0){
+			DateGroup group = groups.get(0);
+			String groupText = group.getText();
+			LogUtil.Log(TAG, "Detect data/time: "+groupText);
+			dateTimeList = NLPUtil.getDateTime(group);
+			String wordBeforeDate = msg.getWordBeforeSubstring(groupText);
+			if (Arrays.asList(NLPConfig.preDue).contains(wordBeforeDate)){
+				// exchange start time and due time
+				dateTimeList.add(dateTimeList.remove(0));
+			}
+			msg.setText(NLPUtil.deletePreposition(msg.getText(), wordBeforeDate, groupText));
+		}else{
+			LogUtil.Log(TAG, "No date time detected");
+		}
+		return dateTimeList;
+	}
+	
+	protected static String extractLocation(Message msg){
+		String location = "";
+		String locationString = StringUtil.getBracketLocation(msg.getText());
+		if (locationString.length() > 0){
+			location = locationString.substring(2, locationString.length()-1);
+			msg.deleteSubstring(locationString);
+			msg.trim();
+			return location;
+		}
+		msg.trim();
+		String[] strArray = msg.getText().split(" ");
+		for(int i = strArray.length-1; i >= 0 ; i--){
+			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '@'){
+				location = strArray[i].substring(1);
+				msg.deleteSubstring(strArray[i]);
+			}
+		}
+		return location;
+	}
+	
+	protected static ArrayList<String> extractTags(Message msg){
+		ArrayList<String> tagList = new ArrayList<String>();
+		msg.trim();
+		String[] strArray = msg.getText().split(" ");
+		for(int i = strArray.length-1; i >= 0 ; i--){
+			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '#'){
+				tagList.add(0, strArray[i].substring(1));
+				msg.deleteSubstring(strArray[i]);
+			}
+		}
+		return tagList;
+	}
+	
+	protected static String deletePreposition(String msg, String wordBeforeDate, String groupText){
 		// delete preposition before date
 		if (Arrays.asList(NLPConfig.preStart).contains(wordBeforeDate)
 				|| Arrays.asList(NLPConfig.preDue).contains(wordBeforeDate)){
@@ -48,7 +107,7 @@ public class NLPUtil {
 	 * @throws ParserConfigurationException 
 	 * @throws DOMException 
 	 */
-	static ArrayList<Integer> readIndexList(String str) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
+	protected static ArrayList<Integer> readIndexList(String str) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
 		ArrayList<Integer> result = new ArrayList<Integer>();
 		String delimiter;
 		str = str.trim();
@@ -94,7 +153,7 @@ public class NLPUtil {
 	}
 	
 
-	static List<DateTime> getDateTime(DateGroup group){
+	protected static List<DateTime> getDateTime(DateGroup group){
 		List<DateTime> dateTimeList = new ArrayList<DateTime>();
 		Date startDate = null;
 		Date dueDate = null;
@@ -146,7 +205,7 @@ public class NLPUtil {
 	 * @param msgToDetectDate the given string
 	 * @return the list of DateGroups
 	 */
-	static List<DateGroup> getDateGroups(String msgToDetectDate){
+	protected static List<DateGroup> getDateGroups(String msgToDetectDate){
 		List<DateGroup> groups = parser.parse(msgToDetectDate);
 		String tempTextToDetect = "";
 		
