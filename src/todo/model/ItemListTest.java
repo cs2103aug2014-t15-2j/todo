@@ -88,7 +88,6 @@ public class ItemListTest {
 		myList.delete(1);
 		assertEquals(myList.size(),0);
 		
-		
 	}
 
 }

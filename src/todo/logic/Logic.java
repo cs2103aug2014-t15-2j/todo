@@ -210,9 +210,20 @@ public class Logic {
 	    }else if((userInput.contains("undone")||userInput.contains("uncompleted"))){
 	    	result = mItemList.showUncompletedListString();
 	    	return result;
-	    }else {
-	    		result = mItemList.displayList();
-			    return result;
+	    //Filter by dateTime using standard format MM/dd/yyyy
+	    }else if(userInput.contains("on")){
+	    	int hasOnPosition = userInput.indexOf("n");
+	    	String dateString = "";
+	    	dateString = userInput.substring(hasOnPosition+2, userInput.length());
+	    	if(dateString.isEmpty()){
+	    		return "Invalid: Missing date for filter.";
+	    	}else{
+	    		result = mItemList.filterByDateTime(dateString);
+	    		return result;
+	    	}
+	    }else{
+	    	result = mItemList.displayList();
+			return result;
 	    }
 	}
 	

@@ -1,6 +1,9 @@
 package todo.model;
 
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -258,7 +261,17 @@ public class ItemList {
 			return filteredList;			
 		}
 		
-		public String filterByDateTime(Date dateTimeFiltered){
+		// Assumption: the dateTime refers to startDateTime
+		
+		public String filterByDateTime(String dateTimeString){
+			
+			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+			Date dateTimeFiltered = null;
+			try{
+				dateTimeFiltered= df.parse(dateTimeString);
+			} catch(ParseException e){
+				e.printStackTrace();
+			}
 
 			String filteredList = "";
 			for(int i = 0; i < itemList.size(); i++ ){
@@ -268,6 +281,7 @@ public class ItemList {
 					if(itemDate.equals(dateTimeFiltered)){
 						String appendString = itemList.get(i).toString();
 					    filteredList += appendString;
+					    filteredList += "\n";
 					    filteredList += "\n";
 				    }
 				}
