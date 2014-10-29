@@ -29,7 +29,7 @@ public class ItemList {
 			return itemList.size();
 		}
 		
-		// Return a specific item from the itemList
+		// Return a specific item from the itemList, the min. index is 0
 		public Item getItem(int index){
 				if(index < 0){
 					IndexOutOfBoundsException exObj1 = 
@@ -64,7 +64,7 @@ public class ItemList {
 			return result;
 		}
 		
-		// Delete item
+		// Delete item, the min.index starts from 1
 		public String delete(int index){
 			try{
 				String removedItemDescription = itemList.get(index - 1).getDescription();

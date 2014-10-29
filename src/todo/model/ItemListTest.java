@@ -59,7 +59,6 @@ public class ItemListTest {
 		
 		ItemList myList = new ItemList();
 		
-		// This is a boundary case for the "valid index" partition
 		assertEquals(myList.size(), 0);
 		
 		myList.add(itemA);
@@ -67,6 +66,28 @@ public class ItemListTest {
 		
 		myList.add(itemB);
 		assertEquals(myList.size(), 2);
+		
+		assertEquals(myList.getItem(0), itemA);
+		
+	}
+	
+	@Test
+	public void testDelete(){
+		Item itemA = new Item(item1);
+		Item itemB = new Item(item2);
+		
+		ItemList myList = new ItemList();
+		
+		myList.add(itemA);
+		myList.add(itemB);
+		assertEquals(myList.size(),2);
+		
+		myList.delete(2);
+		assertEquals(myList.size(),1);
+		
+		myList.delete(1);
+		assertEquals(myList.size(),0);
+		
 		
 	}
 
