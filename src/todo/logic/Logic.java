@@ -30,9 +30,14 @@ public class Logic {
 	private boolean fastUpdate;
 	
 	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
+	private static final String ERROR_MISSING_TAGS = "Invalid: Missing Tag Names.";
 	
 	private static final String MESSAGE_ADD_TIP ="add a new event or task.\n";
 	private static final String MESSAGE_ADD_EXAMPLE ="eg add project meeting tomorrow @utown #cs2103 .";
+	private static final String MESSAGE_UNDO_SUCCESS = "you have successfully undo the previous action.";
+	private static final String MESSAGE_CANNOT_UNDO = "no action can be undo.";
+	private static final String MESSAGE_REDO_SUCCESS = "you have successfully redo the previous action.";
+	private static final String MESSAGE_CANNOT_REDO =  "no action can be redo.";
 	
 	/**
 	 * Private constructor for singleton Logic
@@ -146,9 +151,9 @@ public class Logic {
 		if(stateHistory.canUndo() && stateHistory.saveStateToFuture(mItemList)){
 			mItemList = stateHistory.undo();
 			
-			result = "you have successfully undo the previous action.";
+			result = MESSAGE_UNDO_SUCCESS;
 		}else{
-			result = "no action can be undo.";
+			result = MESSAGE_CANNOT_UNDO;
 		}
 		
 		return result;
@@ -160,9 +165,9 @@ public class Logic {
 		if(stateHistory.canRedo() && stateHistory.saveStateToHistory(mItemList)){
 			mItemList = stateHistory.redo();
 			
-			result = "you have successfully redo the previous action.";
+			result = MESSAGE_REDO_SUCCESS;
 		}else{
-			result = "no action can be redo.";
+			result = MESSAGE_CANNOT_REDO;
 		}
 		
 		return result;
@@ -198,7 +203,7 @@ public class Logic {
 	    	String tagString = "";
 	    	tagString = userInput.substring(hashTagPosition+1, userInput.length());
 	    	if(tagString.isEmpty()){
-	    		return "Invalid: Missing Tag Names.";
+	    		return ERROR_MISSING_TAGS;
 	    	}else{
 	    		result = mItemList.filterByTags(tagString);
 	    		return result;
