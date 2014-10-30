@@ -66,7 +66,7 @@ public class XMLReader {
 	        docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 	        doc = docBuilder.parse(newFile);
 	        doc.getDocumentElement().normalize();
-	        newItemList = traverseNodesToRead(doc);
+	        newItemList = buildItemList(doc);
 		}catch(Exception e){
 			// SEVERE/WARNING/INFO/CONFIG/FINE/FINER/FINEST
 			LOGGER.setLevel(Level.INFO);
@@ -85,14 +85,14 @@ public class XMLReader {
 	}
 	
 	/**
-	 * This method traverses XML nodes, reads their values and stores into an Itemlist that is to be return 
+	 * This method traverses XML nodes, reads their values and stores into an Itemlist that is to be returned 
 	 * 
 	 * @param doc
 	 * @return ItemList
 	 * @throws DOMException
 	 * @throws ParseException
 	 */
-	private ItemList traverseNodesToRead(Document doc) throws DOMException, ParseException{
+	private ItemList buildItemList(Document doc) throws DOMException, ParseException{
 		ItemList newItemList = new ItemList();
 		
 		NodeList items = doc.getElementsByTagName(Storage.ITEM);

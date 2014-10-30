@@ -43,7 +43,7 @@ public class XMLWriter {
 	 * @throws ParserConfigurationException
 	 * @throws TransformerException
 	 */
-	public void storeIntoXML(ItemList il) throws ParserConfigurationException, TransformerException{
+	public void writeIntoXML(ItemList il) throws ParserConfigurationException, TransformerException{
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document doc = docBuilder.newDocument();
 		
@@ -163,11 +163,9 @@ public class XMLWriter {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(doc);
-		// Output to file
 		StreamResult result = new StreamResult(new File(Storage.FILE_DESTINATION));
-		// Output to console
-		//StreamResult result = new StreamResult(System.out);
-		
+	
+		// Set todo.xml style to be human-readable
 		transformer.setOutputProperty(OutputKeys.INDENT, Storage.YES);
 		transformer.setOutputProperty(Storage.XML_INDENT, Storage.INDENT_AMOUNT);
 		transformer.transform(source, result);
