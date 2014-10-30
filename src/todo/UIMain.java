@@ -2,6 +2,7 @@ package todo;
 
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.text.ParseException;
 import java.util.Scanner;
 
@@ -24,6 +25,12 @@ public class UIMain {
 
 	public static void main(String arg[]) throws Exception{
 		
+		processor(new Scanner(System.in), System.out);
+	}
+	
+	public static void processor(Scanner input, PrintStream output) throws Exception {
+		  // Remainder of code
+
 		CommandType mCommandType;
 		scanner = new Scanner(System.in);
 		logic = Logic.getInstanceLogic();
@@ -37,7 +44,7 @@ public class UIMain {
 		}while(mCommandType != CommandType.EXIT);
 		scanner.close();
 	}
-	
+		
 	private static String requestForCommand(){
 		System.out.print("command: ");
 		return scanner.nextLine().trim();
