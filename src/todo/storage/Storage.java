@@ -68,6 +68,6 @@ public class Storage {
 
 	public void saveDataToFile(ItemList mItemList)
 			throws ParserConfigurationException, TransformerException {
-		writer.storeIntoXML(mItemList);
+		writer.writeIntoXML(mItemList);
 	}
 }
