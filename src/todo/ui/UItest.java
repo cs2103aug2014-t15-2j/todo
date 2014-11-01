@@ -13,7 +13,7 @@ public class UItest {
 	
 	@Test
 	public void test() {
-		UIMain.processor(new Scanner(System.in), System.out);
+		//UIMain.processor(new Scanner(System.in), System.out);
 	}
 
 }
