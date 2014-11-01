@@ -12,6 +12,7 @@ import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -20,6 +21,7 @@ public class MyGUI {
 	
 	protected JTextField textField;
 	public JLabel label;
+	public JScrollPane scrollPane;
 	
 	// Main method that creates the GUI
 	public static void main(String[] args) {
@@ -39,8 +41,13 @@ public class MyGUI {
 
                 JFrame frame = new JFrame("JustDidIt");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setLayout(new GridBagLayout());
                 
+                GridBagLayout gridbag = new GridBagLayout();
+                
+                frame.setLayout(gridbag);
+                
+                frame.getContentPane().setBackground(Color.WHITE);
+               
 
                 GridBagConstraints gbc = new GridBagConstraints();
                 gbc.insets = new Insets(4, 4, 4, 4);
@@ -50,22 +57,16 @@ public class MyGUI {
                 gbc.fill = GridBagConstraints.HORIZONTAL;
                 
                 frame.add(createTimePane(), gbc);
-                gbc.gridy++;
                 
-                frame.add(createItemPane(Color.ORANGE), gbc);
                 gbc.gridy++;
-                frame.add(createItemPane(Color.LIGHT_GRAY), gbc);
-                gbc.gridy++;
-                frame.add(createItemPane(Color.ORANGE), gbc);
-                gbc.gridy++;
-                frame.add(createItemPane(Color.LIGHT_GRAY), gbc);
-                gbc.gridy++;
-                frame.add(createItemPane(Color.ORANGE), gbc);
-                gbc.gridy++;
-                frame.add(createItemPane(Color.LIGHT_GRAY), gbc);
-                gbc.gridy++;
-                frame.add(createItemPane(Color.ORANGE), gbc);
+               /* 
+                JPanel itemPanel = createOverallItemPane();
+                scrollPane = new JScrollPane(itemPanel);
+                (gridbag).setConstraints(scrollPane, gbc); */
                 
+                frame.add(createScrollableItemPane(), gbc);
+                
+                         
                 gbc.gridy++;
                 frame.add(createMessagePane(), gbc);
                 
@@ -75,6 +76,7 @@ public class MyGUI {
         		gbc.gridy++;
         		frame.add(createTextFieldPane(), gbc);
 
+        		//frame.setSize(500,500);
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
@@ -82,18 +84,45 @@ public class MyGUI {
         });
     }
 	
+	// This method add Scroll bar panel for item panels
+	public JScrollPane createScrollableItemPane(){
+		JPanel pane = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(4, 4, 4, 4);
+        gbc.gridx = 0;
+        gbc.weightx = 1;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        
+        for(int i=0; i<9; i++){
+        	pane.add(createItemPane(Color.LIGHT_GRAY), gbc);
+        	gbc.gridy++;
+        }
+        
+        pane.add(createItemPane(Color.LIGHT_GRAY), gbc); 
+
+        scrollPane = new JScrollPane(pane){
+        	@Override
+        	public Dimension getPreferredSize(){
+				return new Dimension(400, 400);
+			}
+        	
+        	 @Override
+             public Dimension getMinimumSize() {
+             	return new Dimension(400, 400);
+             }
+        };
+		
+		return scrollPane;
+	}
+	
 	// This method defines individual item panel
 	public JPanel createItemPane(Color color) {
         JPanel pane = new JPanel(){
 
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(50, 50);
-            }
-            
-            @Override
-            public Dimension getMinimumSize() {
-            	return new Dimension(50, 50);
+                return new Dimension(40, 40);
             }
 
         };
