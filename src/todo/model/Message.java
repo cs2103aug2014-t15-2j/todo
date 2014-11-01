@@ -35,7 +35,7 @@ public class Message {
 	}
 	
 	public void deleteFullQuote(){
-		StringUtil.trimString(StringUtil.removeFullQuote(text));
+		text = StringUtil.trimString(StringUtil.removeFullQuote(text));
 	}
 	
 	public boolean isEmpty(){

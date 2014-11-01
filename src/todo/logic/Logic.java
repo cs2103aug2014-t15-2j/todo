@@ -295,22 +295,6 @@ public class Logic {
 		String result = "";
 		
 		if (arr.length > 1){
-			if (StringUtil.isInteger(arr[1])){
-				int index = Integer.valueOf(arr[1]);
-				switch (type){
-					case DELETE:
-						result += mItemList.delete(index);
-						break;
-					case DONE:
-						result += mItemList.done(index);
-						break;
-					case UNDONE:
-						result += mItemList.undone(index);
-						break;
-					default:
-						result += "Invalid command type.";
-				}
-			}else{ 
 				ArrayList<Integer> indexList = NLP.getInstance().batchIndexParser(arr[1]);
 				if(!indexList.isEmpty()){
 					while(!indexList.isEmpty()){
@@ -332,7 +316,6 @@ public class Logic {
 				}else{
 					result += "Invalid parameter";
 				}
-			}
 		}else{
 			switch (type){
 				case DELETE:
