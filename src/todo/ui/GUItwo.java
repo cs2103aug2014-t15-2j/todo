@@ -38,6 +38,8 @@ public class GUItwo extends JFrame{
         compsToExperiment.add(new JLabel("Item 4....................."));
         compsToExperiment.add(new JLabel("Item 5....................."));
         compsToExperiment.add(new JLabel("Item 6....................."));
+        
+
         //Left to right component orientation is selected by default
         compsToExperiment.setComponentOrientation(
                 ComponentOrientation.LEFT_TO_RIGHT);
@@ -81,6 +83,7 @@ public class GUItwo extends JFrame{
         GUItwo frame = new GUItwo("FlowLayoutDemo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Set up the content pane.
+        frame.addComponentsToPane(frame.getContentPane());
         frame.addComponentsToPane(frame.getContentPane());
         //Display the window.
         frame.pack();
