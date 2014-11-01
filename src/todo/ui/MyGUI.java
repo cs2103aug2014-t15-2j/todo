@@ -21,10 +21,12 @@ public class MyGUI {
 	protected JTextField textField;
 	public JLabel label;
 	
+	// Main method that creates the GUI
 	public static void main(String[] args){
 		new MyGUI();
 	}
 	
+	// This methods defines the overall frame
 	public MyGUI() {
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -77,6 +79,7 @@ public class MyGUI {
         });
     }
 	
+	// This method defines individual item panel
 	public JPanel createItemPane(Color color) {
         JPanel pane = new JPanel(){
 
@@ -95,6 +98,7 @@ public class MyGUI {
         return pane;
     }
 	
+	// This method defines text field panel
 	public JPanel createTextFieldPane(){
 		JPanel pane = new JPanel(new BorderLayout());
 	    pane.add(textField);
@@ -102,6 +106,7 @@ public class MyGUI {
 	    return pane;
 	}
 	
+	// This method defines the current time panel
 	public JPanel createTimePane(){
 		JPanel pane = new JPanel(new BorderLayout());
 		label = new JLabel("Current Time: 00:00 ");
