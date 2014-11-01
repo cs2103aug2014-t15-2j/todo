@@ -22,7 +22,7 @@ public class MyGUI {
 	public JLabel label;
 	
 	// Main method that creates the GUI
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		new MyGUI();
 	}
 	
@@ -66,6 +66,9 @@ public class MyGUI {
                 gbc.gridy++;
                 frame.add(createItemPane(Color.ORANGE), gbc);
                 
+                gbc.gridy++;
+                frame.add(createMessagePane(), gbc);
+                
                 textField = new JTextField(50);
         		textField.setFont(new Font("Verdana", Font.BOLD, 14));
         		
@@ -99,20 +102,30 @@ public class MyGUI {
     }
 	
 	// This method defines text field panel
-	public JPanel createTextFieldPane(){
-		JPanel pane = new JPanel(new BorderLayout());
+	public JPanel createTextFieldPane() {
+		JPanel pane = new JPanel();
 	    pane.add(textField);
 	
 	    return pane;
 	}
 	
 	// This method defines the current time panel
-	public JPanel createTimePane(){
+	public JPanel createTimePane() {
 		JPanel pane = new JPanel(new BorderLayout());
 		label = new JLabel("Current Time: 00:00 ");
 		pane.add(label);
 		
 		return pane;
+	}
+	
+	// This method defines the message panel
+	public JPanel createMessagePane() {
+		JPanel pane = new JPanel(new BorderLayout());
+		label = new JLabel("Returned Message ");
+		pane.add(label);
+		
+		return pane;
+		
 	}
 	
 }
