@@ -2,12 +2,12 @@ package todo.logic;
 
 import todo.util.CommandType;
 
-public class Command {
+public class CommandMatch {
 
 	/**
 	 * Default constructor for Command
 	 */
-	public Command(){
+	public CommandMatch(){
 	
 	}
 	

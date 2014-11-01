@@ -11,6 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
+import todo.command.AddCommand;
 import todo.model.DateTime;
 import todo.model.Item;
 import todo.model.Message;
@@ -20,10 +21,8 @@ import todo.util.StringUtil;
 import com.joestelmach.natty.DateGroup;
 
 public class NLP {
-	
 	private static NLP NLPSingleton = null;
 	private static String TAG = "NLP";
-	private static String EMPTY_MESSAGE_EXCEPTION = "Empty message exception";
 
 	private NLP(){
 	}
@@ -47,7 +46,7 @@ public class NLP {
 	 * @return a new item created
 	 * @throws Exception 
 	 */
-	public Item addParser(String msg) throws Exception{		
+	public AddCommand addParser(String msg){		
 		ArrayList<String> tagList;
 		List<DateTime> dateTimeList;
 		String location;
@@ -70,11 +69,15 @@ public class NLP {
 		message.deleteFullQuote();
 		
 		message.trim();
-		if (message.isEmpty()){
-			LogUtil.Log(TAG, "Item description is empty, please consider using quotation marks");
-			throw new Exception(EMPTY_MESSAGE_EXCEPTION);
-		}
-		return new Item(message.getText(), dateTimeList.get(0), dateTimeList.get(1), location, tagList);
+
+		AddCommand addCommand = new AddCommand();
+		addCommand.setDesctiption(message.getText());
+		addCommand.setStart(dateTimeList.get(0));
+		addCommand.setDue(dateTimeList.get(1));
+		addCommand.setLocation(location);
+		addCommand.setTagList(tagList);
+		
+		return addCommand;
 	}
 	
 	/**
@@ -84,11 +87,14 @@ public class NLP {
 	 * @return
 	 */
 	public boolean updateParser(Item item, String msg){
-		
 		LogUtil.Log(TAG, "Start NLP update parser");
+		
+		
 		if (StringUtil.isFullQuote(msg)){
+			// update description
 			item.setDescription(StringUtil.removeFullQuote(msg));
 		}else if (msg.charAt(0) == '@'){
+			// update location
 			item.setLocation(msg.substring(1));
 		}else if (StringUtil.getFirstWord(msg).equals(NLPConfig.addTagCommand)){
 			// add tags
@@ -119,6 +125,7 @@ public class NLP {
 			}
 			item.setTags(tagList);
 		}else{
+			// update date/time
 			List<DateGroup> groups = NLPUtil.getDateGroups(msg);
 			List<DateTime> dateTimeList = new ArrayList<DateTime>();
 			if (groups.size() != 0){

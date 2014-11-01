@@ -24,8 +24,8 @@ public class Logic {
 	private static String TAG = "Logic";
 	private static Logic logicSingleton;
 	private Storage storage;
-	private Command command;
-	private ItemList mItemList;
+	private CommandMatch command;
+	private static ItemList mItemList;
 	private StateHistory stateHistory;
 	private boolean fastUpdate;
 	
@@ -45,7 +45,7 @@ public class Logic {
 	 */
 	private Logic() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
 		storage = new Storage();
-		command = new Command();
+		command = new CommandMatch();
 		mItemList = storage.readDataFromFile();
 		stateHistory = new StateHistory();
 	}
@@ -169,7 +169,7 @@ public class Logic {
 	}
 
 
-	private String add(String userInput) throws Exception{
+	private String add(String userInput) throws ParserConfigurationException, TransformerException{
 		saveState();
 		String content;
 		String [] arr = userInput.split(" ", 2);
@@ -177,10 +177,7 @@ public class Logic {
 		
 		if (arr.length > 1){
 			content = arr[1];
-			Item newItem = NLP.getInstance().addParser(content);
-			if (newItem != null){
-				result = mItemList.add(newItem);
-			}
+			result = NLP.getInstance().addParser(content).execute();
 		}else{
 			result += MESSAGE_ADD_TIP;
 			result += MESSAGE_ADD_EXAMPLE;
@@ -349,6 +346,10 @@ public class Logic {
 	
 	private void saveFile() throws ParserConfigurationException, TransformerException{
 		storage.saveDataToFile(mItemList);
+	}
+	
+	public static ItemList getItemList(){
+		return mItemList;
 	}
 	
 	// For GUI testing purpose
