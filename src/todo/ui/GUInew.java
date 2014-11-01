@@ -11,8 +11,6 @@ public class GUInew extends JFrame{
 	JPanel jp1, jp2, jp3;
 
 	public GUInew(){
-
-		//testComps.setAlignment(FlowLayout.TRAILING);
 		
 		setTitle("JustDidIt");
 		setSize(700, 500);
@@ -38,7 +36,7 @@ public class GUInew extends JFrame{
 	}
 	
 	public static void main(String[] ars){
-		GUInew gui = new GUInew();
+		new GUInew();
 	
 	}
 }
