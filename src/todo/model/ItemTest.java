@@ -1,6 +1,5 @@
 package todo.model;
 
-import todo.storage.*;
 import static org.junit.Assert.*;
 
 import java.text.ParseException;

@@ -12,7 +12,6 @@ import org.xml.sax.SAXException;
 
 import todo.util.CommandType;
 import todo.util.LogUtil;
-import todo.model.Item;
 import todo.model.ItemList;
 import todo.model.StateHistory;
 import todo.nlp.NLP;
@@ -74,7 +73,7 @@ public class Logic {
 	}
 	
 	public int getItemListSize(){
-		return this.mItemList.size();
+		return Logic.mItemList.size();
 	}
 	
 	public CommandType getCommandType(String commandTypeString){
@@ -265,10 +264,9 @@ public class Logic {
 		}
 
 		if(!updateInfo.isEmpty() 
-				&& mItemList.validIndex(updateIndex-1) 
-				&& NLP.getInstance().updateParser(mItemList.getItem(updateIndex-1), updateInfo)){
+				&& mItemList.validIndex(updateIndex-1)){
+			result = NLP.getInstance().updateParser(mItemList.getItem(updateIndex-1), updateInfo).execute();
 			saveFile();
-			result = "update's successful.";
 			LogUtil.Log(TAG, "update index "+(updateIndex-1));
 		}else{
 			result = "update's failed.";

@@ -1,16 +1,7 @@
 package todo;
 
-
-import java.io.IOException;
 import java.io.PrintStream;
-import java.text.ParseException;
 import java.util.Scanner;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.w3c.dom.DOMException;
-import org.xml.sax.SAXException;
 
 import todo.util.CommandType;
 import todo.util.LogUtil;

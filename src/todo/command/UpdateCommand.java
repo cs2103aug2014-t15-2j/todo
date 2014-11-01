@@ -6,6 +6,8 @@ import todo.model.DateTime;
 import todo.model.Item;
 
 public class UpdateCommand implements Command{
+	private static String UPDATE_SUCCESSFUL = "Updated.";
+	
 	private Item item;
 	private String description;
 	private DateTime start;
@@ -15,8 +17,7 @@ public class UpdateCommand implements Command{
 	
 	@Override
 	public String execute() {
-		return null;
-		// TODO Auto-generated method stub
+		return UPDATE_SUCCESSFUL;
 		
 	}
 

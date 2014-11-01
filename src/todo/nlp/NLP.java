@@ -12,6 +12,7 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 import todo.command.AddCommand;
+import todo.command.UpdateCommand;
 import todo.model.DateTime;
 import todo.model.Item;
 import todo.model.Message;
@@ -86,10 +87,13 @@ public class NLP {
 	 * @param msg
 	 * @return
 	 */
-	public boolean updateParser(Item item, String msg){
+	public UpdateCommand updateParser(Item item, String msg){
 		LogUtil.Log(TAG, "Start NLP update parser");
+		UpdateCommand updateCommand = new UpdateCommand();
+		updateCommand.setItem(item);
 		
 		
+		/*
 		if (StringUtil.isFullQuote(msg)){
 			// update description
 			item.setDescription(StringUtil.removeFullQuote(msg));
@@ -141,7 +145,8 @@ public class NLP {
 				item.setDueDateTime(dateTimeList.get(1));
 			}
 		}
-		return true;
+		*/
+		return updateCommand;
 	}
 	
 	/**

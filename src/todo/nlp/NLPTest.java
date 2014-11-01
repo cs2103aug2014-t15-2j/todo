@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,7 +15,6 @@ import org.junit.Test;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
-import todo.model.Item;
 import todo.util.StringUtil;
 
 public class NLPTest {
@@ -39,11 +37,14 @@ public class NLPTest {
 		// step4 find out one word location and all the tags
 		// step5 delete all the escape characters
 		// step6 if the whole sentence is quoted, then delete the quotation marks
+		
+		// TODO
+		/*
 		NLP nlp = NLP.getInstance();
 		String input = "Finish homework by next monday";
-		//TODO
-		//Item add = nlp.addParser(input);
-		//assertEquals(add.getDescription(), "Finish homework");
+		Item add = nlp.addParser(input);
+		assertEquals(add.getDescription(), "Finish homework");
+		*/
 	}
 	
 	@Test

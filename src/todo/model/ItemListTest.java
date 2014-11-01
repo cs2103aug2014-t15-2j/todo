@@ -1,12 +1,7 @@
 package todo.model;
 
 import static org.junit.Assert.*;
-
-import java.util.Date;
-
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class ItemListTest {
 	String item1 = "item-1";
