@@ -271,6 +271,14 @@ public class Item {
 		this.tags = tagList;
 	}
 	
+	public void addTag(String newTag){
+		this.tags.add(newTag);
+	}
+	
+	public void deleteTaf(String tag){
+		this.tags.remove(tag);
+	}
+	
 	public void setStatusDone(){
 		this.isCompleted = true;
 	}

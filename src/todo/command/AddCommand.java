@@ -30,7 +30,7 @@ public class AddCommand implements Command{
 		return ADD_SUCCESSFUL;
 	}
 	
-	public void setDesctiption(String description){
+	public void setDescription(String description){
 		this.description = description;
 	}
 	

@@ -19,8 +19,6 @@ import todo.model.Message;
 import todo.util.LogUtil;
 import todo.util.StringUtil;
 
-import com.joestelmach.natty.DateGroup;
-
 public class NLP {
 	private static NLP NLPSingleton = null;
 	private static String TAG = "NLP";
@@ -40,11 +38,11 @@ public class NLP {
 	}
 	
 	/**
-	 *  Add Parser
+	 *  ADD PARSER
 	 *  extract date/time, location, tags, and description information from user input
 	 * @param msg: the content part of an add command, contains description, 
 	 * 				date/time (optional), location (optional), tags (optional)
-	 * @return a new item created
+	 * @return add command
 	 * @throws Exception 
 	 */
 	public AddCommand addParser(String msg){		
@@ -72,7 +70,7 @@ public class NLP {
 		message.trim();
 
 		AddCommand addCommand = new AddCommand();
-		addCommand.setDesctiption(message.getText());
+		addCommand.setDescription(message.getText());
 		addCommand.setStart(dateTimeList.get(0));
 		addCommand.setDue(dateTimeList.get(1));
 		addCommand.setLocation(location);
@@ -82,75 +80,74 @@ public class NLP {
 	}
 	
 	/**
-	 * Update Parser
-	 * @param item
-	 * @param msg
-	 * @return
+	 * UPDATE PARSER
+	 * @param item : the item to be updated
+	 * @param msg : user input, contain following update info
+	 * 				fully quoted as description
+	 * 				start with @ to update location
+	 * 				start with # to update tags
+	 * 				contain date/time to update date/time
+	 * 				clean command to clean corresponding field
+	 * @return update command
 	 */
 	public UpdateCommand updateParser(Item item, String msg){
+		List<DateTime> dateTimeList;
+		ArrayList<String> tagList;
+		String location;
+		
 		LogUtil.Log(TAG, "Start NLP update parser");
 		UpdateCommand updateCommand = new UpdateCommand();
 		updateCommand.setItem(item);
 		
+		Message message = new Message(msg);
 		
-		/*
+		// set update start/due date/time
+		message.correctDateFormat();
+		dateTimeList = NLPUtil.extractDateTime(message);
+		updateCommand.setStart(dateTimeList.get(0));
+		updateCommand.setDue(dateTimeList.get(1));
+		
+		// set update location
+		location = NLPUtil.extractLocation(message);
+		updateCommand.setLocation(location);
+		
+		// set update tags
+		tagList = NLPUtil.extractTags(message);
+		updateCommand.setTagList(tagList);
+		
+		// set update description
 		if (StringUtil.isFullQuote(msg)){
-			// update description
-			item.setDescription(StringUtil.removeFullQuote(msg));
-		}else if (msg.charAt(0) == '@'){
-			// update location
-			item.setLocation(msg.substring(1));
-		}else if (StringUtil.getFirstWord(msg).equals(NLPConfig.addTagCommand)){
-			// add tags
-			String[] strArray = msg.split(" ");
-			ArrayList<String>  tagList = item.getTags();
-			for(int i = 0; i < strArray.length ; i++){
-				if (strArray[i].length() > 1 && strArray[i].charAt(0) == '#'){
-					tagList.add(strArray[i].substring(1));
-					msg = msg.replace(strArray[i], "");
-				}
-			}
-			item.setTags(tagList);
-		}else if (StringUtil.getFirstWord(msg).equals(NLPConfig.deleteTagCommand)){
-			// delete tags
-			String[] strArray = msg.split(" ");
-			ArrayList<String>  tagList = item.getTags();
-			for(int i = 0; i < strArray.length ; i++){
-				if (strArray[i].length() > 1 && strArray[i].charAt(0) == '#'){
-					String toRemove = strArray[i].substring(1);
-					for ( int j = 0;  j < tagList.size(); j++){
-			            String tempName = tagList.get(j);
-			            if(tempName.equals(toRemove)){
-			            	tagList.remove(j);
-			            }
-			        }
-					msg = msg.replace(strArray[i], "");
-				}
-			}
-			item.setTags(tagList);
-		}else{
-			// update date/time
-			List<DateGroup> groups = NLPUtil.getDateGroups(msg);
-			List<DateTime> dateTimeList = new ArrayList<DateTime>();
-			if (groups.size() != 0){
-				DateGroup group = groups.get(0);
-				String groupText = group.getText();
-				dateTimeList = NLPUtil.getDateTime(group);
-				String wordBeforeDate = StringUtil.getWordBeforeSubstring(msg,groupText);
-				if (Arrays.asList(NLPConfig.preDue).contains(wordBeforeDate)){
-					// exchange start time and due time
-					dateTimeList.add(dateTimeList.remove(0));
-				}
-				item.setStartDateTime(dateTimeList.get(0));
-				item.setDueDateTime(dateTimeList.get(1));
-			}
+			updateCommand.setDescription(StringUtil.removeFullQuote(msg));
 		}
-		*/
+		
+		// clean command
+		if (Arrays.asList(NLPConfig.updateDeleteStart).contains(msg)){
+			// clean start date/time
+			updateCommand.setUpdateStart();
+		}
+		if (Arrays.asList(NLPConfig.updateDeleteDue).contains(msg)){
+			// clean due date/time
+			updateCommand.setUpdateDue();
+		}
+		if (Arrays.asList(NLPConfig.updateDeleteDate).contains(msg)){
+			// clean start & due date/time
+			updateCommand.setUpdateStart();
+			updateCommand.setUpdateDue();
+		}
+		if (Arrays.asList(NLPConfig.updateDeleteLocation).contains(msg)){
+			// clean location
+			updateCommand.setUpdateLocation();
+		}
+		if (Arrays.asList(NLPConfig.updateCleanTag).contains(msg)){
+			// clean tags
+			updateCommand.setCleanTag();
+		}
+		
 		return updateCommand;
 	}
 	
 	/**
-	 * Index Parser
+	 * INDEX PARSER
 	 * @param indices
 	 * @return
 	 * @throws DOMException
@@ -165,7 +162,7 @@ public class NLP {
 	}
 	
 	/**
-	 * General Parser
+	 * GENERAL PARSER
 	 * @param input
 	 * @return if the input is in library, return standard command, otherwise, return original string
 	 */

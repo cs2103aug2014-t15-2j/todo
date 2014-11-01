@@ -80,7 +80,10 @@ public class NLPUtil {
 		String[] strArray = msg.getText().split(" ");
 		for(int i = strArray.length-1; i >= 0 ; i--){
 			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '#'){
-				tagList.add(0, strArray[i].substring(1));
+				String newTag = strArray[i].substring(1);
+				if (!tagList.contains(newTag)){
+					tagList.add(0, newTag);
+				}
 				msg.deleteSubstring(strArray[i]);
 			}
 		}

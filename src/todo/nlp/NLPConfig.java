@@ -9,4 +9,10 @@ public class NLPConfig {
 	
 	public static final String addTagCommand = "add";
 	public static final String deleteTagCommand = "delete";
+	
+	public static final String[] updateDeleteStart = {"no start"};
+	public static final String[] updateDeleteDue = {"no due"};
+	public static final String[] updateDeleteDate = {"no date"};
+	public static final String[] updateDeleteLocation = {"no location"};
+	public static final String[] updateCleanTag = {"no tag", "clean tag", "clean tags"};
 }
