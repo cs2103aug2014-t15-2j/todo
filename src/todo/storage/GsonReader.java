@@ -24,10 +24,11 @@ public class GsonReader {
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		Gson gson = new Gson();
 		ItemList il = gson.fromJson(br, ItemList.class);
-		ItemStaticAttributes itemStaticAttributes = gson.fromJson(br, ItemStaticAttributes.class);
+		ItemStaticAttributes itemStaticAttributes = gson.fromJson(br,
+				ItemStaticAttributes.class);
 		Item.setItemQty(itemStaticAttributes.getItemQty());
 		Item.setLastItemID(itemStaticAttributes.getLastItemId());
-		
+
 		return il;
 	}
 }

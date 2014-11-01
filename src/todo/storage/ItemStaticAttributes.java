@@ -3,8 +3,10 @@ package todo.storage;
 import todo.model.Item;
 
 /**
- * This is a class that maintains two Item's static attributes, which are itemQty and lastItemId.
- * This class is used to cater for GSON's toJson and fromJson methods.
+ * This class maintains two Item's static attributes, which are itemQty and
+ * lastItemId. This class is used to cater for GSON's toJson and fromJson
+ * methods.
+ * 
  * @author Lui
  *
  */
@@ -12,12 +14,12 @@ public class ItemStaticAttributes {
 	private int itemQty;
 	private int lastItemId;
 
-	public ItemStaticAttributes(){
+	public ItemStaticAttributes() {
 		itemQty = Item.getItemQty();
 		lastItemId = Item.getLastItemId();
 	}
-	
-	//getters
+
+	// getters
 	public int getItemQty() {
 		return this.itemQty;
 	}
@@ -26,12 +28,12 @@ public class ItemStaticAttributes {
 		return this.lastItemId;
 	}
 
-	//setters
-	public void setItemQty(int itemQty){
+	// setters
+	public void setItemQty(int itemQty) {
 		this.itemQty = itemQty;
 	}
-	
-	public void setLastItemId(int lastItemId){
+
+	public void setLastItemId(int lastItemId) {
 		this.lastItemId = lastItemId;
 	}
 }

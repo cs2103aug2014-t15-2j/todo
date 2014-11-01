@@ -19,13 +19,13 @@ public class GsonWriter {
 
 		Gson gson = new Gson();
 		gson.toJson(il, writer);
-		
+
 		ItemStaticAttributes itemStaticAttributes = new ItemStaticAttributes();
 		itemStaticAttributes.setItemQty(Item.getItemQty());
 		itemStaticAttributes.setLastItemId(Item.getLastItemId());
-		
+
 		gson.toJson(itemStaticAttributes, writer);
-		
+
 		writer.close();
 	}
 }
