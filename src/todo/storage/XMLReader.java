@@ -81,6 +81,8 @@ public class XMLReader {
 		Node lastItemId = doc.getElementsByTagName(Storage.LAST_ITEM_ID).item(Storage.ZERO);
 		Item.setLastItemID(Integer.parseInt(lastItemId.getTextContent()));
 		
+		// To run at launch of program to build completed and uncompleted lists
+				newItemList.checkStatus();
 		return newItemList;
 	}
 	
@@ -171,6 +173,8 @@ public class XMLReader {
 		
 			newItemList.add(newItem);
 		}
+		//To run at launch of program to build completed and uncompleted lists
+		newItemList.checkStatus();
 		
 		return newItemList;
 	}

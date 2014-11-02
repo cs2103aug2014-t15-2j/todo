@@ -136,7 +136,6 @@ public class Item implements Comparable<Item>{
 	 * @param tags
 	 */
 	public Item(String description, DateTime startDateTime, DateTime dueDateTime, String location, boolean importance, ArrayList<String> tags){
-		isValidDate(startDateTime.getDate(),dueDateTime.getDate());
 		setDescription(description);
 		setStartDateTime(startDateTime);
 		setDueDateTime(dueDateTime);
