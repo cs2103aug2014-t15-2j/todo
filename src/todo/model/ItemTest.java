@@ -104,7 +104,7 @@ public class ItemTest {
 		myList.add(abc3);
 		myList.add(abc4);
 		myList.add(abc5);
-		myList.displayList();
+		myList.toString();
 		System.out.println();
 	}
 	@Test
@@ -132,10 +132,10 @@ public class ItemTest {
 		myList.add(abc3);
 		myList.add(abc4);
 		myList.add(abc5);
-		myList.displayList();
+		myList.toString();
 		
 		//myList.sortByTimeDecreasing();
-		myList.displayList();
+		System.out.println(myList.toString());
 		System.out.println();
 		
 	}
@@ -166,7 +166,7 @@ public class ItemTest {
 		myList.add(abc3);
 		myList.add(abc4);
 		myList.add(abc5);
-	
+		System.out.println(myList.toString());
 		System.out.println("Completed: ");
 		System.out.println(myList.showCompletedListString());
 		System.out.println("UnCompleted: ");
@@ -182,9 +182,46 @@ public class ItemTest {
 		tagList.add("homework");
 		tagList.add("school");
 		Item abc5 = new Item("item5", testDateTime1, testDateTime2, location1, important, tagList);
-
+		
 	assertEquals(abc5.toString(),abc5.cloneItem().toString());
 	}
 	
+	@Test
+	public void searchIndexTest() {
+		System.out.println("Currently testing: testItemListSort: ");
+		ItemList myList = new ItemList();
+		
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		
+		Item abc1 = new Item("item1");
+		abc1.setStatusDone();
+		
+		Item abc2 = new Item("item2",testDateTime1);
+	
+		Item abc3 = new Item("item3",important,tagList);
+		
+		Item abc4 = new Item("item4",location1, important, tagList);
+		abc4.setStatusDone();
+		
+		Item abc5 = new Item("item5", testDateTime1, testDateTime2, location1, important, tagList);
+		System.out.println("BEFORE SORT");
+		
+		myList.add(abc3);
+		myList.add(abc4);
+		myList.add(abc5);
+		myList.add(abc1);
+		myList.add(abc2);
+		myList.toString();
+		System.out.println(myList.toString());
+		System.out.println("After SORT");
+		System.out.println(myList.toString());
+	
+		System.out.println ("key abc3 position : " +ItemList.searchIndex(myList, 16));
+		
+		
+		
+	}
 	
 }

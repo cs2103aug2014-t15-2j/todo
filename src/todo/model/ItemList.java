@@ -50,6 +50,16 @@ public class ItemList {
 			return itemList.get(index);
 		}
 		
+		//Return the list of completed items
+		public ArrayList <Item> getCompletedItems () {
+			return this.completedList;
+		}
+		
+		//Return the list of uncompleted items
+		public ArrayList <Item> getUnCompletedItems () {
+			return this.uncompletedList;
+		}
+		
 		// check if a index valid
 		public boolean validIndex(int index){
 			assert index>= 0;
@@ -98,6 +108,21 @@ public class ItemList {
 				String doneItemDescription = itemList.get(index - 1).getDescription();
 				String result = String.format(MESSAGE_COMPLETED, doneItemDescription);
 				itemList.get(index - 1).setStatusDone();;
+				//Add item to list of completed item:
+				completedList.add(itemList.get(index-1));
+				//Find itemId of the item that was mark as done
+				int target = itemList.get(index-1).getItemId();
+				//Search for the index of the item in the uncompleted list
+				int deleteIndex = searchIndex(uncompletedList,target);
+				//Remove the item from the uncompleted list
+				if(deleteIndex ==-1){
+				String errorMessage = "Item not found in target list";
+				return errorMessage;
+				}
+				else {
+					uncompletedList.remove(deleteIndex);
+				}
+				
 				return result;
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
@@ -117,6 +142,20 @@ public class ItemList {
 				String undoneItemDescription = itemList.get(index - 1).getDescription();
 				itemList.get(index - 1).setStatusUndone();;
 				String result = String.format(MESSAGE_UNCOMPLETED, undoneItemDescription);
+				//Add item to list of uncompleted item:
+				uncompletedList.add(itemList.get(index-1));
+				//Find itemId of the item that was mark as done
+				int target = itemList.get(index-1).getItemId();
+				//Search for the index of the item in the completed list
+				int deleteIndex = searchIndex(completedList,target);
+				//Remove the item from the completed list
+				if(deleteIndex ==-1){
+				String errorMessage = "Item not found in target list";
+				return errorMessage;
+				}
+				else {
+					completedList.remove(deleteIndex);
+				}
 				return result;
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
@@ -152,15 +191,26 @@ public class ItemList {
 			
 			return result;
 		}
+		//Sort the itemList by itemId in ascending order 
+		public void sortByItemId() {
+			Collections.sort(itemList, new Comparator<Item>(){
+				public int compare(Item item1, Item item2){
+					return item1.getItemId()- (item2.getItemId());
+				}
+			});	
+			
+		}
 		
 		// Sort the itemList according to alphabetical order of description
 		public void sortByFirstAlphabet(){
 			Collections.sort(itemList, new Comparator<Item>(){
 				public int compare(Item item1, Item item2){
 					return item1.getDescription().compareToIgnoreCase(item2.getDescription());
-				}
+
+		}
 			});
 		}
+
 		
 		// Sort the itemList from early to later by comparing start time with earliest first with items without startdatetime at the back
 		public void sortByTimeIncreasing(){
@@ -275,18 +325,18 @@ public class ItemList {
 		}
 		
 		public ArrayList<Item> showCompletedList() {
-			checkStatus();
+			
 			return completedList;
 		}
 		
 		public ArrayList<Item> showUncompletedList() {
-			checkStatus();
+			
 			return uncompletedList;
 		}
 		
 		public String showCompletedListString(){
 			String result = "";
-			checkStatus();
+			
 			if (completedList.size() == 0){
 				return ERROR_LIST_EMPTY;
 			}else{
@@ -299,7 +349,7 @@ public class ItemList {
 		
 		public String showUncompletedListString(){
 			String result = "";
-			checkStatus();
+			
 			if (uncompletedList.size() == 0){
 				return ERROR_LIST_EMPTY;
 			}else{
@@ -309,9 +359,32 @@ public class ItemList {
 			}
 			return result;
 		}
+		  
+		   
+		//With the itemId, searches the arrayList and returns the index where the item is stored
+		public static int searchIndex (ArrayList<Item> searchList , int key){
+			int start = 0 ;
+			int end = searchList.size();
+			while(start<=end) {
+				int mid =(start+end)/2;
+				
+				if(key== searchList.get(mid).getItemId()){
+					
+				return mid;
+				
+				}if(key<searchList.get(mid).getItemId()){
+					end = mid -1;
+				
+				}else {
+					start = mid +1;
+				}
+				}
+			
+				return -1; 
+		}
 		
 		//Check for item status and add it to the completed/uncompleted list
-		private void checkStatus() {
+		public void checkStatus() {
 			completedList.clear();
 			uncompletedList.clear();
 			for (int i =0; i < itemList.size(); i++ ) {
@@ -326,6 +399,7 @@ public class ItemList {
 				
 			}
 		}
+		
 			
 }		
 
