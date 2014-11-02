@@ -131,22 +131,6 @@ public class ItemList {
 		}
 		
 		// Display the whole itemList
-		public String displayList(){
-			int i = 1;
-			String result = "";
-			for (Item item : itemList){
-				String appendString = i + ". " + item.toString() + "\n\n";
-				result += appendString;
-				i++;
-			}
-			if(itemList.size() == 0){
-				result = ERROR_LIST_EMPTY;;
-			}
-			
-			return result;
-		}
-		
-		// Display the whole itemList
 		public String toString(){
 			String result = "";
 			if (this.size() == 0){

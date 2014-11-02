@@ -211,7 +211,7 @@ public class Logic {
 	    }else if((userInput.contains("undone")||userInput.contains("uncompleted"))){
 	    	result = mItemList.showUncompletedListString();
 	    	return result;
-	    //Filter by dateTime using standard format MM/dd/yyyy
+	    //Filter by dateTime using standard format yyyy/MM/dd
 	    }else if(userInput.contains("on")){
 	    	int hasOnPosition = userInput.indexOf("n");
 	    	String dateString = "";
@@ -223,7 +223,7 @@ public class Logic {
 	    		return result;
 	    	}
 	    }else{
-	    	result = mItemList.displayList();
+	    	result = mItemList.toString();
 			return result;
 	    }
 	}
