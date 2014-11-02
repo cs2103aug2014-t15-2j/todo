@@ -50,6 +50,16 @@ public class ItemList {
 			return itemList.get(index);
 		}
 		
+		//Return the list of completed items
+		public ArrayList <Item> getCompletedItems () {
+			return this.completedList;
+		}
+		
+		//Return the list of uncompleted items
+		public ArrayList <Item> getUnCompletedItems () {
+			return this.uncompletedList;
+		}
+		
 		// check if a index valid
 		public boolean validIndex(int index){
 			assert index>= 0;
@@ -164,9 +174,14 @@ public class ItemList {
 		
 		// Sort the itemList according to alphabetical order of description
 		public void sortByFirstAlphabet(){
-			Collections.sort(itemList);
+			Collections.sort(itemList, new Comparator<Item>(){
+				public int compare(Item item1, Item item2){
+					return item1.getDescription().compareToIgnoreCase(item2.getDescription());
 
 		}
+			});
+		}
+
 		
 		// Sort the itemList from early to later by comparing start time with earliest first with items without startdatetime at the back
 		public void sortByTimeIncreasing(){
@@ -317,24 +332,22 @@ public class ItemList {
 		}
 		  
 		   
-		
+		//With the itemId, returns the index where the item is stored
 		public static int searchIndex (ItemList searchList , int key){
 			int start = 0 ;
 			int end = searchList.size();
 			while(start<=end) {
 				int mid =(start+end)/2;
-				System.out.println("enter search");
-				System.out.println("Current to compare : "+searchList.getItem(mid).getItemId());
+				
 				if(key== searchList.getItem(mid).getItemId()){
-					System.out.println("enter search2");
+					
 				return mid;
 				
 				}if(key<searchList.getItem(mid).getItemId()){
 					end = mid -1;
-					System.out.println("enter search3");
+				
 				}else {
 					start = mid +1;
-					System.out.println("enter search4");
 				}
 				}
 			

@@ -207,11 +207,12 @@ public class ItemTest {
 		
 		Item abc5 = new Item("item5", testDateTime1, testDateTime2, location1, important, tagList);
 		System.out.println("BEFORE SORT");
-		myList.add(abc1);
-		myList.add(abc2);
+		
 		myList.add(abc3);
 		myList.add(abc4);
 		myList.add(abc5);
+		myList.add(abc1);
+		myList.add(abc2);
 		myList.toString();
 		System.out.println(myList.toString());
 		System.out.println("After SORT");

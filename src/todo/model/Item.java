@@ -136,6 +136,7 @@ public class Item implements Comparable<Item>{
 	 * @param tags
 	 */
 	public Item(String description, DateTime startDateTime, DateTime dueDateTime, String location, boolean importance, ArrayList<String> tags){
+		isValidDate(startDateTime.getDate(),dueDateTime.getDate());
 		setDescription(description);
 		setStartDateTime(startDateTime);
 		setDueDateTime(dueDateTime);
@@ -278,9 +279,11 @@ public class Item implements Comparable<Item>{
 	//Display item
 	public String toString() {
 		String result = "";
+		/* For Testing of itemID
 		result = result.concat("ItemID ");
 		result = result.concat(String.valueOf(this.itemId));
 		result = result.concat(" ");
+		*/
 		result = result.concat("");
 		result = result.concat(description);
 		
@@ -343,17 +346,7 @@ public class Item implements Comparable<Item>{
 		Item clonned = new Item (itemId, description, startDateTime, dueDateTime, location, importance, tags, status);
 		return clonned;
 	} 
-	/*
-	public static class orderByItemId implements Comparator<Item> {
-	@Override
-	public int compare(Item item1 , Item item2){
-		return item1.getItemId()>item2.getItemId() ?1 : (item1.getItemId() < item2.getItemId() ?-1 :0);
-
-		
-	}
 	
-	}
-	*/
 	@Override
 	public int compareTo(Item toCompare){
 		return this.itemId >toCompare.getItemId() ?1 :(this.itemId< toCompare.getItemId() ? -1 :0);
@@ -367,11 +360,16 @@ public class Item implements Comparable<Item>{
 		}
 		return clonnedTagList;
 	}
-	
-	private boolean isValidDate(LocalDateTime startDate , LocalDateTime dueDate) {
-		boolean validity = false;
-		
-		return validity;
+	//Checks if the due date is before the start date
+	private boolean isInValidDate(LocalDateTime startDate , LocalDateTime dueDate)  {
+		boolean Invalid;
+		if(dueDate.isBefore(startDate)){
+			Invalid =true;
+		}
+		else {
+			Invalid = false;
+		}
+		return Invalid;
 		
 	}
 	

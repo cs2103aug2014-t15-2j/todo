@@ -1,5 +1,7 @@
 package todo.ui;
 
+import java.time.*;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -130,7 +132,7 @@ public class MyGUI {
         };
         pane.setLayout(new BorderLayout());
         
-        JLabel indexLabel = new JLabel("   1   ");
+        JLabel indexLabel = new JLabel("   3  ");
         Border border = BorderFactory.createLineBorder(Color.WHITE,5);
         indexLabel.setBorder(border);
         pane.add(indexLabel, BorderLayout.WEST);
@@ -150,7 +152,8 @@ public class MyGUI {
 	// This method defines the current time panel
 	public JPanel createTimePane() {
 		JPanel pane = new JPanel(new BorderLayout());
-		label = new JLabel("Current Time: 00:00 ");
+		
+		label = new JLabel("Current Time: " + LocalDateTime.now().toString());
 		pane.add(label);
 		
 		return pane;
