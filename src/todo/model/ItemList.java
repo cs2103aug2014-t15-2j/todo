@@ -363,6 +363,7 @@ public class ItemList {
 		   
 		//With the itemId, searches the arrayList and returns the index where the item is stored
 		public static int searchIndex (ArrayList<Item> searchList , int key){
+			int notfound = -1;
 			int start = 0 ;
 			int end = searchList.size();
 			while(start<=end) {
@@ -380,7 +381,29 @@ public class ItemList {
 				}
 				}
 			
-				return -1; 
+				return notfound; 
+		}
+		//With the itemId, searches the ItemList and returns the index where the item is stored
+		public static int searchIndex (ItemList searchList , int key){
+			int notfound = -1;
+			int start = 0 ;
+			int end = searchList.size();
+			while(start<=end) {
+				int mid =(start+end)/2;
+				
+				if(key== searchList.getItem(mid).getItemId()){
+					
+				return mid;
+				
+				}if(key<searchList.getItem(mid).getItemId()){
+					end = mid -1;
+				
+				}else {
+					start = mid +1;
+				}
+				}
+			
+				return notfound; 
 		}
 		
 		//Check for item status and add it to the completed/uncompleted list
