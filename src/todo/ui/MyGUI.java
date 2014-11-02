@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.time.LocalDateTime;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -172,7 +173,7 @@ public class MyGUI {
 	// This method defines the current time panel
 	public JPanel createTimePane() {
 		JPanel pane = new JPanel(new BorderLayout());
-		label = new JLabel("Current Time: 00:00 ");
+		label = new JLabel("Current Time: " + LocalDateTime.now().toString());
 		pane.add(label);
 		
 		return pane;
