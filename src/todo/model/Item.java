@@ -3,9 +3,11 @@ package todo.model;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Collections;
+import java.lang.String;
 
-
-public class Item {
+public class Item implements Comparable<Item>{
 	
 	private static final boolean unImportant = false;
 	private static int itemQty = 0;
@@ -276,6 +278,9 @@ public class Item {
 	//Display item
 	public String toString() {
 		String result = "";
+		result = result.concat("ItemID ");
+		result = result.concat(String.valueOf(this.itemId));
+		result = result.concat(" ");
 		result = result.concat("");
 		result = result.concat(description);
 		
@@ -338,8 +343,22 @@ public class Item {
 		Item clonned = new Item (itemId, description, startDateTime, dueDateTime, location, importance, tags, status);
 		return clonned;
 	} 
+	/*
+	public static class orderByItemId implements Comparator<Item> {
+	@Override
+	public int compare(Item item1 , Item item2){
+		return item1.getItemId()>item2.getItemId() ?1 : (item1.getItemId() < item2.getItemId() ?-1 :0);
 
-	 
+		
+	}
+	
+	}
+	*/
+	@Override
+	public int compareTo(Item toCompare){
+		return this.itemId >toCompare.getItemId() ?1 :(this.itemId< toCompare.getItemId() ? -1 :0);
+	}
+	
 	private ArrayList<String> cloneTags(ArrayList<String> tags){
 		ArrayList<String> clonnedTagList = new ArrayList<String>();
 		for (int j = 0; j < tags.size(); j++) {

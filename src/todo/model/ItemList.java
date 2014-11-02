@@ -152,14 +152,20 @@ public class ItemList {
 			
 			return result;
 		}
+		//Sort the itemList by itemId in ascending order 
+		public void sortByItemId() {
+			Collections.sort(itemList, new Comparator<Item>(){
+				public int compare(Item item1, Item item2){
+					return item1.getItemId()- (item2.getItemId());
+				}
+			});	
+			
+		}
 		
 		// Sort the itemList according to alphabetical order of description
 		public void sortByFirstAlphabet(){
-			Collections.sort(itemList, new Comparator<Item>(){
-				public int compare(Item item1, Item item2){
-					return item1.getDescription().compareToIgnoreCase(item2.getDescription());
-				}
-			});
+			Collections.sort(itemList);
+
 		}
 		
 		// Sort the itemList from early to later by comparing start time with earliest first with items without startdatetime at the back
@@ -309,6 +315,31 @@ public class ItemList {
 			}
 			return result;
 		}
+		  
+		   
+		
+		public static int searchIndex (ItemList searchList , int key){
+			int start = 0 ;
+			int end = searchList.size();
+			while(start<=end) {
+				int mid =(start+end)/2;
+				System.out.println("enter search");
+				System.out.println("Current to compare : "+searchList.getItem(mid).getItemId());
+				if(key== searchList.getItem(mid).getItemId()){
+					System.out.println("enter search2");
+				return mid;
+				
+				}if(key<searchList.getItem(mid).getItemId()){
+					end = mid -1;
+					System.out.println("enter search3");
+				}else {
+					start = mid +1;
+					System.out.println("enter search4");
+				}
+				}
+			
+				return -1; 
+		}
 		
 		//Check for item status and add it to the completed/uncompleted list
 		private void checkStatus() {
@@ -326,6 +357,7 @@ public class ItemList {
 				
 			}
 		}
+		
 			
 }		
 

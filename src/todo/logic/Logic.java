@@ -351,7 +351,7 @@ public class Logic {
 	
 	// For GUI testing purpose
 	public String getListString(){
-			return mItemList.displayList();
+			return mItemList.toString();
 	}
 	
 }
