@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.Border;
 
 public class MyGUI {
 	
@@ -76,7 +78,7 @@ public class MyGUI {
         		gbc.gridy++;
         		frame.add(createTextFieldPane(), gbc);
 
-        		//frame.setSize(500,500);
+        		//frame.setSize(600,550);
                 frame.pack();
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
@@ -126,6 +128,13 @@ public class MyGUI {
             }
 
         };
+        pane.setLayout(new BorderLayout());
+        
+        JLabel indexLabel = new JLabel("   1   ");
+        Border border = BorderFactory.createLineBorder(Color.WHITE,5);
+        indexLabel.setBorder(border);
+        pane.add(indexLabel, BorderLayout.WEST);
+        
         pane.setBackground(color);
         return pane;
     }
