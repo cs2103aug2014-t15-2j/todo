@@ -125,7 +125,7 @@ public class MyGUI {
 
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(40, 40);
+                return new Dimension(50, 50);
             }
 
         };
@@ -133,18 +133,29 @@ public class MyGUI {
         
         // Defines index Label
         JLabel indexLabel = new JLabel("   1   ");
+        indexLabel.setFont(new Font("Verdana", Font.BOLD, 13));
         Border indexBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 5);
         indexLabel.setBorder(indexBorder);
         pane.add(indexLabel, BorderLayout.WEST);
         
         // Defines DateTime TextArea
-        JTextArea dateTimeTextArea = new JTextArea(20, 20);
+        JTextArea dateTimeTextArea = new JTextArea(18, 18);
         dateTimeTextArea.setFont(new Font("Verdana", Font.PLAIN, 10));
-        dateTimeTextArea.setText(" Start: 11/03/2014 08:00 am " + "\n" + " Due:  11/07/2014 23:59 pm");
+        dateTimeTextArea.setText(" Start: 11/03/2014 08:00 am " + "\n" + "\n" + " Due:  11/07/2014 23:59 pm");
         
         Border dateTimeBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
         dateTimeTextArea.setBorder(dateTimeBorder);
         pane.add(dateTimeTextArea, BorderLayout.EAST);
+        
+        // Defines description TextArea
+        JTextArea descriTextArea = new JTextArea(20, 20);
+        descriTextArea.setFont(new Font("Verdana", Font.PLAIN, 10));
+        descriTextArea.setText(" Attend project meeting of CS2103 after school. "
+                               + "\n" + " Location: UTown " + "\n" + " [#School #Work]");
+        
+        Border descriBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+        descriTextArea.setBorder(descriBorder);
+        pane.add(descriTextArea, BorderLayout.CENTER);
         
         pane.setBackground(color);
         return pane;
