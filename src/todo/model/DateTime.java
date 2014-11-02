@@ -23,10 +23,6 @@ public class DateTime {
 		this.hasTime = hasTime;
 	}
 	
-	private DateTime(LocalDateTime clonnedLocalDateTime, boolean hasTime){
-		this.date= clonnedLocalDateTime;
-		this.hasTime =hasTime;
-	}
 
 	public void setDate(Date date) {
 		this.date = convertDateToLocalDateTime (date);
