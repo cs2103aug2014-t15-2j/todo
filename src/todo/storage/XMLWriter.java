@@ -24,10 +24,6 @@ import todo.model.DateTime;
 
 public class XMLWriter {
 	
-	private DateFormat dateWithTime = new SimpleDateFormat(
-			Storage.DATE_WITH_TIME);
-	private DateFormat dateWithoutTime = new SimpleDateFormat(
-			Storage.DATE_WITHOUT_TIME);
 
 	/**
 	 * Default constructor
@@ -95,9 +91,15 @@ public class XMLWriter {
 				sdtHasTime.appendChild(doc.createTextNode(String.valueOf(sdt.hasTime())));
 				
 				if(sdt.hasTime()){
-					sdtDateTime.appendChild(doc.createTextNode(dateWithTime.format(sdt.getDate())));
+					String dateWithTime = sdt.getDate().toString();
+					dateWithTime = dateWithTime.replace(' ', ' ');
+					sdtDateTime.appendChild(doc.createTextNode(dateWithTime));
 				}else{
-					sdtDateTime.appendChild(doc.createTextNode(dateWithoutTime.format(sdt.getDate())));
+					String dateWithoutTime = (sdt.getDate().toString());
+					int toRemoveAfter = dateWithoutTime.indexOf("T") ;
+					dateWithoutTime = dateWithoutTime.substring(0,toRemoveAfter);
+					sdtDateTime.appendChild(doc.createTextNode(dateWithoutTime));
+			
 				}
 			}
 			startDateTime.appendChild(sdtHasTime);
@@ -118,9 +120,14 @@ public class XMLWriter {
 				ddtHasTime.appendChild(doc.createTextNode(String.valueOf(ddt.hasTime())));
 				
 				if(ddt.hasTime()){
-					ddtDateTime.appendChild(doc.createTextNode(dateWithTime.format(ddt.getDate())));
+					String dateWithTime = ddt.getDate().toString();
+					dateWithTime = dateWithTime.replace(' ', ' ');
+					ddtDateTime.appendChild(doc.createTextNode(dateWithTime));
 				}else{
-					ddtDateTime.appendChild(doc.createTextNode(dateWithoutTime.format(ddt.getDate())));
+					String dateWithoutTime = (ddt.getDate().toString());
+					int toRemoveAfter = dateWithoutTime.indexOf("T") ;
+					dateWithoutTime = dateWithoutTime.substring(0,toRemoveAfter);
+					ddtDateTime.appendChild(doc.createTextNode(dateWithoutTime));
 				}
 			}
 			dueDateTime.appendChild(ddtHasTime);

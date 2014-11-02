@@ -1,24 +1,10 @@
 package todo.model;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-/**
- * @author SAMSUNG
- *
- */
-/**
- * @author SAMSUNG
- *
- */
-/**
- * @author SAMSUNG
- *
- */
-/**
- * @author SAMSUNG
- *
- */
+
 public class Item {
 	
 	private static final boolean unImportant = false;
@@ -352,7 +338,7 @@ public class Item {
 		Item clonned = new Item (itemId, description, startDateTime, dueDateTime, location, importance, tags, status);
 		return clonned;
 	} 
-	
+
 	 
 	private ArrayList<String> cloneTags(ArrayList<String> tags){
 		ArrayList<String> clonnedTagList = new ArrayList<String>();
@@ -361,6 +347,13 @@ public class Item {
 			clonnedTagList.add(cloneTag);	
 		}
 		return clonnedTagList;
+	}
+	
+	private boolean isValidDate(LocalDateTime startDate , LocalDateTime dueDate) {
+		boolean validity = false;
+		
+		return validity;
+		
 	}
 	
 }

@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.time.*;
 
 import org.junit.Test;
 public class ItemTest {
@@ -29,15 +30,21 @@ public class ItemTest {
 	
 	@Test
 	public void testItemConstructor() {
-	
+		System.out.println("Currently testing: testItemConstructors: ");
 		Item abc = new Item (item1,testDateTime1);
 		Item def = new Item (item1,testDateTime1);
 		
 		assertEquals(abc.getDescription(),def.getDescription());
 		assertEquals(abc.getStartDateTime(),def.getStartDateTime());
-		
-		
+		System.out.println(currentDate4.getTime());
+		Instant instant = Instant.ofEpochMilli(currentDate4.getTime());
+		System.out.println("Instant from Date:\n" + instant);
+		Date date = Date.from(instant);
+		System.out.println("Date from Instant:\n" + date + " long: " + date.getTime());
+		LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneOffset.of("+8"));
+		System.out.println("LocalDateTime from Instant:\n" + ldt);
 	}
+		
 	
 	public void testTagsInput() {
 		ArrayList<String> tagList = new ArrayList<String>();
@@ -127,7 +134,7 @@ public class ItemTest {
 		myList.add(abc5);
 		myList.displayList();
 		
-		myList.sortByTimeDecreasing();
+		//myList.sortByTimeDecreasing();
 		myList.displayList();
 		System.out.println();
 		
@@ -170,6 +177,7 @@ public class ItemTest {
 	}
 	@Test
 	public void cloneTest() throws ParseException {
+		System.out.println("Currently testing: cloneTest: ");
 		ArrayList<String> tagList = new ArrayList<String>();
 		tagList.add("homework");
 		tagList.add("school");

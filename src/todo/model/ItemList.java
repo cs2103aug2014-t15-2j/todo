@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.time.*;
 
 
 public class ItemList {
@@ -177,10 +178,10 @@ public class ItemList {
 			});
 		}
 		
-		// Sort the itemList from early to later times
+		// Sort the itemList from early to later by comparing start time with earliest first with items without startdatetime at the back
 		public void sortByTimeIncreasing(){
 			ArrayList<Item> listWithoutStartDateTime = new ArrayList<Item>();
-			
+			//Extract items without start-time and stores them in a list temporarily
 			for(int i=0; i < itemList.size(); i++){
 				if (itemList.get(i).getStartDateTime() == null){
 					listWithoutStartDateTime.add(itemList.get(i));
@@ -188,7 +189,7 @@ public class ItemList {
 					i--;
 				}
 			}
-			
+			//Look through remaining list and sort by start-time, from earliest to latest
 			Collections.sort(itemList, new Comparator<Item>(){
 				public int compare(Item item1, Item item2){
 					return item1.getStartDateTime().getDate().compareTo(item2.getStartDateTime().getDate());
@@ -199,10 +200,10 @@ public class ItemList {
 			}
 		}
 		
-		//Sort the itemList from later to early times
+		//Sort the itemList from latest first with items without startdatetime at the back
 		public void sortByTimeDecreasing(){
 			ArrayList<Item> listWithoutStartDateTime = new ArrayList<Item>();
-			
+			//Extract items without start-time and stores them in a list temporarily
 			for(int i=0; i < itemList.size(); i++){
 				if (itemList.get(i).getStartDateTime() == null){
 					listWithoutStartDateTime.add(itemList.get(i));
@@ -210,17 +211,17 @@ public class ItemList {
 					i--;
 				}
 			}
-			
+			//Look through remaining list and sort by start-time, from earliest to latest
 			Collections.sort(itemList, new Comparator<Item>(){
-				public int compare(Item item2, Item item1){
-					return item1.getStartDateTime().getDate().compareTo(item2.getStartDateTime().getDate());
+				public int compare(Item item1, Item item2){
+					return item2.getStartDateTime().getDate().compareTo(item1.getStartDateTime().getDate());
 				}
 			});
 			for(Item item : listWithoutStartDateTime){
 				itemList.add(item);
 			}
+			
 		}  
-		
 		// Search certain key word in itemList
 		public String search(String searchKey){
 			String result = "";
@@ -277,7 +278,7 @@ public class ItemList {
 			for(int i = 0; i < itemList.size(); i++ ){
 				DateTime dateTime = itemList.get(i).getStartDateTime();
 				if(dateTime != null){
-					Date itemDate = dateTime.getDate();
+					LocalDateTime itemDate = dateTime.getDate();
 					if(itemDate.equals(dateTimeFiltered)){
 						String appendString = itemList.get(i).toString();
 					    filteredList += appendString;

@@ -43,8 +43,8 @@ public class Storage {
 	public static final String IS_COMPLETED = "isCompleted";
 
 	// Related to date and time
-	public static final String DATE_WITH_TIME = "MM/dd/yyyy HH:mm:ss";
-	public static final String DATE_WITHOUT_TIME = "MM/dd/yyyy";
+	public static final String DATE_WITH_TIME = "yyyy-MM-dd HH:mm:ss";
+	public static final String DATE_WITHOUT_TIME = "yyyy-MM-dd";
 
 	// Other miscellaneous constant string and integer
 	public static final String EMPTY = "";

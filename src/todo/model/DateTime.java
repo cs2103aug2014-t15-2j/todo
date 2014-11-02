@@ -4,34 +4,40 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.time.*;
 
 public class DateTime {
 	public static final String DATE_WITH_TIME = "MM/dd/yyyy HH:mm:ss";
 	public static final String DATE_WITHOUT_TIME = "MM/dd/yyyy";
 
 	private boolean hasTime;
-	private Date date;
+	private LocalDateTime date;
 
 	public DateTime(Date date) {
-		this.date = date;
+		this.date = convertDateToLocalDateTime (date);
 		this.hasTime = true;
 	}
 
 	public DateTime(Date date, boolean hasTime) {
-		this.date = date;
+		this.date = convertDateToLocalDateTime (date);
 		this.hasTime = hasTime;
+	}
+	
+	private DateTime(LocalDateTime clonnedLocalDateTime, boolean hasTime){
+		this.date= clonnedLocalDateTime;
+		this.hasTime =hasTime;
 	}
 
 	public void setDate(Date date) {
-		this.date = date;
+		this.date = convertDateToLocalDateTime (date);
 	}
 
 	public void setDate(Date date, boolean hasTime) {
-		this.date = date;
+		this.date = convertDateToLocalDateTime (date);
 		this.hasTime = hasTime;
 	}
 
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return this.date;
 	}
 
@@ -40,13 +46,13 @@ public class DateTime {
 	}
 
 	public String toString() {
-		DateFormat mDateFormate;
+		String output;
 		if (hasTime) {
-			mDateFormate = new SimpleDateFormat(DATE_WITH_TIME);
+			output=this.date.toString();
 		} else {
-			mDateFormate = new SimpleDateFormat(DATE_WITHOUT_TIME);
+			output=this.date.toLocalDate().toString();
 		}
-		return mDateFormate.format(this.date);
+		return output;
 	}
 
 	/**
@@ -55,20 +61,30 @@ public class DateTime {
 	 * @throws ParseException
 	 */
 	public DateTime cloneDateTime() throws ParseException {
-		DateFormat dateWithTime = new SimpleDateFormat(DATE_WITH_TIME);
-		DateFormat dateWithoutTime = new SimpleDateFormat(DATE_WITHOUT_TIME);
-
-		DateTime clonedDateTime = null;
-		Date clonedDate = null;
-
-		if (this.hasTime()) {
-			clonedDate = dateWithTime.parse(this.toString());
-			clonedDateTime = new DateTime(clonedDate, true);
-		} else {
-			clonedDate = dateWithoutTime.parse(this.toString());
-			clonedDateTime = new DateTime(clonedDate, false);
+		
+		DateTime clonnedDateTime = null;
+		if (this.hasTime()){
+			Instant instant = this.date.toInstant(ZoneOffset.of("+08"));
+			Date clonnedDate = Date.from(instant);
+			clonnedDateTime = new DateTime(clonnedDate,true);
+		}
+		else {
+			Instant instant = this.date.toInstant(ZoneOffset.of("+08"));
+			Date clonnedDate = Date.from(instant);
+			clonnedDateTime = new DateTime(clonnedDate,false);
+			
 		}
 
-		return clonedDateTime;
+		return clonnedDateTime;
 	}
-}
+	
+	public LocalDateTime convertDateToLocalDateTime (Date targetDate){
+		Instant instant = Instant.ofEpochMilli(targetDate.getTime());
+		LocalDateTime formattedDate = LocalDateTime.ofInstant(instant, ZoneOffset.of("+08"));
+		return formattedDate;
+		
+	}
+
+	
+	}
+
