@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -97,11 +98,11 @@ public class MyGUI {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         
         for(int i=0; i<9; i++){
-        	pane.add(createItemPane(Color.LIGHT_GRAY), gbc);
+        	pane.add(createItemPane(Color.WHITE), gbc);
         	gbc.gridy++;
         }
         
-        pane.add(createItemPane(Color.LIGHT_GRAY), gbc); 
+        pane.add(createItemPane(Color.WHITE), gbc); 
 
         scrollPane = new JScrollPane(pane){
         	@Override
@@ -130,10 +131,20 @@ public class MyGUI {
         };
         pane.setLayout(new BorderLayout());
         
+        // Defines index Label
         JLabel indexLabel = new JLabel("   1   ");
-        Border border = BorderFactory.createLineBorder(Color.WHITE,5);
-        indexLabel.setBorder(border);
+        Border indexBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 5);
+        indexLabel.setBorder(indexBorder);
         pane.add(indexLabel, BorderLayout.WEST);
+        
+        // Defines DateTime TextArea
+        JTextArea dateTimeTextArea = new JTextArea(20, 20);
+        dateTimeTextArea.setFont(new Font("Verdana", Font.PLAIN, 10));
+        dateTimeTextArea.setText(" Start: 11/03/2014 08:00 am " + "\n" + " Due:  11/07/2014 23:59 pm");
+        
+        Border dateTimeBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+        dateTimeTextArea.setBorder(dateTimeBorder);
+        pane.add(dateTimeTextArea, BorderLayout.EAST);
         
         pane.setBackground(color);
         return pane;
