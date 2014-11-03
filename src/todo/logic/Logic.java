@@ -27,7 +27,7 @@ public class Logic {
 	private static ItemList mItemList;
 	private StateHistory stateHistory;
 	private boolean fastUpdate;
-	private String finalMessage = "";
+	private String finalMessage = "Status: ";
 	private ArrayList<Item> itemsForGUI = new ArrayList<Item>();
 
 	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
@@ -114,75 +114,76 @@ public class Logic {
 		case READ:
 			itemsForGUI = read(userInput);
 			break;
-		/*case UPDATE:
-			result = update(userInput);
+		case UPDATE:
+			itemsForGUI = update(userInput);
 			break;
 		case DELETE:
-			result = simpleOperation(CommandType.DELETE, userInput);
+			itemsForGUI = simpleOperation(CommandType.DELETE, userInput);
 			break;
 		case DONE:
-			result = simpleOperation(CommandType.DONE, userInput);
+			itemsForGUI = simpleOperation(CommandType.DONE, userInput);
 			break;
 		case UNDONE:
-			result = simpleOperation(CommandType.UNDONE, userInput);
+			itemsForGUI = simpleOperation(CommandType.UNDONE, userInput);
 			break;
 		case CLEAR:
-			result = clear();
+			itemsForGUI = clear();
 			break;
 		case UNDO:
-			result = undo();
+			itemsForGUI = undo();
 			break;
 		case REDO:
-			result = redo();
+			itemsForGUI = redo();
 			break;
+		
 		case INVALID:
 			LogUtil.Log(TAG, "invalid command, invoke NLP general parser");
 			String standardInput = NLP.getInstance().generalParser(userInput);
 			if (userInput != standardInput) {
 				executeCommand(standardInput);
 			} else {
-				result = ERROR_UNRECOGNISED_COMMAND;
+				this.setSystemMessage(ERROR_UNRECOGNISED_COMMAND);
+				
 			}
 			break;
 		default:
 			// shouldn't reach here.
 			break;
-			*/
+			
 		}
 		return itemsForGUI;
 	}
 
-	private String undo() {
-		String result = "";
+	private ArrayList<Item> undo() {
 
 		if (stateHistory.canUndo() && stateHistory.saveStateToFuture(mItemList)) {
 			mItemList = stateHistory.undo();
-
-			result = MESSAGE_UNDO_SUCCESS;
+			this.setSystemMessage(MESSAGE_UNDO_SUCCESS);
+			
 		} else {
-			result = MESSAGE_CANNOT_UNDO;
+			this.setSystemMessage(MESSAGE_CANNOT_UNDO);
 		}
 
-		return result;
+		return mItemList.getAllItems();
 	}
 
-	private String redo() {
-		String result = "";
+	private ArrayList<Item> redo() {
+		
 
 		if (stateHistory.canRedo()
 				&& stateHistory.saveStateToHistory(mItemList)) {
 			mItemList = stateHistory.redo();
 
-			result = MESSAGE_REDO_SUCCESS;
+			this.setSystemMessage(MESSAGE_REDO_SUCCESS);
 		} else {
-			result = MESSAGE_CANNOT_REDO;
+			this.setSystemMessage(MESSAGE_CANNOT_REDO); 
 		}
 
-		return result;
+		return mItemList.getAllItems();
 	}
 
 	private ArrayList<Item> add(String userInput) throws ParserConfigurationException,
-			TransformerException {
+			TransformerException, DOMException, SAXException, IOException, ParseException {
 		saveState();
 		String content;
 		String[] arr = userInput.split(" ", 2);
@@ -242,21 +243,23 @@ public class Logic {
 		// FilteredList not required, returns complete list
 		else {
 			filteredItems = mItemList.getAllItems();
+			systemMessage = "Showing all Tasks";
+			setSystemMessage(systemMessage);
 		}
 		return filteredItems;
 	}
 
-	private String clear() throws ParserConfigurationException,
+	private ArrayList<Item> clear() throws ParserConfigurationException,
 			TransformerException {
 		saveState();
 		String result = "";
 		result = mItemList.clear();
-
+		this.setSystemMessage(result);
 		saveFile();
-		return result;
+		return mItemList.getAllItems();
 	}
 
-	private String update(String userInput)
+	private ArrayList<Item> update(String userInput)
 			throws ParserConfigurationException, TransformerException {
 		saveState();
 		String updateInfo = "";
@@ -293,8 +296,8 @@ public class Logic {
 		} else {
 			result = "update's failed.";
 		}
-
-		return result;
+		this.setSystemMessage(result);
+		return mItemList.getAllItems();
 	}
 
 	/**
@@ -311,7 +314,7 @@ public class Logic {
 	 * @throws SAXException
 	 * @throws DOMException
 	 */
-	private String simpleOperation(CommandType type, String userInput)
+	private ArrayList<Item> simpleOperation(CommandType type, String userInput)
 			throws ParserConfigurationException, TransformerException,
 			DOMException, SAXException, IOException, ParseException {
 		saveState();
@@ -358,16 +361,17 @@ public class Logic {
 		}
 
 		saveFile();
-		return result;
+		this.setSystemMessage(result);
+		return mItemList.getAllItems();
 	}
 
 	public String getSystemMessage() {
 		return this.finalMessage;
 	}
 
-	private void setSystemMessage(String message) {
-
-		finalMessage.concat(message);
+	public void setSystemMessage(String message) {
+		this.finalMessage = "";
+		this.finalMessage = message;
 
 	}
 

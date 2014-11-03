@@ -48,7 +48,6 @@ public class MyGUI {
                     ex.printStackTrace();
                 }
                 
-                logic = GUIcontrol.getLogic();
 
                 JFrame frame = new JFrame("JustDidIt");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
