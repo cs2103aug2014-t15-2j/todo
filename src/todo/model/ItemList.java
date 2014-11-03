@@ -49,6 +49,10 @@ public class ItemList {
 				
 			return itemList.get(index);
 		}
+		//Return the list of all items
+		public ArrayList <Item> getAllItems () {
+			return this.itemList;
+		}
 		
 		//Return the list of completed items
 		public ArrayList <Item> getCompletedItems () {
@@ -269,9 +273,10 @@ public class ItemList {
 			return result;
 		}		
 		
-		public String filterByTags(String tagString){
+		public ArrayList<Item> filterByTags(String tagString){
 			String[] splitedTags = tagString.split("\\W+");
-			String filteredList = "";
+			//String filteredList = ""; -remove later
+			ArrayList<Item> itemWithTargetTags = new ArrayList<Item>();
 			int matchNumber = splitedTags.length;
 			int currentMatchNumber;
 			
@@ -288,20 +293,22 @@ public class ItemList {
 					}
 				}
 				if(currentMatchNumber == matchNumber){
-					String appendString = i.toString();
-					filteredList += appendString;
-					filteredList += "\n";
+					//String appendString = i.toString(); --remove later
+					//filteredList += appendString; --to remove later
+					//filteredList += "\n";
+					itemWithTargetTags.add(i);
 				}
 			}
-			return filteredList;			
+			return itemWithTargetTags;			
 		}
 		
 		// Assumption: the dateTime refers to startDateTime
 		
-		public String filterByDateTime(String dateTimeString){
+		public ArrayList<Item> filterByDateTime(String dateTimeString){
 			
 			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 			Date dateTimeFiltered = null;
+			ArrayList<Item> itemWithTargetDate = new ArrayList<Item>();
 			try{
 				dateTimeFiltered= df.parse(dateTimeString);
 			} catch(ParseException e){
@@ -318,10 +325,12 @@ public class ItemList {
 					    filteredList += appendString;
 					    filteredList += "\n";
 					    filteredList += "\n";
-				    }
+					    itemWithTargetDate.add(itemList.get(i));
 				}
 			}
-			return filteredList;
+			}
+			return itemWithTargetDate;
+			
 		}
 		
 		public ArrayList<Item> showCompletedList() {
