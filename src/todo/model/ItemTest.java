@@ -237,7 +237,7 @@ public class ItemTest {
 		Item abc4 = new Item("item4",location1, important, tagList);
 		abc4.setStatusDone();
 		Item abc5 = new Item("item5", testDateTime1, testDateTime2, location1, important, tagList);
-		if (Item.isInValidDate(abc5.getStartDateTime().getDate(),abc5.getDueDateTime().getDate().minusHours(10))){
+		if (DateTime.isInValidDate(abc5.getStartDateTime().getDate(),abc5.getDueDateTime().getDate().minusHours(10))){
 			System.out.println("Invalid");
 		}
 		else {

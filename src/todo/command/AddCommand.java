@@ -25,6 +25,12 @@ public class AddCommand implements Command{
 		if (description.equals("")){
 			return DESCRIPTION_EMPTY;
 		}
+		if(this.start != null && this.due != null){
+			if(DateTime.isInValidDate(this.start.getDate(),this.due.getDate())){
+			return "Due Date is before Start Date";
+			}
+		}
+		
 		Item newItem = new Item(description, start, due, location, tagList);
 		Logic.getItemList().add(newItem);
 		return ADD_SUCCESSFUL;

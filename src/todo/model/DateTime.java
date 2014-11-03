@@ -81,6 +81,22 @@ public class DateTime {
 		
 	}
 
-	
-	}
+	// Checks if the due date is before the start date
+		public static boolean isInValidDate(LocalDateTime startDate,
+				LocalDateTime dueDate) {
+			boolean invalid;
+			if ((startDate != null) && (dueDate != null)) {
+				if (dueDate.isBefore(startDate)) {
+					invalid = true;
+					System.out.println("Invalid Date Input");
+				} else {
+					invalid = false;
+				}
+			} else {
+				invalid = true;
+			}
+			
+			return invalid;
 
+	}
+}
