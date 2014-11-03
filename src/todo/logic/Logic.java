@@ -28,6 +28,7 @@ public class Logic {
 	private StateHistory stateHistory;
 	private boolean fastUpdate;
 	private String finalMessage = "";
+	private ArrayList<Item> itemsForGUI = new ArrayList<Item>();
 
 	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
 	private static final String ERROR_MISSING_TAGS = "Invalid: Missing Tag Names.";
@@ -100,7 +101,7 @@ public class Logic {
 	 * @param commandType
 	 * @throws Exception
 	 */
-	public String executeCommand(String userInput) throws Exception {
+	public ArrayList<Item> executeCommand(String userInput) throws Exception {
 		CommandType commandType = getCommandType(StringUtil
 				.getFirstWord(userInput));
 		String result = "";
@@ -108,12 +109,12 @@ public class Logic {
 
 		switch (commandType) {
 		case CREATE:
-			result = add(userInput);
+			itemsForGUI = add(userInput);
 			break;
 		case READ:
-			result = read(userInput);
+			itemsForGUI = read(userInput);
 			break;
-		case UPDATE:
+		/*case UPDATE:
 			result = update(userInput);
 			break;
 		case DELETE:
@@ -146,8 +147,9 @@ public class Logic {
 		default:
 			// shouldn't reach here.
 			break;
+			*/
 		}
-		return result;
+		return itemsForGUI;
 	}
 
 	private String undo() {
@@ -179,7 +181,7 @@ public class Logic {
 		return result;
 	}
 
-	private String add(String userInput) throws ParserConfigurationException,
+	private ArrayList<Item> add(String userInput) throws ParserConfigurationException,
 			TransformerException {
 		saveState();
 		String content;
@@ -189,17 +191,18 @@ public class Logic {
 		if (arr.length > 1) {
 			content = arr[1];
 			result = NLP.getInstance().addParser(content).execute();
+			setSystemMessage(result);
 		} else {
 			result += MESSAGE_ADD_TIP;
 			result += MESSAGE_ADD_EXAMPLE;
+			setSystemMessage(result);
 		}
 
 		saveFile();
-		return result;
+		return mItemList.getAllItems();
 	}
 
-	//private ArrayList<Item> read(String userInput) {   --< FINAL VERSION SHOULD BE RETURNING ARRAYLIST OF ITEMS INSTEAD OF STRING
-	private String read(String userInput) {
+	private ArrayList<Item> read(String userInput) {  // --< FINAL VERSION SHOULD BE RETURNING ARRAYLIST OF ITEMS INSTEAD OF STRING
 		String systemMessage = "";
 		ArrayList<Item> filteredItems = new ArrayList<Item>();
 		// Filter by tags
@@ -240,7 +243,7 @@ public class Logic {
 		else {
 			filteredItems = mItemList.getAllItems();
 		}
-		return systemMessage;
+		return filteredItems;
 	}
 
 	private String clear() throws ParserConfigurationException,
@@ -380,6 +383,9 @@ public class Logic {
 
 	public static ItemList getItemList() {
 		return mItemList;
+	}
+	public ArrayList<Item> getItemsforGUI () {
+		return this.itemsForGUI;
 	}
 
 	// For GUI testing purpose
