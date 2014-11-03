@@ -28,6 +28,9 @@ public GUIcontrol() throws DOMException, ParserConfigurationException, SAXExcept
 	ArrayList<Item> unCompletedTasks = new ArrayList<Item>(); allTasks.showUncompletedList();
 }
 
+public Logic getLogic(){
+	return logic;
+}
 
 public ItemList getItemList() {
 	return allTasks;
