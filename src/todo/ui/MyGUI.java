@@ -11,6 +11,7 @@ import java.awt.Insets;
 import java.time.LocalDateTime;
 
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -99,11 +100,11 @@ public class MyGUI {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         
         for(int i=0; i<9; i++){
-        	pane.add(createItemPane(Color.WHITE), gbc);
+        	pane.add(createItemPane(), gbc);
         	gbc.gridy++;
         }
         
-        pane.add(createItemPane(Color.WHITE), gbc); 
+        pane.add(createItemPane(), gbc); 
 
         scrollPane = new JScrollPane(pane){
         	@Override
@@ -121,7 +122,7 @@ public class MyGUI {
 	}
 	
 	// This method defines individual item panel
-	public JPanel createItemPane(Color color) {
+	public JPanel createItemPane() {
         JPanel pane = new JPanel(){
 
             @Override
@@ -132,33 +133,53 @@ public class MyGUI {
         };
         pane.setLayout(new BorderLayout());
         
-        // Defines index Label
-        JLabel indexLabel = new JLabel("   1   ");
-        indexLabel.setFont(new Font("Verdana", Font.BOLD, 13));
-        Border indexBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 5);
-        indexLabel.setBorder(indexBorder);
-        pane.add(indexLabel, BorderLayout.WEST);
+        // Defines index Label  (The old one) 
         
+        /*JLabel indexLabel = new JLabel("   1   ");
+        indexLabel.setFont(new Font("Verdana", Font.BOLD, 13));
+        Border indexBorder = BorderFactory.createLineBorder(Color.ORANGE, 5);
+        indexLabel.setBorder(indexBorder);
+        pane.add(indexLabel, BorderLayout.WEST); */
+        
+        JPanel indexPane = new JPanel();
+        indexPane.setLayout(new BorderLayout());
+        JLabel indexLabel = new JLabel("   1 ");
+        indexLabel.setFont(new Font("Verdana", Font.BOLD, 13));
+        indexPane.add(indexLabel, BorderLayout.WEST);
+        
+        JCheckBox checkBox = new JCheckBox();
+        checkBox.setSelected(true);
+        indexPane.add(checkBox, BorderLayout.CENTER);
+        checkBox.setEnabled(false);
+        
+        Border indexBorder = BorderFactory.createLineBorder(Color.ORANGE, 5);
+        indexPane.setBorder(indexBorder);
+        
+        indexPane.setBackground(Color.WHITE);
+        checkBox.setBackground(Color.WHITE);
+        
+        pane.add(indexPane, BorderLayout.WEST);
+              
         // Defines DateTime TextArea
         JTextArea dateTimeTextArea = new JTextArea(18, 18);
-        dateTimeTextArea.setFont(new Font("Verdana", Font.PLAIN, 10));
+        dateTimeTextArea.setFont(new Font("Verdana", Font.PLAIN, 12));
         dateTimeTextArea.setText(" Start: 11/03/2014 08:00 am " + "\n" + "\n" + " Due:  11/07/2014 23:59 pm");
         
-        Border dateTimeBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+        Border dateTimeBorder = BorderFactory.createLineBorder(Color.ORANGE, 1);
         dateTimeTextArea.setBorder(dateTimeBorder);
         pane.add(dateTimeTextArea, BorderLayout.EAST);
         
         // Defines description TextArea
         JTextArea descriTextArea = new JTextArea(20, 20);
-        descriTextArea.setFont(new Font("Verdana", Font.PLAIN, 10));
+        descriTextArea.setFont(new Font("Verdana", Font.PLAIN, 12));
         descriTextArea.setText(" Attend project meeting of CS2103 after school. "
-                               + "\n" + " Location: UTown " + "\n" + " [#School #Work]");
+                               + "\n" + " Location: UTown " + "\n" + " #School    #Work");
         
         Border descriBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
         descriTextArea.setBorder(descriBorder);
         pane.add(descriTextArea, BorderLayout.CENTER);
         
-        pane.setBackground(color);
+        pane.setBackground(Color.WHITE);
         return pane;
     }
 	
@@ -175,6 +196,7 @@ public class MyGUI {
 		JPanel pane = new JPanel(new BorderLayout());
 		label = new JLabel("Current Time: " + LocalDateTime.now().toString());
 		pane.add(label);
+		pane.setBackground(Color.WHITE);
 		
 		return pane;
 	}
@@ -184,6 +206,7 @@ public class MyGUI {
 		JPanel pane = new JPanel(new BorderLayout());
 		label = new JLabel("Returned Message ");
 		pane.add(label);
+	    pane.setBackground(Color.WHITE);
 		
 		return pane;
 		
