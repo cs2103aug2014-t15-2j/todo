@@ -205,6 +205,7 @@ public class MyGUI extends JFrame implements ActionListener {
         dateTimeTextArea.setText(" Start: " + guiControl.getItemList().getItem(index).getStartDateTime() 
         	    + "\n" + "\n" 
         		+ " Due: " + guiControl.getItemList().getItem(index).getDueDateTime());
+        dateTimeTextArea.setEditable(false);
         
         Border dateTimeBorder = BorderFactory.createLineBorder(Color.ORANGE, 1);
         dateTimeTextArea.setBorder(dateTimeBorder);
@@ -229,6 +230,7 @@ public class MyGUI extends JFrame implements ActionListener {
         descriTextArea.setText(" " + displayDescription
         		+ "\n" + " " + displayLocation
         		+ "\n" + " " + displayTags);
+        descriTextArea.setEditable(false);
         
         Border descriBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
         descriTextArea.setBorder(descriBorder);
