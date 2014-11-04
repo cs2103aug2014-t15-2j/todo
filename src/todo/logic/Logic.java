@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 
 import todo.util.CommandType;
 import todo.util.LogUtil;
+import todo.command.AddCommand;
 import todo.model.*;
 import todo.nlp.NLP;
 import todo.storage.Storage;
@@ -107,7 +108,6 @@ public class Logic {
 	public ArrayList<Item> executeCommand(String userInput) throws Exception {
 		CommandType commandType = getCommandType(StringUtil
 				.getFirstWord(userInput));
-		String result = "";
 		userInput = StringUtil.trimString(userInput);
 
 		switch (commandType) {
@@ -158,11 +158,10 @@ public class Logic {
 	}
 
 	private ArrayList<Item> undo() {
-
 		if (stateHistory.canUndo() && stateHistory.saveStateToFuture(mItemList)) {
 			mItemList = stateHistory.undo();
-			this.setSystemMessage(MESSAGE_UNDO_SUCCESS);
 			
+			this.setSystemMessage(MESSAGE_UNDO_SUCCESS);
 		} else {
 			this.setSystemMessage(MESSAGE_CANNOT_UNDO);
 		}
@@ -171,10 +170,7 @@ public class Logic {
 	}
 
 	private ArrayList<Item> redo() {
-		
-
-		if (stateHistory.canRedo()
-				&& stateHistory.saveStateToHistory(mItemList)) {
+		if (stateHistory.canRedo() && stateHistory.saveStateToHistory(mItemList)) {
 			mItemList = stateHistory.redo();
 
 			this.setSystemMessage(MESSAGE_REDO_SUCCESS);
@@ -202,6 +198,9 @@ public class Logic {
 			setSystemMessage(result);
 		}
 
+		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)){
+			undo();
+		}
 		saveFile();
 		return mItemList.getAllItems();
 	}
