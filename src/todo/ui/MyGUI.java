@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.time.LocalDateTime;
 
 import javax.swing.BorderFactory;
@@ -22,8 +23,11 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
 
+import todo.logic.Logic;
+
 public class MyGUI {
 	
+	private Logic logic;
 	protected JTextField textField;
 	public JLabel label;
 	public JScrollPane scrollPane;
@@ -43,6 +47,7 @@ public class MyGUI {
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                     ex.printStackTrace();
                 }
+                
 
                 JFrame frame = new JFrame("JustDidIt");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -70,7 +75,6 @@ public class MyGUI {
                 (gridbag).setConstraints(scrollPane, gbc); */
                 
                 frame.add(createScrollableItemPane(), gbc);
-                
                          
                 gbc.gridy++;
                 frame.add(createMessagePane(), gbc);
@@ -212,5 +216,10 @@ public class MyGUI {
 		
 	}
 	
-	
+	public void actionPerformed(ActionEvent e){
+		
+		String userInput = textField.getText();
+		textField.setText("");
+		
+	}
 }

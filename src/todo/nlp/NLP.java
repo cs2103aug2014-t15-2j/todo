@@ -50,9 +50,14 @@ public class NLP {
 	 * @param msg: the content part of an add command, contains description, 
 	 * 				date/time (optional), location (optional), tags (optional)
 	 * @return add command
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
+	 * @throws DOMException 
 	 * @throws Exception 
 	 */
-	public AddCommand addParser(String msg){		
+	public AddCommand addParser(String msg) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{		
 		ArrayList<String> tagList;
 		List<DateTime> dateTimeList;
 		String location;
