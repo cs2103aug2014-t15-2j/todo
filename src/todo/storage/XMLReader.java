@@ -74,7 +74,7 @@ public class XMLReader {
 			// SEVERE/WARNING/INFO/CONFIG/FINE/FINER/FINEST
 			LOGGER.setLevel(Level.INFO);
 			LOGGER.info("Error related to external file");
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		// There only one ITEM_QUANTITY to set for Item
@@ -153,8 +153,8 @@ public class XMLReader {
 					LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
 					newItem.setDueDateTime(new DateTime(dateTime, true));
 				}else{
-					Date sDate = dateWithoutTime.parse(sDateTime.getTextContent());
-					newItem.setStartDateTime(new DateTime(sDate, false));
+					Date dDate = dateWithoutTime.parse(dDateTime.getTextContent());
+					newItem.setStartDateTime(new DateTime(dDate, false));
 				}
 			}
 			//------------------Retrieving of DueDateTime-----------------------
