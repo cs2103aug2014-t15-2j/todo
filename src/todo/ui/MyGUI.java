@@ -50,14 +50,14 @@ public class MyGUI implements ActionListener {
 	
 	// This methods defines the overall frame
 	public MyGUI() {
-      /*  EventQueue.invokeLater(new Runnable() {
+        EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                     ex.printStackTrace();
-                } */
+                } 
 
                 JFrame frame = new JFrame("JustDidIt");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -112,8 +112,8 @@ public class MyGUI implements ActionListener {
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
             }
-     //   });
-  //  }
+        });
+    }
 	
 	// This method add Scroll bar panel for item panels
 	public JScrollPane createScrollableItemPane(){

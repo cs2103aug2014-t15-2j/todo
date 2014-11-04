@@ -12,8 +12,8 @@ import org.xml.sax.SAXException;
 
 import todo.util.CommandType;
 import todo.util.LogUtil;
+import todo.command.AddCommand;
 import todo.model.*;
-import todo.model.StateHistory;
 import todo.nlp.NLP;
 import todo.storage.Storage;
 import todo.util.StringUtil;
@@ -27,17 +27,21 @@ public class Logic {
 	private static ItemList mItemList;
 	private StateHistory stateHistory;
 	private boolean fastUpdate;
-	private String finalMessage = "";
+	private String finalMessage = "Status: ";
+	private ArrayList<Item> itemsForGUI = new ArrayList<Item>();
 
 	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
 	private static final String ERROR_MISSING_TAGS = "Invalid: Missing Tag Names.";
 
-	private static final String MESSAGE_ADD_TIP = "add a new event or task.\n";
-	private static final String MESSAGE_ADD_EXAMPLE = "eg add project meeting tomorrow @utown #cs2103 .";
+	private static final String MESSAGE_ADD_TIP = "Add command : add a new event or task.\n";
+	private static final String MESSAGE_ADD_EXAMPLE = "eg add project meeting tomorrow @utown #cs2103 \n";
 	private static final String MESSAGE_UNDO_SUCCESS = "you have successfully undo the previous action.";
 	private static final String MESSAGE_CANNOT_UNDO = "no action can be undo.";
 	private static final String MESSAGE_REDO_SUCCESS = "you have successfully redo the previous action.";
 	private static final String MESSAGE_CANNOT_REDO = "no action can be redo.";
+	private static final String MESSAGE_SHOW_UNCOMPLETED = "Showing all uncompleted tasks";
+	private static final String MESSAGE_SHOW_COMPLETED = "Showing all completed tasks";
+	private static final String MESSAGE_SHOW_FILTERED = "Showing task(s) labeled with" + " " + "%1$s";
 
 	/**
 	 * Private constructor for singleton Logic
@@ -53,6 +57,7 @@ public class Logic {
 		storage = new Storage();
 		command = new CommandMatch();
 		mItemList = storage.readDataFromFile();
+		mItemList.checkStatus();
 		stateHistory = new StateHistory();
 	}
 
@@ -100,87 +105,84 @@ public class Logic {
 	 * @param commandType
 	 * @throws Exception
 	 */
-	public String executeCommand(String userInput) throws Exception {
+	public ArrayList<Item> executeCommand(String userInput) throws Exception {
 		CommandType commandType = getCommandType(StringUtil
 				.getFirstWord(userInput));
-		String result = "";
 		userInput = StringUtil.trimString(userInput);
 
 		switch (commandType) {
 		case CREATE:
-			result = add(userInput);
+			itemsForGUI = add(userInput);
 			break;
 		case READ:
-			result = read(userInput);
+			itemsForGUI = read(userInput);
 			break;
 		case UPDATE:
-			result = update(userInput);
+			itemsForGUI = update(userInput);
 			break;
 		case DELETE:
-			result = simpleOperation(CommandType.DELETE, userInput);
+			itemsForGUI = simpleOperation(CommandType.DELETE, userInput);
 			break;
 		case DONE:
-			result = simpleOperation(CommandType.DONE, userInput);
+			itemsForGUI = simpleOperation(CommandType.DONE, userInput);
 			break;
 		case UNDONE:
-			result = simpleOperation(CommandType.UNDONE, userInput);
+			itemsForGUI = simpleOperation(CommandType.UNDONE, userInput);
 			break;
 		case CLEAR:
-			result = clear();
+			itemsForGUI = clear();
 			break;
 		case UNDO:
-			result = undo();
+			itemsForGUI = undo();
 			break;
 		case REDO:
-			result = redo();
+			itemsForGUI = redo();
 			break;
+		
 		case INVALID:
 			LogUtil.Log(TAG, "invalid command, invoke NLP general parser");
 			String standardInput = NLP.getInstance().generalParser(userInput);
 			if (userInput != standardInput) {
 				executeCommand(standardInput);
 			} else {
-				result = ERROR_UNRECOGNISED_COMMAND;
+				this.setSystemMessage(ERROR_UNRECOGNISED_COMMAND);
+				
 			}
 			break;
 		default:
 			// shouldn't reach here.
 			break;
+			
 		}
-		return result;
+		return itemsForGUI;
 	}
 
-	private String undo() {
-		String result = "";
-
+	private ArrayList<Item> undo() {
 		if (stateHistory.canUndo() && stateHistory.saveStateToFuture(mItemList)) {
 			mItemList = stateHistory.undo();
-
-			result = MESSAGE_UNDO_SUCCESS;
+			
+			this.setSystemMessage(MESSAGE_UNDO_SUCCESS);
 		} else {
-			result = MESSAGE_CANNOT_UNDO;
+			this.setSystemMessage(MESSAGE_CANNOT_UNDO);
 		}
 
-		return result;
+		return mItemList.getAllItems();
 	}
 
-	private String redo() {
-		String result = "";
-
-		if (stateHistory.canRedo()
-				&& stateHistory.saveStateToHistory(mItemList)) {
+	private ArrayList<Item> redo() {
+		if (stateHistory.canRedo() && stateHistory.saveStateToHistory(mItemList)) {
 			mItemList = stateHistory.redo();
 
-			result = MESSAGE_REDO_SUCCESS;
+			this.setSystemMessage(MESSAGE_REDO_SUCCESS);
 		} else {
-			result = MESSAGE_CANNOT_REDO;
+			this.setSystemMessage(MESSAGE_CANNOT_REDO); 
 		}
 
-		return result;
+		return mItemList.getAllItems();
 	}
 
-	private String add(String userInput) throws ParserConfigurationException,
-			TransformerException {
+	private ArrayList<Item> add(String userInput) throws ParserConfigurationException,
+			TransformerException, DOMException, SAXException, IOException, ParseException {
 		saveState();
 		String content;
 		String[] arr = userInput.split(" ", 2);
@@ -189,17 +191,24 @@ public class Logic {
 		if (arr.length > 1) {
 			content = arr[1];
 			result = NLP.getInstance().addParser(content).execute();
+			setSystemMessage(result);
 		} else {
 			result += MESSAGE_ADD_TIP;
 			result += MESSAGE_ADD_EXAMPLE;
+			setSystemMessage(result);
 		}
 
+		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)){
+			undo();
+			result = MESSAGE_ADD_TIP;
+			result += MESSAGE_ADD_EXAMPLE;
+			setSystemMessage(result);
+		}
 		saveFile();
-		return result;
+		return mItemList.getAllItems();
 	}
 
-	//private ArrayList<Item> read(String userInput) {   --< FINAL VERSION SHOULD BE RETURNING ARRAYLIST OF ITEMS INSTEAD OF STRING
-	private String read(String userInput) {
+	private ArrayList<Item> read(String userInput) {  // --< FINAL VERSION SHOULD BE RETURNING ARRAYLIST OF ITEMS INSTEAD OF STRING
 		String systemMessage = "";
 		ArrayList<Item> filteredItems = new ArrayList<Item>();
 		// Filter by tags
@@ -212,6 +221,8 @@ public class Logic {
 				systemMessage = ERROR_MISSING_TAGS;
 				setSystemMessage(systemMessage);
 			} else {
+				systemMessage =String.format(MESSAGE_SHOW_FILTERED, tagString) ;
+				setSystemMessage(systemMessage);
 				filteredItems = mItemList.filterByTags(tagString);
 			}
 			// Filter by completed/uncompleted
@@ -220,9 +231,13 @@ public class Logic {
 				&& !(userInput.contains("undone") || userInput
 						.contains("uncompleted"))) {
 			filteredItems = mItemList.showCompletedList();
+			systemMessage = MESSAGE_SHOW_COMPLETED;
+			setSystemMessage(systemMessage);
 		} else if ((userInput.contains("undone") || userInput
 				.contains("uncompleted"))) {
 			filteredItems = mItemList.showUncompletedList();
+			systemMessage = MESSAGE_SHOW_UNCOMPLETED;
+			setSystemMessage(systemMessage);
 
 			// Filter by dateTime using standard format yyyy/MM/dd
 		} else if (userInput.contains("on")) {
@@ -233,27 +248,31 @@ public class Logic {
 			if (dateString.isEmpty()) {
 				setSystemMessage("Invalid: Missing date for filter.");
 			} else {
+				systemMessage =String.format(MESSAGE_SHOW_FILTERED, dateString) ;
+				setSystemMessage(systemMessage);
 				filteredItems = mItemList.filterByDateTime(dateString);
 			}
 		}
 		// FilteredList not required, returns complete list
 		else {
 			filteredItems = mItemList.getAllItems();
+			systemMessage = "Showing all Tasks";
+			setSystemMessage(systemMessage);
 		}
-		return systemMessage;
+		return filteredItems;
 	}
 
-	private String clear() throws ParserConfigurationException,
+	private ArrayList<Item> clear() throws ParserConfigurationException,
 			TransformerException {
 		saveState();
 		String result = "";
 		result = mItemList.clear();
-
+		this.setSystemMessage(result);
 		saveFile();
-		return result;
+		return mItemList.getAllItems();
 	}
 
-	private String update(String userInput)
+	private ArrayList<Item> update(String userInput)
 			throws ParserConfigurationException, TransformerException {
 		saveState();
 		String updateInfo = "";
@@ -266,7 +285,6 @@ public class Logic {
 			// start with item index
 			arr = userInput.split(" ", 2);
 			arrLen = 2;
-
 		} else {
 			// start with update command
 			arr = userInput.split(" ", 3);
@@ -281,17 +299,14 @@ public class Logic {
 		}
 
 		if (!updateInfo.isEmpty() && mItemList.validIndex(updateIndex - 1)) {
-			result = NLP
-					.getInstance()
-					.updateParser(mItemList.getItem(updateIndex - 1),
-							updateInfo).execute();
+			result = NLP.getInstance().updateParser(mItemList.getItem(updateIndex - 1), updateInfo).execute();
 			saveFile();
 			LogUtil.Log(TAG, "update index " + (updateIndex - 1));
 		} else {
 			result = "update's failed.";
 		}
-
-		return result;
+		this.setSystemMessage(result);
+		return mItemList.getAllItems();
 	}
 
 	/**
@@ -308,7 +323,7 @@ public class Logic {
 	 * @throws SAXException
 	 * @throws DOMException
 	 */
-	private String simpleOperation(CommandType type, String userInput)
+	private ArrayList<Item> simpleOperation(CommandType type, String userInput)
 			throws ParserConfigurationException, TransformerException,
 			DOMException, SAXException, IOException, ParseException {
 		saveState();
@@ -355,16 +370,17 @@ public class Logic {
 		}
 
 		saveFile();
-		return result;
+		this.setSystemMessage(result);
+		return mItemList.getAllItems();
 	}
 
 	public String getSystemMessage() {
 		return this.finalMessage;
 	}
 
-	private void setSystemMessage(String message) {
-
-		finalMessage.concat(message);
+	public void setSystemMessage(String message) {
+		this.finalMessage = "";
+		this.finalMessage = message;
 
 	}
 
@@ -380,6 +396,9 @@ public class Logic {
 
 	public static ItemList getItemList() {
 		return mItemList;
+	}
+	public ArrayList<Item> getItemsforGUI () {
+		return this.itemsForGUI;
 	}
 
 	// For GUI testing purpose

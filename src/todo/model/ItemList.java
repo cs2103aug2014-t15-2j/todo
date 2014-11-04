@@ -315,16 +315,16 @@ public class ItemList {
 				e.printStackTrace();
 			}
 
-			String filteredList = "";
+			//String filteredList = "";  <-- TO REMOVE
 			for(int i = 0; i < itemList.size(); i++ ){
 				DateTime dateTime = itemList.get(i).getStartDateTime();
 				if(dateTime != null){
 					LocalDateTime itemDate = dateTime.getDate();
 					if(itemDate.equals(dateTimeFiltered)){
-						String appendString = itemList.get(i).toString();
-					    filteredList += appendString;
-					    filteredList += "\n";
-					    filteredList += "\n";
+						//String appendString = itemList.get(i).toString();
+					    //filteredList += appendString;
+					   // filteredList += "\n";
+					   // filteredList += "\n";
 					    itemWithTargetDate.add(itemList.get(i));
 				}
 			}
