@@ -35,13 +35,12 @@ import org.xml.sax.SAXException;
 
 //import todo.ui.GUIcontrol;
 
-public class MyGUI implements ActionListener {
+public class MyGUI extends JFrame implements ActionListener {
 	
 	public GUIcontrol guiControl = null;
 	protected JTextField textField;
 	public JLabel label;
 	public JScrollPane scrollPane;
-	public JScrollPane dynamicScrollPane;
 	
 	// Main method that creates the GUI
 	public static void main(String[] args) {
@@ -95,7 +94,7 @@ public class MyGUI implements ActionListener {
                 gbc.gridy++;	
                 scrollPane = createScrollableItemPane();
                 frame.add(scrollPane, gbc);
-               // scrollPane.addActionListener(this);
+               // scrollPane.addActionListener();
                 
                          
                 gbc.gridy++;
@@ -172,6 +171,7 @@ public class MyGUI implements ActionListener {
         indexLabel.setBorder(indexBorder);
         pane.add(indexLabel, BorderLayout.WEST); */
         
+        // Displaying item index
         int displayIndex = index + 1;
         JPanel indexPane = new JPanel();
         indexPane.setLayout(new BorderLayout());
@@ -179,8 +179,13 @@ public class MyGUI implements ActionListener {
         indexLabel.setFont(new Font("Verdana", Font.BOLD, 13));
         indexPane.add(indexLabel, BorderLayout.WEST);
         
+        // Displaying item status
         JCheckBox checkBox = new JCheckBox();
-        checkBox.setSelected(true);
+        if(guiControl.getItemList().getItem(index).getStatus()){
+        	checkBox.setSelected(true);
+        }else{
+        	checkBox.setSelected(false);
+        }
         indexPane.add(checkBox, BorderLayout.CENTER);
         checkBox.setEnabled(false);
         
@@ -254,6 +259,7 @@ public class MyGUI implements ActionListener {
 		
 		try {
 			guiControl.sendToLogic(userInput);
+			
 		} catch (ParserConfigurationException | TransformerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -274,9 +280,12 @@ public class MyGUI implements ActionListener {
 			e.printStackTrace();
 		}
 		
-		scrollPane.invalidate();
-		scrollPane.repaint();
-
+	//	SwingUtilities.updateComponentTreeUI(MyGUI.this);
+    //    scrollPane.removeAll();
+     //   scrollPane.validate();
+      //  scrollPane.repaint();
+		this.setVisible(false);
+		new MyGUI().setVisible(true);
         
 	}
 
