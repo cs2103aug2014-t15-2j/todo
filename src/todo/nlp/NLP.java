@@ -73,7 +73,7 @@ public class NLP {
 		message.deleteEscapeCharaster();
 		// step6 delete whole sentence quotation marks
 		message.deleteFullQuote();
-		
+		// step7 trim message as description
 		message.trim();
 
 		AddCommand addCommand = new AddCommand();
@@ -155,8 +155,10 @@ public class NLP {
 	
 	/**
 	 * INDEX PARSER
-	 * @param indices
-	 * @return
+	 * index parser convert a string of indices into a list of integer
+	 * the final list is sorted and with no duplicates
+	 * @param indices the string of indices in natural language
+	 * @return a array list of integer
 	 * @throws DOMException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
