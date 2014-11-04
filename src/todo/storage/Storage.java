@@ -2,29 +2,24 @@ package todo.storage;
 
 import java.io.IOException;
 import java.text.ParseException;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
-
 import todo.model.ItemList;
 
 /**
  * Facade class
- * 
+ *
  * @author Lui
  *
  */
 public class Storage {
-
 	// Related to FileIO
 	public static final String FILE_DESTINATION = "todo.xml";
 	public static final String YES = "yes";
 	public static final String XML_INDENT = "{http://xml.apache.org/xslt}indent-amount";
 	public static final String INDENT_AMOUNT = "4";
-
 	// Related to XML tags
 	public static final String ITEM_LIST = "ItemList";
 	public static final String ITEM_QUANTITY = "itemQty";
@@ -41,11 +36,9 @@ public class Storage {
 	public static final String TAGS = "tags";
 	public static final String TAG = "tag";
 	public static final String IS_COMPLETED = "isCompleted";
-
 	// Related to date and time
 	public static final String DATE_WITH_TIME = "yyyy-MM-dd HH:mm";
 	public static final String DATE_WITHOUT_TIME = "yyyy-MM-dd";
-
 	// Other miscellaneous constant string and integer
 	public static final String EMPTY = "";
 	public static final String TRUE = "true";
@@ -53,7 +46,6 @@ public class Storage {
 	public static final String SPACE = " ";
 	public static final int ZERO = 0;
 	public static final int ONE = 1;
-	
 	private XMLWriter writer;
 	private XMLReader reader;
 
