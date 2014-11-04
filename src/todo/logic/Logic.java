@@ -206,7 +206,7 @@ public class Logic {
 		}
 
 		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)){
-			undo();
+			stateHistory.undo();
 			result = MESSAGE_ADD_TIP;
 			result += MESSAGE_ADD_EXAMPLE;
 			setSystemMessage(result);
@@ -314,7 +314,7 @@ public class Logic {
 		}
 		
 		if(result.equals("Update failed.")){
-			undo();
+			stateHistory.undo();
 		}
 		
 		this.setSystemMessage(result);
@@ -385,7 +385,7 @@ public class Logic {
 				result.equals(ItemList.ERROR_INDEX_EXCEEDED) || result.equals(ItemList.ERROR_INDEX_NEGATIVE) ||
 				result.equals(MESSAGE_DELETE_TIP) || result.equals(MESSAGE_DONE_TIP) ||
 				result.equals(MESSAGE_UNDONE_TIP)){
-			undo();	
+			stateHistory.undo();
 		}
 		
 		saveFile();
