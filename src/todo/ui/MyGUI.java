@@ -200,17 +200,35 @@ public class MyGUI extends JFrame implements ActionListener {
         // Defines DateTime TextArea
         JTextArea dateTimeTextArea = new JTextArea(18, 18);
         dateTimeTextArea.setFont(new Font("Verdana", Font.PLAIN, 12));
-        dateTimeTextArea.setText(" Start: 11/03/2014 08:00 am " + "\n" + "\n" + " Due:  11/07/2014 23:59 pm");
+
+        
+        dateTimeTextArea.setText(" Start: " + guiControl.getItemList().getItem(index).getStartDateTime() 
+        	    + "\n" + "\n" 
+        		+ " Due: " + guiControl.getItemList().getItem(index).getDueDateTime());
         
         Border dateTimeBorder = BorderFactory.createLineBorder(Color.ORANGE, 1);
         dateTimeTextArea.setBorder(dateTimeBorder);
         pane.add(dateTimeTextArea, BorderLayout.EAST);
         
         // Defines description TextArea
+        String displayDescription = "";
+        displayDescription = guiControl.getItemList().getItem(index).getDescription();
+        String displayLocation = "";
+        if(guiControl.getItemList().getItem(index).getLocation().equals(null)){
+        }else{
+        	displayLocation = "Location: " + guiControl.getItemList().getItem(index).getLocation();
+        }
+        String displayTags = "";
+        if(guiControl.getItemList().getItem(index).getTags().equals(null)){
+        }else{
+        	displayTags = guiControl.getItemList().getItem(index).getTags().toString();
+        }
+        
         JTextArea descriTextArea = new JTextArea(20, 20);
         descriTextArea.setFont(new Font("Verdana", Font.PLAIN, 12));
-        descriTextArea.setText(" Attend project meeting of CS2103 after school. "
-                               + "\n" + " Location: UTown " + "\n" + " #School    #Work");
+        descriTextArea.setText(" " + displayDescription
+        		+ "\n" + " " + displayLocation
+        		+ "\n" + " " + displayTags);
         
         Border descriBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
         descriTextArea.setBorder(descriBorder);
@@ -284,6 +302,7 @@ public class MyGUI extends JFrame implements ActionListener {
     //    scrollPane.removeAll();
      //   scrollPane.validate();
       //  scrollPane.repaint();
+	//	this.setVisible(false);
 		this.setVisible(false);
 		new MyGUI().setVisible(true);
         
