@@ -27,7 +27,6 @@ public class AddCommand implements Command {
 		if (description.equals("")) {
 			statusMessage = DESCRIPTION_EMPTY;
 			return statusMessage;
-
 		}
 
 		if (this.start != null && this.due != null) {

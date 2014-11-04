@@ -282,7 +282,6 @@ public class Logic {
 			// start with item index
 			arr = userInput.split(" ", 2);
 			arrLen = 2;
-
 		} else {
 			// start with update command
 			arr = userInput.split(" ", 3);
@@ -297,10 +296,7 @@ public class Logic {
 		}
 
 		if (!updateInfo.isEmpty() && mItemList.validIndex(updateIndex - 1)) {
-			result = NLP
-					.getInstance()
-					.updateParser(mItemList.getItem(updateIndex - 1),
-							updateInfo).execute();
+			result = NLP.getInstance().updateParser(mItemList.getItem(updateIndex - 1), updateInfo).execute();
 			saveFile();
 			LogUtil.Log(TAG, "update index " + (updateIndex - 1));
 		} else {
