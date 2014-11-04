@@ -13,6 +13,7 @@ import org.xml.sax.SAXException;
 import todo.util.CommandType;
 import todo.util.LogUtil;
 import todo.command.AddCommand;
+import todo.command.UpdateCommand;
 import todo.model.*;
 import todo.nlp.NLP;
 import todo.storage.Storage;
@@ -33,15 +34,10 @@ public class Logic {
 	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
 	private static final String ERROR_MISSING_TAGS = "Invalid: Missing Tag Names.";
 
-	private static final String MESSAGE_ADD_TIP = "Add command : add a new event or task.\n";
-	private static final String MESSAGE_ADD_EXAMPLE = "eg add project meeting tomorrow @utown #cs2103 \n";
-	
+	private static final String MESSAGE_ADD_TIP = "Add command : add a new event or task.\neg add project meeting tomorrow @utown #cs2103 \n";
 	private static final String MESSAGE_DELETE_TIP = "delete a existing event or task.\ne.g. delete 3";
 	private static final String MESSAGE_DONE_TIP = "set an item as done.\ne.g. done 3";
 	private static final String MESSAGE_UNDONE_TIP = "set an item as undone.\ne.g. undone 3";
-	
-	
-	
 	private static final String MESSAGE_UNDO_SUCCESS = "you have successfully undo the previous action.";
 	private static final String MESSAGE_CANNOT_UNDO = "no action can be undo.";
 	private static final String MESSAGE_REDO_SUCCESS = "you have successfully redo the previous action.";
@@ -64,7 +60,7 @@ public class Logic {
 		storage = new Storage();
 		command = new CommandMatch();
 		mItemList = storage.readDataFromFile();
-		//mItemList.checkStatus();
+		mItemList.checkStatus();
 		stateHistory = new StateHistory();
 	}
 
@@ -201,14 +197,12 @@ public class Logic {
 			setSystemMessage(result);
 		} else {
 			result += MESSAGE_ADD_TIP;
-			result += MESSAGE_ADD_EXAMPLE;
 			setSystemMessage(result);
 		}
 
 		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)){
 			stateHistory.undo();
 			result = MESSAGE_ADD_TIP;
-			result += MESSAGE_ADD_EXAMPLE;
 			setSystemMessage(result);
 		}
 		saveFile();
@@ -302,7 +296,7 @@ public class Logic {
 			updateInfo = arr[arrLen - 1];
 			updateIndex = Integer.valueOf(arr[arrLen - 2]);
 		} else {
-			result += "update an event or task";
+			result = UpdateCommand.UPDATE_FAILED;
 		}
 
 		if (!updateInfo.isEmpty() && mItemList.validIndex(updateIndex - 1)) {
@@ -310,10 +304,10 @@ public class Logic {
 			saveFile();
 			LogUtil.Log(TAG, "update index " + (updateIndex - 1));
 		} else {
-			result = "update's failed.";
+			result = UpdateCommand.UPDATE_FAILED;
 		}
 		
-		if(result.equals("Update failed.")){
+		if(result.equals(UpdateCommand.UPDATE_FAILED)){
 			stateHistory.undo();
 		}
 		
@@ -350,31 +344,31 @@ public class Logic {
 					Integer thisIndex = indexList.remove(indexList.size() - 1);
 					switch (type) {
 					case DELETE:
-						result += mItemList.delete(thisIndex) + "\n";
+						result = mItemList.delete(thisIndex);
 						break;
 					case DONE:
-						result += mItemList.done(thisIndex) + "\n";
+						result = mItemList.done(thisIndex);
 						break;
 					case UNDONE:
-						result += mItemList.undone(thisIndex) + "\n";
+						result = mItemList.undone(thisIndex);
 						break;
 					default:
-						result += "Invalid command type.";
+						result = "Invalid command type.";
 					}
 				}
 			} else {
-				result += "Invalid parameter";
+				result = "Invalid parameter";
 			}
 		} else {
 			switch (type) {
 			case DELETE:
-				result += MESSAGE_DELETE_TIP;
+				result = MESSAGE_DELETE_TIP;
 				break;
 			case DONE:
-				result += MESSAGE_DONE_TIP;
+				result = MESSAGE_DONE_TIP;
 				break;
 			case UNDONE:
-				result += MESSAGE_UNDONE_TIP;
+				result = MESSAGE_UNDONE_TIP;
 				break;
 			default:
 				result = "Invalid command type.";

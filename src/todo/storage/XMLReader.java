@@ -74,7 +74,7 @@ public class XMLReader {
 			// SEVERE/WARNING/INFO/CONFIG/FINE/FINER/FINEST
 			LOGGER.setLevel(Level.INFO);
 			LOGGER.info("Error related to external file");
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 		// There only one ITEM_QUANTITY to set for Item
@@ -181,8 +181,6 @@ public class XMLReader {
 		
 			newItemList.add(newItem);
 		}
-		//To run at launch of program to build completed and uncompleted lists
-		newItemList.checkStatus();
 		
 		return newItemList;
 	}
