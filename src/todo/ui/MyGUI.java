@@ -262,7 +262,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	// This method defines the message panel
 	public JPanel createMessagePane() {
 		JPanel pane = new JPanel(new BorderLayout());
-		label = new JLabel("Returned Message ");
+		label = new JLabel(guiControl.getSystemMessageControl());
 		pane.add(label);
 	    pane.setBackground(Color.WHITE);
 		
