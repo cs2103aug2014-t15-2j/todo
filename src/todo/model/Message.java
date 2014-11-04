@@ -49,4 +49,11 @@ public class Message {
 	public void deleteSubstring(String str){
 		text = text.replace(str, "");
 	}
+	
+	// change the first letter of the text to upper case
+	public void formatText(){
+		if(text.length()>0){
+			text = Character.toUpperCase(text.charAt(0)) + text.substring(1); 
+		}
+	}
 }

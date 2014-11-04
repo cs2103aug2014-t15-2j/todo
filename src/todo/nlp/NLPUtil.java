@@ -103,6 +103,7 @@ public class NLPUtil {
 		for(int i = strArray.length-1; i >= 0 ; i--){
 			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '#'){
 				String newTag = strArray[i].substring(1);
+				// prevent duplicate tags
 				if (!tagList.contains(newTag)){
 					tagList.add(0, newTag);
 				}
