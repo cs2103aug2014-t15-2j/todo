@@ -43,14 +43,16 @@ public class Storage {
 	public static final String IS_COMPLETED = "isCompleted";
 
 	// Related to date and time
-	public static final String DATE_WITH_TIME = "yyyy-MM-dd HH:mm:ss";
+	public static final String DATE_WITH_TIME = "yyyy-MM-dd HH:mm";
 	public static final String DATE_WITHOUT_TIME = "yyyy-MM-dd";
 
 	// Other miscellaneous constant string and integer
 	public static final String EMPTY = "";
 	public static final String TRUE = "true";
+	public static final String CAPITAL_T = "T";
+	public static final String SPACE = " ";
 	public static final int ZERO = 0;
-
+	public static final int ONE = 1;
 	
 	private XMLWriter writer;
 	private XMLReader reader;
