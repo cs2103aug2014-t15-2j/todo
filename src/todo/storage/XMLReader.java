@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,6 +33,7 @@ public class XMLReader {
 
 	private DateFormat dateWithTime = new SimpleDateFormat(Storage.DATE_WITH_TIME);
 	private DateFormat dateWithoutTime = new SimpleDateFormat(Storage.DATE_WITHOUT_TIME);
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 	/**
 	 * Default constructor
@@ -71,6 +74,7 @@ public class XMLReader {
 			// SEVERE/WARNING/INFO/CONFIG/FINE/FINER/FINEST
 			LOGGER.setLevel(Level.INFO);
 			LOGGER.info("Error related to external file");
+			e.printStackTrace();
 		}
 		
 		// There only one ITEM_QUANTITY to set for Item
@@ -120,12 +124,17 @@ public class XMLReader {
 			Element startDateTimeElement = (Element) startDateTime;
 			Node sHasTime = startDateTimeElement.getElementsByTagName(Storage.HAS_TIME).item(Storage.ZERO);
 			Node sDateTime = startDateTimeElement.getElementsByTagName(Storage.DATE_TIME).item(Storage.ZERO);
-			
+			//System.out.println("retrieviing startdatetime");
 			if(sDateTime.getTextContent() != Storage.EMPTY){
+				//System.out.println("retrieviing startdatetime2");
 				if(sHasTime.getTextContent().equals(Storage.TRUE)){
-					Date sDate = dateWithTime.parse(sDateTime.getTextContent());
-					newItem.setStartDateTime(new DateTime(sDate, true));
+					//System.out.println("retrieviing startdatetime3");
+					String dateWithTime =sDateTime.getTextContent() ;
+					LocalDateTime dateTime = LocalDateTime.parse(dateWithTime, formatter);
+					//Date sDate = dateWithTime.parse(sDateTime.getTextContent());
+					newItem.setStartDateTime(new DateTime(dateTime, true));
 				}else{
+					//System.out.println("retrieviing startdatetime4");
 					Date sDate = dateWithoutTime.parse(sDateTime.getTextContent());
 					newItem.setStartDateTime(new DateTime(sDate, false));
 				}
@@ -140,11 +149,12 @@ public class XMLReader {
 			
 			if(dDateTime.getTextContent() != Storage.EMPTY){
 				if(dHasTime.getTextContent().equals(Storage.TRUE)){
-					Date dDate = dateWithTime.parse(dDateTime.getTextContent());
-					newItem.setDueDateTime(new DateTime(dDate, true));
+					String dateString = dDateTime.getTextContent();
+					LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
+					newItem.setDueDateTime(new DateTime(dateTime, true));
 				}else{
-					Date dDate = dateWithoutTime.parse(dDateTime.getTextContent());
-					newItem.setDueDateTime(new DateTime(dDate, false));
+					Date sDate = dateWithoutTime.parse(sDateTime.getTextContent());
+					newItem.setStartDateTime(new DateTime(sDate, false));
 				}
 			}
 			//------------------Retrieving of DueDateTime-----------------------

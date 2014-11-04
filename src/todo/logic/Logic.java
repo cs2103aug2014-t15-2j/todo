@@ -57,7 +57,7 @@ public class Logic {
 		storage = new Storage();
 		command = new CommandMatch();
 		mItemList = storage.readDataFromFile();
-		mItemList.checkStatus();
+		//mItemList.checkStatus();
 		stateHistory = new StateHistory();
 	}
 
