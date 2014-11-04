@@ -90,7 +90,7 @@ public class XMLWriter {
 				
 				if(sdt.hasTime()){
 					String dateWithTime = sdt.getDate().toString();
-					dateWithTime = dateWithTime.replace(' ', ' ');
+					dateWithTime = dateWithTime.replace('T', ' ');
 					sdtDateTime.appendChild(doc.createTextNode(dateWithTime));
 				}else{
 					String dateWithoutTime = (sdt.getDate().toString());
@@ -119,7 +119,7 @@ public class XMLWriter {
 				
 				if(ddt.hasTime()){
 					String dateWithTime = ddt.getDate().toString();
-					dateWithTime = dateWithTime.replace(' ', ' ');
+					dateWithTime = dateWithTime.replace('T', ' ');
 					ddtDateTime.appendChild(doc.createTextNode(dateWithTime));
 				}else{
 					String dateWithoutTime = (ddt.getDate().toString());

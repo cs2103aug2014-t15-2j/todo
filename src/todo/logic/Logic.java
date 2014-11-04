@@ -33,8 +33,8 @@ public class Logic {
 	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
 	private static final String ERROR_MISSING_TAGS = "Invalid: Missing Tag Names.";
 
-	private static final String MESSAGE_ADD_TIP = "add a new event or task.\n";
-	private static final String MESSAGE_ADD_EXAMPLE = "eg add project meeting tomorrow @utown #cs2103 .";
+	private static final String MESSAGE_ADD_TIP = "Add command : add a new event or task.\n";
+	private static final String MESSAGE_ADD_EXAMPLE = "eg add project meeting tomorrow @utown #cs2103 \n";
 	private static final String MESSAGE_UNDO_SUCCESS = "you have successfully undo the previous action.";
 	private static final String MESSAGE_CANNOT_UNDO = "no action can be undo.";
 	private static final String MESSAGE_REDO_SUCCESS = "you have successfully redo the previous action.";
@@ -200,6 +200,9 @@ public class Logic {
 
 		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)){
 			undo();
+			result = MESSAGE_ADD_TIP;
+			result += MESSAGE_ADD_EXAMPLE;
+			setSystemMessage(result);
 		}
 		saveFile();
 		return mItemList.getAllItems();
