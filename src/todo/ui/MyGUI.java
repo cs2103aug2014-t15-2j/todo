@@ -9,6 +9,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentListener;
+import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 
 import javax.swing.BorderFactory;
@@ -19,18 +23,25 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
-import todo.logic.Logic;
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
 
-public class MyGUI {
+//import todo.ui.GUIcontrol;
+
+public class MyGUI implements ActionListener {
 	
-	private Logic logic;
+	public GUIcontrol guiControl = null;
 	protected JTextField textField;
 	public JLabel label;
 	public JScrollPane scrollPane;
+	public JScrollPane dynamicScrollPane;
 	
 	// Main method that creates the GUI
 	public static void main(String[] args) {
@@ -39,16 +50,14 @@ public class MyGUI {
 	
 	// This methods defines the overall frame
 	public MyGUI() {
-        EventQueue.invokeLater(new Runnable() {
+      /*  EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                     ex.printStackTrace();
-                }
-                
-                logic = GUIcontrol.getLogic();
+                } */
 
                 JFrame frame = new JFrame("JustDidIt");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,13 +78,25 @@ public class MyGUI {
                 
                 frame.add(createTimePane(), gbc);
                 
-                gbc.gridy++;
+               
                /* 
                 JPanel itemPanel = createOverallItemPane();
                 scrollPane = new JScrollPane(itemPanel);
                 (gridbag).setConstraints(scrollPane, gbc); */
+              
+				try {
+					guiControl = new GUIcontrol();
+				} catch (DOMException | ParserConfigurationException
+						| SAXException | IOException | ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+                gbc.gridy++;	
+                scrollPane = createScrollableItemPane();
+                frame.add(scrollPane, gbc);
+               // scrollPane.addActionListener(this);
                 
-                frame.add(createScrollableItemPane(), gbc);
                          
                 gbc.gridy++;
                 frame.add(createMessagePane(), gbc);
@@ -91,8 +112,8 @@ public class MyGUI {
                 frame.setLocationRelativeTo(null);
                 frame.setVisible(true);
             }
-        });
-    }
+     //   });
+  //  }
 	
 	// This method add Scroll bar panel for item panels
 	public JScrollPane createScrollableItemPane(){
@@ -104,12 +125,12 @@ public class MyGUI {
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         
-        for(int i=0; i<9; i++){
-        	pane.add(createItemPane(), gbc);
-        	gbc.gridy++;
-        }
+
         
-        pane.add(createItemPane(), gbc); 
+        for(int i = 0; i < guiControl.getItemList().size(); i++){
+            pane.add(createItemPane(i), gbc);
+        	gbc.gridy++; 
+        }
 
         scrollPane = new JScrollPane(pane){
         	@Override
@@ -127,12 +148,17 @@ public class MyGUI {
 	}
 	
 	// This method defines individual item panel
-	public JPanel createItemPane() {
+	public JPanel createItemPane(int index) {
         JPanel pane = new JPanel(){
 
             @Override
             public Dimension getPreferredSize() {
                 return new Dimension(50, 50);
+            }
+            
+            @Override
+            public Dimension getMinimumSize(){
+            	return new Dimension(50, 50);
             }
 
         };
@@ -146,9 +172,10 @@ public class MyGUI {
         indexLabel.setBorder(indexBorder);
         pane.add(indexLabel, BorderLayout.WEST); */
         
+        int displayIndex = index + 1;
         JPanel indexPane = new JPanel();
         indexPane.setLayout(new BorderLayout());
-        JLabel indexLabel = new JLabel("   1 ");
+        JLabel indexLabel = new JLabel("   " + displayIndex + " ");
         indexLabel.setFont(new Font("Verdana", Font.BOLD, 13));
         indexPane.add(indexLabel, BorderLayout.WEST);
         
@@ -191,6 +218,7 @@ public class MyGUI {
 	// This method defines text field panel
 	public JPanel createTextFieldPane() {
 		JPanel pane = new JPanel();
+        textField.addActionListener(this);
 	    pane.add(textField);
 	
 	    return pane;
@@ -216,11 +244,40 @@ public class MyGUI {
 		return pane;
 		
 	}
+
 	
-	public void actionPerformed(ActionEvent e){
+	public void actionPerformed(ActionEvent evt){
 		
 		String userInput = textField.getText();
+		
 		textField.setText("");
 		
+		try {
+			guiControl.sendToLogic(userInput);
+		} catch (ParserConfigurationException | TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		scrollPane.invalidate();
+		scrollPane.repaint();
+
+        
 	}
+
 }
