@@ -35,6 +35,13 @@ public class Logic {
 
 	private static final String MESSAGE_ADD_TIP = "Add command : add a new event or task.\n";
 	private static final String MESSAGE_ADD_EXAMPLE = "eg add project meeting tomorrow @utown #cs2103 \n";
+	
+	private static final String MESSAGE_DELETE_TIP = "delete a existing event or task.\ne.g. delete 3";
+	private static final String MESSAGE_DONE_TIP = "set an item as done.\ne.g. done 3";
+	private static final String MESSAGE_UNDONE_TIP = "set an item as undone.\ne.g. undone 3";
+	
+	
+	
 	private static final String MESSAGE_UNDO_SUCCESS = "you have successfully undo the previous action.";
 	private static final String MESSAGE_CANNOT_UNDO = "no action can be undo.";
 	private static final String MESSAGE_REDO_SUCCESS = "you have successfully redo the previous action.";
@@ -305,6 +312,11 @@ public class Logic {
 		} else {
 			result = "update's failed.";
 		}
+		
+		if(result.equals("Update failed.")){
+			undo();
+		}
+		
 		this.setSystemMessage(result);
 		return mItemList.getAllItems();
 	}
@@ -356,19 +368,26 @@ public class Logic {
 		} else {
 			switch (type) {
 			case DELETE:
-				result += "delete a existing event or task.\ne.g. delete 3";
+				result += MESSAGE_DELETE_TIP;
 				break;
 			case DONE:
-				result += "set an item as done.\ne.g. done 3";
+				result += MESSAGE_DONE_TIP;
 				break;
 			case UNDONE:
-				result += "set an item as undone.\ne.g. undone 3";
+				result += MESSAGE_UNDONE_TIP;
 				break;
 			default:
 				result = "Invalid command type.";
 			}
 		}
 
+		if(result.equals("Invalid parameter") || result.equals("Invalid command type.") || result.equals(ItemList.ERROR_LIST_EMPTY) || 
+				result.equals(ItemList.ERROR_INDEX_EXCEEDED) || result.equals(ItemList.ERROR_INDEX_NEGATIVE) ||
+				result.equals(MESSAGE_DELETE_TIP) || result.equals(MESSAGE_DONE_TIP) ||
+				result.equals(MESSAGE_UNDONE_TIP)){
+			undo();	
+		}
+		
 		saveFile();
 		this.setSystemMessage(result);
 		return mItemList.getAllItems();

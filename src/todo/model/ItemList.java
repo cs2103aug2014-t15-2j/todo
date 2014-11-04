@@ -13,9 +13,9 @@ import java.time.*;
 
 public class ItemList {
 		//Error Messages
-		private static final String ERROR_INDEX_NEGATIVE = "Invalid index used - Negative Index";
-		private static final String ERROR_INDEX_EXCEEDED = "Invalid index used - Index out of range";
-		private static final String ERROR_LIST_EMPTY = "The list is empty. ";
+		public static final String ERROR_INDEX_NEGATIVE = "Invalid index used - Negative Index";
+		public static final String ERROR_INDEX_EXCEEDED = "Invalid index used - Index out of range";
+		public static final String ERROR_LIST_EMPTY = "The list is empty. ";
 		//System Messages
 		private static final String MESSAGE_ADDED ="%1$s"+" "+"is added.";
 		private static final String MESSAGE_DELETED = "\"" + "%1$s" + "\"" + " is deleted.";
