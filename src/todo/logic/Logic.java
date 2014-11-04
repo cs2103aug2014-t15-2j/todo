@@ -13,7 +13,6 @@ import org.xml.sax.SAXException;
 import todo.util.CommandType;
 import todo.util.LogUtil;
 import todo.model.*;
-import todo.model.StateHistory;
 import todo.nlp.NLP;
 import todo.storage.Storage;
 import todo.util.StringUtil;
@@ -39,6 +38,9 @@ public class Logic {
 	private static final String MESSAGE_CANNOT_UNDO = "no action can be undo.";
 	private static final String MESSAGE_REDO_SUCCESS = "you have successfully redo the previous action.";
 	private static final String MESSAGE_CANNOT_REDO = "no action can be redo.";
+	private static final String MESSAGE_SHOW_UNCOMPLETED = "Showing all uncompleted tasks";
+	private static final String MESSAGE_SHOW_COMPLETED = "Showing all completed tasks";
+	private static final String MESSAGE_SHOW_FILTERED = "Showing tasks labeled with" + " " + "%1$s";
 
 	/**
 	 * Private constructor for singleton Logic
@@ -54,6 +56,7 @@ public class Logic {
 		storage = new Storage();
 		command = new CommandMatch();
 		mItemList = storage.readDataFromFile();
+		mItemList.checkStatus();
 		stateHistory = new StateHistory();
 	}
 
@@ -216,6 +219,8 @@ public class Logic {
 				systemMessage = ERROR_MISSING_TAGS;
 				setSystemMessage(systemMessage);
 			} else {
+				systemMessage =String.format(MESSAGE_SHOW_FILTERED, tagString) ;
+				setSystemMessage(systemMessage);
 				filteredItems = mItemList.filterByTags(tagString);
 			}
 			// Filter by completed/uncompleted
@@ -224,9 +229,13 @@ public class Logic {
 				&& !(userInput.contains("undone") || userInput
 						.contains("uncompleted"))) {
 			filteredItems = mItemList.showCompletedList();
+			systemMessage = MESSAGE_SHOW_COMPLETED;
+			setSystemMessage(systemMessage);
 		} else if ((userInput.contains("undone") || userInput
 				.contains("uncompleted"))) {
 			filteredItems = mItemList.showUncompletedList();
+			systemMessage = MESSAGE_SHOW_UNCOMPLETED;
+			setSystemMessage(systemMessage);
 
 			// Filter by dateTime using standard format yyyy/MM/dd
 		} else if (userInput.contains("on")) {
@@ -237,6 +246,8 @@ public class Logic {
 			if (dateString.isEmpty()) {
 				setSystemMessage("Invalid: Missing date for filter.");
 			} else {
+				systemMessage =String.format(MESSAGE_SHOW_FILTERED, dateString) ;
+				setSystemMessage(systemMessage);
 				filteredItems = mItemList.filterByDateTime(dateString);
 			}
 		}
