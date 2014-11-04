@@ -31,10 +31,6 @@ public class XMLReader {
 	// Logger
 	private final static Logger LOGGER = Logger.getLogger(XMLReader.class .getName());
 
-	private DateFormat dateWithTime = new SimpleDateFormat(Storage.DATE_WITH_TIME);
-	private DateFormat dateWithoutTime = new SimpleDateFormat(Storage.DATE_WITHOUT_TIME);
-	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
 	/**
 	 * Default constructor
 	 */
@@ -124,19 +120,21 @@ public class XMLReader {
 			Element startDateTimeElement = (Element) startDateTime;
 			Node sHasTime = startDateTimeElement.getElementsByTagName(Storage.HAS_TIME).item(Storage.ZERO);
 			Node sDateTime = startDateTimeElement.getElementsByTagName(Storage.DATE_TIME).item(Storage.ZERO);
-			//System.out.println("retrieviing startdatetime");
 			if(sDateTime.getTextContent() != Storage.EMPTY){
-				//System.out.println("retrieviing startdatetime2");
 				if(sHasTime.getTextContent().equals(Storage.TRUE)){
-					//System.out.println("retrieviing startdatetime3");
-					String dateWithTime =sDateTime.getTextContent() ;
-					LocalDateTime dateTime = LocalDateTime.parse(dateWithTime, formatter);
-					//Date sDate = dateWithTime.parse(sDateTime.getTextContent());
-					newItem.setStartDateTime(new DateTime(dateTime, true));
+					String dateWithTime =sDateTime.getTextContent().replace('T', ' '); 
+					//System.out.println("Date with time = "+dateWithTime);
+					dateWithTime = dateWithTime.substring(0,16);
+					//System.out.println("Date with time 2 = "+dateWithTime);
+					LocalDateTime dateWithTimeObject = LocalDateTime.parse(dateWithTime,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+					newItem.setStartDateTime(new DateTime(dateWithTimeObject, true));
 				}else{
-					//System.out.println("retrieviing startdatetime4");
-					Date sDate = dateWithoutTime.parse(sDateTime.getTextContent());
-					newItem.setStartDateTime(new DateTime(sDate, false));
+					String dateWithoutTime =sDateTime.getTextContent().replace('T', ' '); 
+					dateWithoutTime = dateWithoutTime.substring(0,16);
+					//System.out.println("Date without time = "+dateWithoutTime);
+					LocalDateTime dateWithoutTimeObject = LocalDateTime.parse(dateWithoutTime,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+					newItem.setDueDateTime(new DateTime(dateWithoutTimeObject, true));
+
 				}
 			}
 			//------------------Retrieving of startDateTime---------------------
@@ -149,12 +147,23 @@ public class XMLReader {
 			
 			if(dDateTime.getTextContent() != Storage.EMPTY){
 				if(dHasTime.getTextContent().equals(Storage.TRUE)){
-					String dateString = dDateTime.getTextContent();
-					LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
-					newItem.setDueDateTime(new DateTime(dateTime, true));
+					String dateWithTime =sDateTime.getTextContent().replace('T', ' '); 
+					//System.out.println("Date with time = "+dateWithTime);
+					if(dateWithTime!=""){
+					dateWithTime = dateWithTime.substring(0,16);
+					//System.out.println("Date with time 2 = "+dateWithTime);
+					LocalDateTime dateWithTimeObject = LocalDateTime.parse(dateWithTime,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+					newItem.setDueDateTime(new DateTime(dateWithTimeObject, true));
+					}
+					
 				}else{
-					Date dDate = dateWithoutTime.parse(dDateTime.getTextContent());
-					newItem.setStartDateTime(new DateTime(dDate, false));
+					String dateWithoutTime =sDateTime.getTextContent().replace('T', ' '); 
+					if(dateWithoutTime!=""){
+					dateWithoutTime = dateWithoutTime.substring(0,16);
+					System.out.println("Date without time = "+dateWithoutTime);
+					LocalDateTime dateWithoutTimeObject = LocalDateTime.parse(dateWithoutTime,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+					newItem.setDueDateTime(new DateTime(dateWithoutTimeObject, true));
+				}
 				}
 			}
 			//------------------Retrieving of DueDateTime-----------------------

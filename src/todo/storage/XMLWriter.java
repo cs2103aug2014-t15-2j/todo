@@ -87,18 +87,8 @@ public class XMLWriter {
 				sdtDateTime.appendChild(doc.createTextNode(Storage.EMPTY));
 			}else{
 				sdtHasTime.appendChild(doc.createTextNode(String.valueOf(sdt.hasTime())));
-				
-				if(sdt.hasTime()){
 					String dateWithTime = sdt.getDate().toString();
-					dateWithTime = dateWithTime.replace('T', ' ');
 					sdtDateTime.appendChild(doc.createTextNode(dateWithTime));
-				}else{
-					String dateWithoutTime = (sdt.getDate().toString());
-					int toRemoveAfter = dateWithoutTime.indexOf("T") ;
-					dateWithoutTime = dateWithoutTime.substring(0,toRemoveAfter);
-					sdtDateTime.appendChild(doc.createTextNode(dateWithoutTime));
-			
-				}
 			}
 			startDateTime.appendChild(sdtHasTime);
 			startDateTime.appendChild(sdtDateTime);
@@ -116,17 +106,9 @@ public class XMLWriter {
 				ddtDateTime.appendChild(doc.createTextNode(Storage.EMPTY));
 			}else{
 				ddtHasTime.appendChild(doc.createTextNode(String.valueOf(ddt.hasTime())));
+				String dateWithTime = ddt.getDate().toString();
+				ddtDateTime.appendChild(doc.createTextNode(dateWithTime));
 				
-				if(ddt.hasTime()){
-					String dateWithTime = ddt.getDate().toString();
-					dateWithTime = dateWithTime.replace('T', ' ');
-					ddtDateTime.appendChild(doc.createTextNode(dateWithTime));
-				}else{
-					String dateWithoutTime = (ddt.getDate().toString());
-					int toRemoveAfter = dateWithoutTime.indexOf("T") ;
-					dateWithoutTime = dateWithoutTime.substring(0,toRemoveAfter);
-					ddtDateTime.appendChild(doc.createTextNode(dateWithoutTime));
-				}
 			}
 			dueDateTime.appendChild(ddtHasTime);
 			dueDateTime.appendChild(ddtDateTime);

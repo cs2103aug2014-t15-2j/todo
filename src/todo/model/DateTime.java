@@ -83,6 +83,7 @@ public class DateTime {
 	public LocalDateTime convertDateToLocalDateTime (Date targetDate){
 		Instant instant = Instant.ofEpochMilli(targetDate.getTime());
 		LocalDateTime formattedDate = LocalDateTime.ofInstant(instant, ZoneOffset.of("+08"));
+		//System.out.println(formattedDate);
 		return formattedDate;
 		
 	}
