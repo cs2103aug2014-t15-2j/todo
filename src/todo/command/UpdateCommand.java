@@ -16,6 +16,7 @@ public class UpdateCommand implements Command {
 	private DateTime due;
 	private String location;
 	private ArrayList<String> tagList;
+	private String statusMessage;
 
 	private boolean updateStart;
 	private boolean updateDue;
@@ -45,7 +46,7 @@ public class UpdateCommand implements Command {
 			item.setDescription(description);
 			updated = true;
 		}
-		if (tagList != null) {
+		if (tagList != null && tagList.size() != 0) {
 			for (String tag : tagList) {
 				if (item.getTags().contains(tag)) {
 					item.deleteTaf(tag);
@@ -61,10 +62,11 @@ public class UpdateCommand implements Command {
 		}
 
 		if (updated) {
-			return UPDATE_SUCCESSFUL;
+			statusMessage = UPDATE_SUCCESSFUL;
 		} else {
-			return UPDATE_FAILED;
+			statusMessage = UPDATE_FAILED;
 		}
+		return statusMessage;
 	}
 
 	public void setItem(Item item) {

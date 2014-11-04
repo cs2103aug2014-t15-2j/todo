@@ -22,13 +22,16 @@ import todo.model.Message;
 import todo.util.LogUtil;
 import todo.util.StringUtil;
 
+/**
+ * This class contains all the utility methods used by NLP
+ * @author siwei
+ *
+ */
 public class NLPUtil {
-
 	private static String TAG = "NLPUtil";
-	
 	public static Parser parser = new Parser();
 	
-	
+	// Extractors
 	protected static List<DateTime> extractDateTime(Message msg){
 		List<DateTime> dateTimeList = new ArrayList<DateTime>();
 		List<DateGroup> groups = NLPUtil.getDateGroups(msg.withoutQuotation());
@@ -104,11 +107,6 @@ public class NLPUtil {
 	 * Read indexes from a string
 	 * @param str
 	 * @return array list of integers
-	 * @throws ParseException 
-	 * @throws IOException 
-	 * @throws SAXException 
-	 * @throws ParserConfigurationException 
-	 * @throws DOMException 
 	 */
 	protected static ArrayList<Integer> readIndexList(String str) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
 		ArrayList<Integer> result = new ArrayList<Integer>();
