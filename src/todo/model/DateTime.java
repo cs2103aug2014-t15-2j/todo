@@ -23,6 +23,12 @@ public class DateTime {
 		this.hasTime = hasTime;
 	}
 	
+	public DateTime(LocalDateTime date, boolean hasTime) {
+		this.date = date;
+		this.hasTime = hasTime;
+	}
+	
+	
 
 	public void setDate(Date date) {
 		this.date = convertDateToLocalDateTime (date);

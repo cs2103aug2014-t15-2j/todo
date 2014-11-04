@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 
 import todo.util.CommandType;
 import todo.util.LogUtil;
+import todo.command.AddCommand;
 import todo.model.*;
 import todo.nlp.NLP;
 import todo.storage.Storage;
@@ -32,8 +33,8 @@ public class Logic {
 	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
 	private static final String ERROR_MISSING_TAGS = "Invalid: Missing Tag Names.";
 
-	private static final String MESSAGE_ADD_TIP = "add a new event or task.\n";
-	private static final String MESSAGE_ADD_EXAMPLE = "eg add project meeting tomorrow @utown #cs2103 .";
+	private static final String MESSAGE_ADD_TIP = "Add command : add a new event or task.\n";
+	private static final String MESSAGE_ADD_EXAMPLE = "eg add project meeting tomorrow @utown #cs2103 \n";
 	private static final String MESSAGE_UNDO_SUCCESS = "you have successfully undo the previous action.";
 	private static final String MESSAGE_CANNOT_UNDO = "no action can be undo.";
 	private static final String MESSAGE_REDO_SUCCESS = "you have successfully redo the previous action.";
@@ -107,7 +108,6 @@ public class Logic {
 	public ArrayList<Item> executeCommand(String userInput) throws Exception {
 		CommandType commandType = getCommandType(StringUtil
 				.getFirstWord(userInput));
-		String result = "";
 		userInput = StringUtil.trimString(userInput);
 
 		switch (commandType) {
@@ -158,11 +158,10 @@ public class Logic {
 	}
 
 	private ArrayList<Item> undo() {
-
 		if (stateHistory.canUndo() && stateHistory.saveStateToFuture(mItemList)) {
 			mItemList = stateHistory.undo();
-			this.setSystemMessage(MESSAGE_UNDO_SUCCESS);
 			
+			this.setSystemMessage(MESSAGE_UNDO_SUCCESS);
 		} else {
 			this.setSystemMessage(MESSAGE_CANNOT_UNDO);
 		}
@@ -171,10 +170,7 @@ public class Logic {
 	}
 
 	private ArrayList<Item> redo() {
-		
-
-		if (stateHistory.canRedo()
-				&& stateHistory.saveStateToHistory(mItemList)) {
+		if (stateHistory.canRedo() && stateHistory.saveStateToHistory(mItemList)) {
 			mItemList = stateHistory.redo();
 
 			this.setSystemMessage(MESSAGE_REDO_SUCCESS);
@@ -202,6 +198,12 @@ public class Logic {
 			setSystemMessage(result);
 		}
 
+		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)){
+			undo();
+			result = MESSAGE_ADD_TIP;
+			result += MESSAGE_ADD_EXAMPLE;
+			setSystemMessage(result);
+		}
 		saveFile();
 		return mItemList.getAllItems();
 	}
@@ -283,7 +285,6 @@ public class Logic {
 			// start with item index
 			arr = userInput.split(" ", 2);
 			arrLen = 2;
-
 		} else {
 			// start with update command
 			arr = userInput.split(" ", 3);
@@ -298,10 +299,7 @@ public class Logic {
 		}
 
 		if (!updateInfo.isEmpty() && mItemList.validIndex(updateIndex - 1)) {
-			result = NLP
-					.getInstance()
-					.updateParser(mItemList.getItem(updateIndex - 1),
-							updateInfo).execute();
+			result = NLP.getInstance().updateParser(mItemList.getItem(updateIndex - 1), updateInfo).execute();
 			saveFile();
 			LogUtil.Log(TAG, "update index " + (updateIndex - 1));
 		} else {
