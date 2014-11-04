@@ -7,7 +7,7 @@ package todo.nlp;
  */
 public class NLPConfig {
 	// Date/time keywords
-	public static final String[] filterOut = {"eve","sun"};
+	public static final String[] filterOut = {"eve","sun", "mon", "wed", "sat", "fri"};
 	public static final String[] preStart = {"from", "on", "at"};
 	public static final String[] preDue = {"by", "before", "due", "in"};
 	public static final String[] timeKeyword = {"EXPLICIT_TIME", "minute", "hour"};

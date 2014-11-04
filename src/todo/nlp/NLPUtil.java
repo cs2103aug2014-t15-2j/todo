@@ -32,6 +32,12 @@ public class NLPUtil {
 	public static Parser parser = new Parser();
 	
 	// Extractors
+	
+	/**
+	 * Extract date time from a given string
+	 * @param msg Message object that may contain date/time text
+	 * @return a list of date/time
+	 */
 	protected static List<DateTime> extractDateTime(Message msg){
 		List<DateTime> dateTimeList = new ArrayList<DateTime>();
 		List<DateGroup> groups = NLPUtil.getDateGroups(msg.withoutQuotation());
@@ -57,16 +63,23 @@ public class NLPUtil {
 		return dateTimeList;
 	}
 	
+	/**
+	 * Extract location
+	 * @param msg
+	 * @return location string
+	 */
 	protected static String extractLocation(Message msg){
 		String location = "";
 		String locationString = StringUtil.getBracketLocation(msg.getText());
-		if (locationString.length() > 0){
+		// look for long location
+		if (locationString.length() > 2){
 			location = locationString.substring(2, locationString.length()-1);
 			msg.deleteSubstring(locationString);
 			msg.trim();
 			return location;
 		}
 		msg.trim();
+		// look for one-word location
 		String[] strArray = msg.getText().split(" ");
 		for(int i = strArray.length-1; i >= 0 ; i--){
 			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '@'){
@@ -77,10 +90,16 @@ public class NLPUtil {
 		return location;
 	}
 	
+	/**
+	 * Extract tags
+	 * @param msg
+	 * @return array list of tags
+	 */
 	protected static ArrayList<String> extractTags(Message msg){
 		ArrayList<String> tagList = new ArrayList<String>();
 		msg.trim();
 		String[] strArray = msg.getText().split(" ");
+		// look for all the word after a "#" in the string array
 		for(int i = strArray.length-1; i >= 0 ; i--){
 			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '#'){
 				String newTag = strArray[i].substring(1);
