@@ -18,6 +18,7 @@ public class GUIcontrol {
 	private ItemList allTasks;
 	private ArrayList<Item> completedTasks;
 	private ArrayList<Item> unCompletedTasks;
+	private String systemMessage = "";
 
 	public GUIcontrol() throws DOMException, ParserConfigurationException,
 			SAXException, IOException, ParseException {
@@ -47,6 +48,10 @@ public class GUIcontrol {
 	public ArrayList<Item> sendtoGUI(ArrayList<Item>itemsForGUI) {
 		itemsForGUI = logic.getItemsforGUI ();
 		return itemsForGUI;
+	}
+	public String getSystemMessageControl () {
+		systemMessage= logic.getSystemMessage();
+		return this.systemMessage;
 	}
 
 	public String sendToLogic(String userInput) throws Exception {
