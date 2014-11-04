@@ -40,7 +40,7 @@ public class Logic {
 	private static final String MESSAGE_CANNOT_REDO = "no action can be redo.";
 	private static final String MESSAGE_SHOW_UNCOMPLETED = "Showing all uncompleted tasks";
 	private static final String MESSAGE_SHOW_COMPLETED = "Showing all completed tasks";
-	private static final String MESSAGE_SHOW_FILTERED = "Showing tasks labeled with" + " " + "%1$s";
+	private static final String MESSAGE_SHOW_FILTERED = "Showing task(s) labeled with" + " " + "%1$s";
 
 	/**
 	 * Private constructor for singleton Logic
