@@ -181,8 +181,6 @@ public class XMLReader {
 		
 			newItemList.add(newItem);
 		}
-		//To run at launch of program to build completed and uncompleted lists
-		newItemList.checkStatus();
 		
 		return newItemList;
 	}
