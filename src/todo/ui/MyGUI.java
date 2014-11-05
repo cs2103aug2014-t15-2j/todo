@@ -10,7 +10,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentListener;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
@@ -23,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
@@ -41,6 +39,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	protected JTextField textField;
 	public JLabel label;
 	public JScrollPane scrollPane;
+	public JPanel mainPane;
 	
 	// Main method that creates the GUI
 	public static void main(String[] args) {
@@ -50,7 +49,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	// This methods defines the overall frame
 	public MyGUI() {
         EventQueue.invokeLater(new Runnable() {
-            @Override
+			@Override
             public void run() {
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -92,12 +91,24 @@ public class MyGUI extends JFrame implements ActionListener {
 				}
 
                 gbc.gridy++;	
-                scrollPane = createScrollableItemPane();
+                scrollPane =  new JScrollPane(createMainItemPane()){
+                	@Override
+                	public Dimension getPreferredSize(){
+        				return new Dimension(400, 400);
+        			}
+                	
+                	 @Override
+                     public Dimension getMinimumSize() {
+                     	return new Dimension(400, 400);
+                     }
+                };
                 frame.add(scrollPane, gbc);
                // scrollPane.addActionListener();
                 
                          
                 gbc.gridy++;
+                
+                
                 frame.add(createMessagePane(), gbc);
                 
                 textField = new JTextField(50);
@@ -115,23 +126,22 @@ public class MyGUI extends JFrame implements ActionListener {
     }
 	
 	// This method add Scroll bar panel for item panels
-	public JScrollPane createScrollableItemPane(){
-		JPanel pane = new JPanel(new GridBagLayout());
+	public JPanel createMainItemPane(){
+		mainPane = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(4, 4, 4, 4);
         gbc.gridx = 0;
         gbc.weightx = 1;
         gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;  
         
 
         
         for(int i = 0; i < guiControl.getItemList().size(); i++){
-            pane.add(createItemPane(i), gbc);
+            mainPane.add(createItemPane(i), gbc);
         	gbc.gridy++; 
         }
-
-        scrollPane = new JScrollPane(pane){
+       /* scrollPane = new JScrollPane(mainPane){
         	@Override
         	public Dimension getPreferredSize(){
 				return new Dimension(400, 400);
@@ -141,14 +151,15 @@ public class MyGUI extends JFrame implements ActionListener {
              public Dimension getMinimumSize() {
              	return new Dimension(400, 400);
              }
-        };
+        };  */
 		
-		return scrollPane;
+		return mainPane;
 	}
 	
 	// This method defines individual item panel
 	public JPanel createItemPane(int index) {
-        JPanel pane = new JPanel(){
+        @SuppressWarnings("serial")
+		JPanel pane = new JPanel(){
 
             @Override
             public Dimension getPreferredSize() {
@@ -271,7 +282,8 @@ public class MyGUI extends JFrame implements ActionListener {
 	}
 
 	
-	public void actionPerformed(ActionEvent evt){
+	@SuppressWarnings("serial")
+	public void actionPerformed(ActionEvent evt) {
 		
 		String userInput = textField.getText();
 		
@@ -301,13 +313,32 @@ public class MyGUI extends JFrame implements ActionListener {
 		}
 		
 	//	SwingUtilities.updateComponentTreeUI(MyGUI.this);
-    //    scrollPane.removeAll();
-     //   scrollPane.validate();
-      //  scrollPane.repaint();
-	//	this.setVisible(false);
-		this.setVisible(false);
-		new MyGUI().setVisible(true);
-        
-	}
 
+           mainPane.removeAll();
+           GridBagConstraints gbc = new GridBagConstraints();
+           gbc.insets = new Insets(4, 4, 4, 4);
+           gbc.gridx = 0;
+           gbc.weightx = 1;
+           gbc.gridy = 0;
+           gbc.fill = GridBagConstraints.HORIZONTAL;  
+           
+
+           
+           for(int i = 0; i < guiControl.getItemList().size(); i++){
+               mainPane.add(createItemPane(i), gbc);
+           	gbc.gridy++; 
+           }
+           mainPane.revalidate();
+
+	//	this.setVisible(false);
+		
+	//	scrollPane.getViewport().invalidate();
+
+		
+	//	scrollPane.getViewport().repaint();
+		
+	//	this.setVisible(false);
+	//	new MyGUI().setVisible(true);
+
+	}
 }
