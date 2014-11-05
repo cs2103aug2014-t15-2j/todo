@@ -108,9 +108,12 @@ public class ItemList {
 		
 		// Done item
 		public String done(int index){
+			String result = "";
+		
 			try{
+				if(!itemList.get(index-1).getStatus()){
 				String doneItemDescription = itemList.get(index - 1).getDescription();
-				String result = String.format(MESSAGE_COMPLETED, doneItemDescription);
+				result = String.format(MESSAGE_COMPLETED, doneItemDescription);
 				itemList.get(index - 1).setStatusDone();;
 				//Add item to list of completed item:
 				completedList.add(itemList.get(index-1));
@@ -125,6 +128,10 @@ public class ItemList {
 				}
 				else {
 					uncompletedList.remove(deleteIndex);
+				}
+				}
+				else {
+					result = "Task is already marked as completed!";
 				}
 				
 				return result;
@@ -142,10 +149,12 @@ public class ItemList {
 		
 		// Undone item
 		public String undone(int index){
+			String result = "";
 			try{
+				if(itemList.get(index-1).getStatus()){
 				String undoneItemDescription = itemList.get(index - 1).getDescription();
 				itemList.get(index - 1).setStatusUndone();;
-				String result = String.format(MESSAGE_UNCOMPLETED, undoneItemDescription);
+				 result = String.format(MESSAGE_UNCOMPLETED, undoneItemDescription);
 				//Add item to list of uncompleted item:
 				uncompletedList.add(itemList.get(index-1));
 				//Find itemId of the item that was mark as done
@@ -160,6 +169,11 @@ public class ItemList {
 				else {
 					completedList.remove(deleteIndex);
 				}
+				}
+				else {
+					result = "Task is already mark as uncompleted!";
+				}
+				
 				return result;
 			}catch(IndexOutOfBoundsException e){
 				String returnErrorMessage = null;
