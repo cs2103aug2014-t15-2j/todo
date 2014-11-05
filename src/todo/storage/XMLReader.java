@@ -8,25 +8,27 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
 import todo.model.Item;
 import todo.model.ItemList;
 import todo.model.DateTime;
 
 public class XMLReader {
-	private DateTimeFormatter dateWithTime = DateTimeFormatter
-			.ofPattern(Storage.DATE_WITH_TIME);
-	private DateFormat dateWithoutTime = new SimpleDateFormat(
-			Storage.DATE_WITHOUT_TIME);
+	private DateTimeFormatter formatter = DateTimeFormatter
+			.ofPattern(Storage.DATE_FORMAT);
 
 	/**
 	 * Default constructor
@@ -107,14 +109,12 @@ public class XMLReader {
 					Storage.HAS_TIME).item(Storage.ZERO);
 			Node sDateTime = startDateTimeElement.getElementsByTagName(
 					Storage.DATE_TIME).item(Storage.ZERO);
-			if (sDateTime.getTextContent() != Storage.EMPTY) {
+
+			if (!sDateTime.getTextContent().equals(Storage.EMPTY)) {
+				LocalDateTime sDate = LocalDateTime.parse(sDateTime.getTextContent(), formatter);
 				if (sHasTime.getTextContent().equals(Storage.TRUE)) {
-					LocalDateTime sDate = LocalDateTime.parse(
-							sDateTime.getTextContent(), dateWithTime);
 					newItem.setStartDateTime(new DateTime(sDate, true));
 				} else {
-					Date sDate = dateWithoutTime.parse(sDateTime
-							.getTextContent());
 					newItem.setStartDateTime(new DateTime(sDate, false));
 				}
 			}
@@ -129,14 +129,11 @@ public class XMLReader {
 					Storage.HAS_TIME).item(Storage.ZERO);
 			Node dDateTime = dueDateTimeElement.getElementsByTagName(
 					Storage.DATE_TIME).item(Storage.ZERO);
-			if (dDateTime.getTextContent() != Storage.EMPTY) {
+			if (!dDateTime.getTextContent().equals(Storage.EMPTY)) {
+				LocalDateTime dDate = LocalDateTime.parse(dDateTime.getTextContent(), formatter);
 				if (dHasTime.getTextContent().equals(Storage.TRUE)) {
-					LocalDateTime dDate = LocalDateTime.parse(
-							dDateTime.getTextContent(), dateWithTime);
 					newItem.setDueDateTime(new DateTime(dDate, true));
 				} else {
-					Date dDate = dateWithoutTime.parse(dDateTime
-							.getTextContent());
 					newItem.setDueDateTime(new DateTime(dDate, false));
 				}
 			}

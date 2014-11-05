@@ -79,19 +79,7 @@ public class XMLWriter {
 			} else {
 				sdtHasTime.appendChild(doc.createTextNode(String.valueOf(sdt
 						.hasTime())));
-				if (sdt.hasTime()) {
-					String dateWithTime = sdt.getDate().toString();
-					dateWithTime = dateWithTime.replace(Storage.CAPITAL_T,
-							Storage.SPACE);
-					sdtDateTime.appendChild(doc.createTextNode(dateWithTime));
-				} else {
-					String dateWithoutTime = sdt.getDate().toString();
-					int indexOfT = dateWithoutTime.indexOf(Storage.CAPITAL_T);
-					dateWithoutTime = dateWithoutTime.substring(Storage.ZERO,
-							indexOfT);
-					sdtDateTime
-							.appendChild(doc.createTextNode(dateWithoutTime));
-				}
+				sdtDateTime.appendChild(doc.createTextNode(sdt.writeString()));
 			}
 			startDateTime.appendChild(sdtHasTime);
 			startDateTime.appendChild(sdtDateTime);
@@ -110,19 +98,7 @@ public class XMLWriter {
 			} else {
 				ddtHasTime.appendChild(doc.createTextNode(String.valueOf(ddt
 						.hasTime())));
-				if (ddt.hasTime()) {
-					String dateWithTime = ddt.getDate().toString();
-					dateWithTime = dateWithTime.replace(Storage.CAPITAL_T,
-							Storage.SPACE);
-					ddtDateTime.appendChild(doc.createTextNode(dateWithTime));
-				} else {
-					String dateWithoutTime = (ddt.getDate().toString());
-					int indexOfT = dateWithoutTime.indexOf(Storage.CAPITAL_T);
-					dateWithoutTime = dateWithoutTime.substring(Storage.ZERO,
-							indexOfT);
-					ddtDateTime
-							.appendChild(doc.createTextNode(dateWithoutTime));
-				}
+				ddtDateTime.appendChild(doc.createTextNode(ddt.writeString()));
 			}
 			dueDateTime.appendChild(ddtHasTime);
 			dueDateTime.appendChild(ddtDateTime);

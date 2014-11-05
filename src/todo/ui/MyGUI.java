@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -33,6 +34,8 @@ import javax.xml.transform.TransformerException;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
+import todo.model.Item;
+
 //import todo.ui.GUIcontrol;
 
 public class MyGUI extends JFrame implements ActionListener {
@@ -43,6 +46,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	public JScrollPane scrollPane;
 	public JPanel mainPane;
 	public String userInput;
+	public ArrayList<Item> dynamicList = new ArrayList<Item>();
 	
 	// Main method that creates the GUI
 	public static void main(String[] args) {
@@ -89,6 +93,13 @@ public class MyGUI extends JFrame implements ActionListener {
 					guiControl = new GUIcontrol();
 				} catch (DOMException | ParserConfigurationException
 						| SAXException | IOException | ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				try {
+					dynamicList = guiControl.getItemList().getAllItems();
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -143,7 +154,7 @@ public class MyGUI extends JFrame implements ActionListener {
           gbc.fill = GridBagConstraints.HORIZONTAL; 
           gbc.gridwidth = GridBagConstraints.REMAINDER;
           
-          for(int i = 0; i < guiControl.getItemList().size(); i++){
+          for(int i = 0; i <dynamicList.size(); i++){
               mainPane.add(createItemPane(i), gbc);            
           	  gbc.gridy++; 
           	  //gbc.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -211,7 +222,7 @@ public class MyGUI extends JFrame implements ActionListener {
         
         // Displaying item status
         JCheckBox checkBox = new JCheckBox();
-        if(guiControl.getItemList().getItem(index).getStatus()){
+        if(dynamicList.get(index).getStatus()){
         	checkBox.setSelected(true);
         }else{
         	checkBox.setSelected(false);
@@ -232,9 +243,9 @@ public class MyGUI extends JFrame implements ActionListener {
         dateTimeTextArea.setFont(new Font("Verdana", Font.PLAIN, 12));
 
         
-        dateTimeTextArea.setText(" Start: " + guiControl.getItemList().getItem(index).getStartDateTime() 
+        dateTimeTextArea.setText(" Start: " + dynamicList.get(index).getStartDateTime() 
         	    + "\n" + "\n" 
-        		+ " Due: " + guiControl.getItemList().getItem(index).getDueDateTime());
+        		+ " Due: " + dynamicList.get(index).getDueDateTime());
         dateTimeTextArea.setEditable(false);
         
         Border dateTimeBorder = BorderFactory.createLineBorder(Color.ORANGE, 1);
@@ -243,16 +254,16 @@ public class MyGUI extends JFrame implements ActionListener {
         
         // Defines description TextArea
         String displayDescription = "";
-        displayDescription = guiControl.getItemList().getItem(index).getDescription();
+        displayDescription = dynamicList.get(index).getDescription();
         String displayLocation = "";
-        if(guiControl.getItemList().getItem(index).getLocation().equals(null)){
+        if(dynamicList.get(index).getLocation().equals(null)){
         }else{
-        	displayLocation = "Location: " + guiControl.getItemList().getItem(index).getLocation();
+        	displayLocation = "Location: " + dynamicList.get(index).getLocation();
         }
         String displayTags = "";
-        if(guiControl.getItemList().getItem(index).getTags().equals(null)){
+        if(dynamicList.get(index).getTags().equals(null)){
         }else{
-        	displayTags = guiControl.getItemList().getItem(index).getTags().toString();
+        	displayTags = dynamicList.get(index).getTags().toString();
         }
         
         JTextArea descriTextArea = new JTextArea(20, 20);
@@ -308,7 +319,8 @@ public class MyGUI extends JFrame implements ActionListener {
 		textField.setText("");
 		
 		try {
-			guiControl.sendToLogic(userInput);
+			//guiControl.sendToLogic(userInput);
+			dynamicList = guiControl.sendToGUI(userInput);
 			
 		} catch (ParserConfigurationException | TransformerException e) {
 			// TODO Auto-generated catch block
@@ -328,7 +340,7 @@ public class MyGUI extends JFrame implements ActionListener {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 		
 	//	SwingUtilities.updateComponentTreeUI(MyGUI.this);
 

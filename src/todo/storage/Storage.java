@@ -37,8 +37,7 @@ public class Storage {
 	public static final String TAG = "tag";
 	public static final String IS_COMPLETED = "isCompleted";
 	// Related to date and time
-	public static final String DATE_WITH_TIME = "yyyy-MM-dd HH:mm";
-	public static final String DATE_WITHOUT_TIME = "yyyy-MM-dd";
+	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 	// Other miscellaneous constant string and integer
 	public static final String EMPTY = "";
 	public static final String TRUE = "true";

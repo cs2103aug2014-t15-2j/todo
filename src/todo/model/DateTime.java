@@ -27,8 +27,6 @@ public class DateTime {
 		this.date = date;
 		this.hasTime = hasTime;
 	}
-	
-	
 
 	public void setDate(Date date) {
 		this.date = convertDateToLocalDateTime (date);
@@ -49,12 +47,18 @@ public class DateTime {
 
 	public String toString() {
 		String output;
+	
 		if (hasTime) {
-			output=this.date.toString();
-		} else {
-			output=this.date.toLocalDate().toString();
+			output =this.date.toString();
+			output = output.replace("T", " ");
+		}else{
+			output = this.date.toLocalDate().toString();
 		}
 		return output;
+	}
+	
+	public String writeString(){
+		return this.date.toString().replace("T", " ").substring(0, 16);
 	}
 
 	/**
