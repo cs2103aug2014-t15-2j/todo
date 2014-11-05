@@ -33,6 +33,12 @@ public class Logic {
 
 	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
 	private static final String ERROR_MISSING_TAGS = "Invalid: Missing Tag Names.";
+	private static final String ERROR_INVALID_COMMAND = "Invalid command";
+	private static final String ERROR_INVALID_PARAM = "Invalid parameter";
+	
+	private static final String ITEMS_ARE_DELETED = " items are deleted";
+	private static final String ITEMS_ARE_DONE = " items are marked as completed.";
+	private static final String ITEMS_ARE_UNDONE = " items are marked as uncompleted.";
 
 	private static final String MESSAGE_ADD_TIP = "Add command : add a new event or task.\neg add project meeting tomorrow @utown #cs2103 \n";
 	private static final String MESSAGE_DELETE_TIP = "delete a existing event or task.\ne.g. delete 3";
@@ -338,8 +344,8 @@ public class Logic {
 		String result = "";
 
 		if (arr.length > 1) {
-			ArrayList<Integer> indexList = NLP.getInstance().batchIndexParser(
-					arr[1]);
+			ArrayList<Integer> indexList = NLP.getInstance().batchIndexParser(arr[1]);
+			int numberOfItems = indexList.size();
 			if (!indexList.isEmpty()) {
 				while (!indexList.isEmpty()) {
 					Integer thisIndex = indexList.remove(indexList.size() - 1);
@@ -354,11 +360,26 @@ public class Logic {
 						result = mItemList.undone(thisIndex);
 						break;
 					default:
-						result = "Invalid command type.";
+						result = ERROR_INVALID_COMMAND;
+					}
+				}
+				if(numberOfItems > 1){
+					switch (type) {
+					case DELETE:
+						result = numberOfItems + ITEMS_ARE_DELETED;
+						break;
+					case DONE:
+						result = numberOfItems + ITEMS_ARE_DONE;
+						break;
+					case UNDONE:
+						result = numberOfItems + ITEMS_ARE_UNDONE;
+						break;
+					default:
+						// should not reach here
 					}
 				}
 			} else {
-				result = "Invalid parameter";
+				result = ERROR_INVALID_PARAM;
 			}
 		} else {
 			switch (type) {
@@ -372,7 +393,7 @@ public class Logic {
 				result = MESSAGE_UNDONE_TIP;
 				break;
 			default:
-				result = "Invalid command type.";
+				result = ERROR_INVALID_COMMAND;
 			}
 		}
 
