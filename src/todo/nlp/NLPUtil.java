@@ -52,10 +52,13 @@ public class NLPUtil {
 			LogUtil.Log(TAG, "Detect data/time: "+groupText);
 			dateTimeList = NLPUtil.getDateTime(group);
 			String wordBeforeDate = msg.getWordBeforeSubstring(groupText);
-			if (Arrays.asList(NLPConfig.preDue).contains(wordBeforeDate)){
+			String twoWordBeforeDate = msg.getTwoWordsBeforeSubstring(groupText);
+			if (Arrays.asList(NLPConfig.preDue).contains(twoWordBeforeDate)
+					|| Arrays.asList(NLPConfig.preDue).contains(wordBeforeDate)){
 				// exchange start time and due time
 				dateTimeList.add(dateTimeList.remove(0));
 			}
+			msg.setText(NLPUtil.deletePreposition(msg.getText(), twoWordBeforeDate, groupText));
 			msg.setText(NLPUtil.deletePreposition(msg.getText(), wordBeforeDate, groupText));
 		}else{
 			LogUtil.Log(TAG, "No date time detected");

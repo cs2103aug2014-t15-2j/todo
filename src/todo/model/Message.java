@@ -29,6 +29,10 @@ public class Message {
 		return StringUtil.getWordBeforeSubstring(text,substring);
 	}
 	
+	public String getTwoWordsBeforeSubstring(String substring){
+		return StringUtil.getTwoWordsBeforeSubstring(text,substring);
+	}
+	
 	public void deleteEscapeCharaster(){
 		text = text.replaceAll("\\\\#", "#");
 		text = text.replaceAll("\\\\@", "@");

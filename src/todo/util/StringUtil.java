@@ -72,6 +72,20 @@ public class StringUtil {
 		return result;
 	}
 	
+	public static String getTwoWordsBeforeSubstring(String str, String sub){
+		int idx = str.lastIndexOf(sub)-2;
+		int countSpace = 0;
+		String result = "";
+		while (idx >= 0 && !(countSpace == 1 && str.charAt(idx) == ' ')){
+			if (str.charAt(idx) == ' '){
+				countSpace++;
+			}
+			result = str.charAt(idx) + result;
+			idx--;
+		}
+		return result;
+	}
+	
 	public static boolean isFullQuote(String str){
 		if (str.length() > 1){
 			if (str.charAt(0) == '\"' && str.charAt(str.length()-1) == '\"'){
