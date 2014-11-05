@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -129,6 +130,7 @@ public class MyGUI extends JFrame implements ActionListener {
                 
                 textField = new JTextField(50);
         		textField.setFont(new Font("Verdana", Font.BOLD, 14));
+        		textField.setBackground(Color.WHITE);
         		
         		gbc.gridy++;
         		frame.add(createTextFieldPane(), gbc);
@@ -285,6 +287,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	public JPanel createTextFieldPane() {
 		JPanel pane = new JPanel();
         textField.addActionListener(this);
+        pane.setBackground(Color.WHITE);
 	    pane.add(textField);
 	
 	    return pane;
@@ -306,6 +309,7 @@ public class MyGUI extends JFrame implements ActionListener {
 		messageLabel = new JLabel();
 		pane.add(messageLabel);
 	    pane.setBackground(Color.WHITE);
+	    pane.setBorder(new EmptyBorder(0, 0, 0, 0) );
 		
 		return pane;
 		
