@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.Border;
@@ -40,10 +41,12 @@ public class MyGUI extends JFrame implements ActionListener {
 	public JLabel messageLabel;
 	public JScrollPane scrollPane;
 	public JPanel mainPane;
+	public String userInput;
 	
 	// Main method that creates the GUI
 	public static void main(String[] args) {
-		new MyGUI();
+
+        new MyGUI();
 	}
 	
 	// This methods defines the overall frame
@@ -55,7 +58,7 @@ public class MyGUI extends JFrame implements ActionListener {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                     ex.printStackTrace();
-                } 
+                }         
 
                 JFrame frame = new JFrame("JustDidIt");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,7 +68,6 @@ public class MyGUI extends JFrame implements ActionListener {
                 frame.setLayout(gridbag);
                 
                 frame.getContentPane().setBackground(Color.WHITE);
-               
 
                 GridBagConstraints gbc = new GridBagConstraints();
                 gbc.insets = new Insets(4, 4, 4, 4);
@@ -102,6 +104,8 @@ public class MyGUI extends JFrame implements ActionListener {
                      	return new Dimension(400, 400);
                      }
                 };
+                scrollPane.setBackground(Color.WHITE);
+                
                 frame.add(scrollPane, gbc);
                // scrollPane.addActionListener();
                 
@@ -127,20 +131,27 @@ public class MyGUI extends JFrame implements ActionListener {
 	
 	// This method add Scroll bar panel for item panels
 	public JPanel createMainItemPane(){
-		mainPane = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(4, 4, 4, 4);
-        gbc.gridx = 0;
-        gbc.weightx = 1;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;  
-        
+		  mainPane = new JPanel(new GridBagLayout());
+		  GridBagConstraints gbc = new GridBagConstraints();
+          gbc.insets = new Insets(4, 4, 4, 4);
+          gbc.anchor = GridBagConstraints.NORTH;
+          gbc.gridx = 0;
+          gbc.weightx = 1.0;
+          gbc.gridy = 0;
+          gbc.weighty = 1.0;  
+          gbc.fill = GridBagConstraints.HORIZONTAL;           
+          
+          for(int i = 0; i < guiControl.getItemList().size(); i++){
+              mainPane.add(createItemPane(i), gbc);            
+          	  gbc.gridy++; 
+          	  gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+          }
 
         
-        for(int i = 0; i < guiControl.getItemList().size(); i++){
-            mainPane.add(createItemPane(i), gbc);
-        	gbc.gridy++; 
-        }
+      // For testing:  Border mainBorder = BorderFactory.createLineBorder(Color.BLUE, 2);
+      //  mainPane.setBorder(mainBorder);
+        
+        mainPane.setBackground(Color.WHITE);
        /* scrollPane = new JScrollPane(mainPane){
         	@Override
         	public Dimension getPreferredSize(){
@@ -281,11 +292,10 @@ public class MyGUI extends JFrame implements ActionListener {
 		
 	}
 
-	
 	@SuppressWarnings("serial")
 	public void actionPerformed(ActionEvent evt) {
 		
-		String userInput = textField.getText();
+		userInput = textField.getText();
 		
 		textField.setText("");
 		
@@ -320,16 +330,16 @@ public class MyGUI extends JFrame implements ActionListener {
            
            GridBagConstraints gbc = new GridBagConstraints();
            gbc.insets = new Insets(4, 4, 4, 4);
+           gbc.anchor = GridBagConstraints.NORTH;
            gbc.gridx = 0;
-           gbc.weightx = 1;
+           gbc.weightx = 1.0;
            gbc.gridy = 0;
-           gbc.fill = GridBagConstraints.HORIZONTAL;  
-           
-
+           gbc.weighty = 1.0;  
+           gbc.fill = GridBagConstraints.HORIZONTAL;           
            
            for(int i = 0; i < guiControl.getItemList().size(); i++){
-               mainPane.add(createItemPane(i), gbc);
-           	gbc.gridy++; 
+               mainPane.add(createItemPane(i), gbc);            
+           	   gbc.gridy++; 
            }
            
            messageLabel.setText(guiControl.getSystemMessageControl());
