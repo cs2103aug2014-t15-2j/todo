@@ -82,7 +82,7 @@ public class MyGUI extends JFrame implements ActionListener {
                 gbc.gridy = 0;
                 gbc.fill = GridBagConstraints.HORIZONTAL;
                 
-                frame.add(createTimePane(), gbc);
+                //frame.add(createTimePane(), gbc);
                 
                
                /* 
