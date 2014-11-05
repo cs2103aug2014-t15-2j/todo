@@ -33,6 +33,7 @@ public class Logic {
 
 	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
 	private static final String ERROR_MISSING_TAGS = "Invalid: Missing Tag Names.";
+	private static final String ERROR_MISSING_LOCATION = "Invalid: Missing location name";
 	private static final String ERROR_INVALID_COMMAND = "Invalid command";
 	private static final String ERROR_INVALID_PARAM = "Invalid parameter";
 	
@@ -217,7 +218,7 @@ public class Logic {
 		return mItemList.getAllItems();
 	}
 
-	private ArrayList<Item> read(String userInput) {  // --< FINAL VERSION SHOULD BE RETURNING ARRAYLIST OF ITEMS INSTEAD OF STRING
+	private ArrayList<Item> read(String userInput) {  
 		String systemMessage = "";
 		ArrayList<Item> filteredItems = new ArrayList<Item>();
 		// Filter by tags
@@ -234,6 +235,20 @@ public class Logic {
 				setSystemMessage(systemMessage);
 				filteredItems = mItemList.filterByTags(tagString);
 			}
+			//Filer by Location
+		} else if (userInput.contains("@")){
+			int	locationPosition = userInput.indexOf("#");
+			String locationString = "";
+			locationString = userInput.substring(locationPosition + 1,
+					userInput.length());
+			if (locationString.isEmpty()) {
+				systemMessage = ERROR_MISSING_LOCATION;
+				setSystemMessage(systemMessage);
+			} else {
+				systemMessage =String.format(MESSAGE_SHOW_FILTERED, locationString) ;
+				setSystemMessage(systemMessage);
+				filteredItems = mItemList.filterByLocation(locationString);
+			}
 			// Filter by completed/uncompleted
 		} else if ((userInput.contains("completed") || userInput
 				.contains("done"))
@@ -247,7 +262,7 @@ public class Logic {
 			filteredItems = mItemList.showUncompletedList();
 			systemMessage = MESSAGE_SHOW_UNCOMPLETED;
 			setSystemMessage(systemMessage);
-
+			
 			// Filter by dateTime using standard format yyyy/MM/dd
 		} else if (userInput.contains("on")) {
 			int hasOnPosition = userInput.indexOf("n");

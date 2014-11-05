@@ -222,10 +222,12 @@ public class MyGUI extends JFrame implements ActionListener {
         
         // Displaying item status
         JCheckBox checkBox = new JCheckBox();
+        if(index<dynamicList.size()){
         if(dynamicList.get(index).getStatus()){
         	checkBox.setSelected(true);
         }else{
         	checkBox.setSelected(false);
+        }
         }
         indexPane.add(checkBox, BorderLayout.CENTER);
         checkBox.setEnabled(false);
@@ -242,18 +244,19 @@ public class MyGUI extends JFrame implements ActionListener {
         JTextArea dateTimeTextArea = new JTextArea(18, 18);
         dateTimeTextArea.setFont(new Font("Verdana", Font.PLAIN, 12));
 
-        
+        if(index<dynamicList.size()){
         dateTimeTextArea.setText(" Start: " + dynamicList.get(index).getStartDateTime() 
         	    + "\n" + "\n" 
         		+ " Due: " + dynamicList.get(index).getDueDateTime());
         dateTimeTextArea.setEditable(false);
-        
+        }
         Border dateTimeBorder = BorderFactory.createLineBorder(Color.ORANGE, 1);
         dateTimeTextArea.setBorder(dateTimeBorder);
         pane.add(dateTimeTextArea, BorderLayout.EAST);
         
         // Defines description TextArea
         String displayDescription = "";
+        
         displayDescription = dynamicList.get(index).getDescription();
         String displayLocation = "";
         if(dynamicList.get(index).getLocation().equals(null)){

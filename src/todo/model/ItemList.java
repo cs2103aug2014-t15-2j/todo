@@ -301,6 +301,34 @@ public class ItemList {
 			}
 			return itemWithTargetTags;			
 		}
+		public ArrayList<Item> filterByLocation(String locationString){
+			String[] splitedTags = locationString.split("\\W+");
+			//String filteredList = ""; -remove later
+			ArrayList<Item> itemWithTargetLocation = new ArrayList<Item>();
+			int matchNumber = splitedTags.length;
+			int currentMatchNumber;
+			
+			for(Item i : itemList){
+				currentMatchNumber = 0;
+				String locationCompared = "";
+				for(int j = 0; j < i.getTags().size(); j++){
+					for(int k = 0; k <splitedTags.length; k++){
+						locationCompared = splitedTags[k];
+						if(i.getLocation().equals(locationCompared)){
+							currentMatchNumber++;
+							break;
+						}
+					}
+				}
+				if(currentMatchNumber == matchNumber){
+					//String appendString = i.toString(); --remove later
+					//filteredList += appendString; --to remove later
+					//filteredList += "\n";
+					itemWithTargetLocation.add(i);
+				}
+			}
+			return itemWithTargetLocation;			
+		}
 		
 		// Assumption: the dateTime refers to startDateTime
 		
