@@ -358,10 +358,12 @@ public class Logic {
 		saveState();
 		String[] arr = userInput.split(" ", 2);
 		String result = "";
+		int num = 0;
+		int numOfItems = 0;
 
 		if (arr.length > 1) {
 			ArrayList<Integer> indexList = NLP.getInstance().batchIndexParser(arr[1]);
-			int numberOfItems = indexList.size();
+			numOfItems = indexList.size();
 			if (!indexList.isEmpty()) {
 				while (!indexList.isEmpty()) {
 					Integer thisIndex = indexList.remove(indexList.size() - 1);
@@ -378,20 +380,10 @@ public class Logic {
 					default:
 						result = ERROR_INVALID_COMMAND;
 					}
-				}
-				if(numberOfItems > 1){
-					switch (type) {
-					case DELETE:
-						result = numberOfItems + ITEMS_ARE_DELETED;
-						break;
-					case DONE:
-						result = numberOfItems + ITEMS_ARE_DONE;
-						break;
-					case UNDONE:
-						result = numberOfItems + ITEMS_ARE_UNDONE;
-						break;
-					default:
-						// should not reach here
+					if(result.equals(ItemList.DELETE_SUCCESSFUL) ||
+							result.equals(ItemList.DONE_SUCCESSFUL) ||
+							 result.equals(ItemList.UNDONE_SUCCESSFUL)){
+						num++;
 					}
 				}
 			} else {
@@ -413,15 +405,18 @@ public class Logic {
 			}
 		}
 
-		if(result.equals("Invalid parameter") || result.equals("Invalid command type.") || result.equals(ItemList.ERROR_LIST_EMPTY) || 
-				result.equals(ItemList.ERROR_INDEX_EXCEEDED) || result.equals(ItemList.ERROR_INDEX_NEGATIVE) ||
-				result.equals(MESSAGE_DELETE_TIP) || result.equals(MESSAGE_DONE_TIP) ||
-				result.equals(MESSAGE_UNDONE_TIP)){
+		if(num == 0){
 			stateHistory.undo();
 		}
 		
+		if(num != 0 && num != numOfItems){
+			this.setSystemMessage("Some operations have passed, some haven't");
+		}else{
+			this.setSystemMessage(result);
+		}
+		
 		saveFile();
-		this.setSystemMessage(result);
+
 		return mItemList.getAllItems();
 	}
 

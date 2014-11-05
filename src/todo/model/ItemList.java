@@ -16,12 +16,18 @@ public class ItemList {
 		public static final String ERROR_INDEX_NEGATIVE = "Invalid index used - Negative Index";
 		public static final String ERROR_INDEX_EXCEEDED = "Invalid index used - Index out of range";
 		public static final String ERROR_LIST_EMPTY = "The list is empty. ";
+		public static final String ERROR_GENERAL = "invalid command";
+		
 		//System Messages
 		private static final String MESSAGE_ADDED ="%1$s"+" "+"is added.";
 		private static final String MESSAGE_DELETED = "\"" + "%1$s" + "\"" + " is deleted.";
 		private static final String MESSAGE_COMPLETED = "\"" + "%1$s" + "\"" + " is marked as completed.";
 		private static final String MESSAGE_UNCOMPLETED = "\"" + "%1$s" + "\"" + " is marked as uncompleted.";
 		private static final String MESSAGE_CLEARED ="All tasks are cleared.";
+		
+		public static final String DELETE_SUCCESSFUL = "Delete operation successful";
+		public static final String DONE_SUCCESSFUL = "Done operation successful";
+		public static final String UNDONE_SUCCESSFUL = "Undone operation successful";
 	
 		//Attributes
 		private ArrayList <Item> itemList = new ArrayList <Item> ();
@@ -90,9 +96,9 @@ public class ItemList {
 				itemList.remove(index - 1);
 				Item.setItemQtyAfterDeletion();
 				
-				return result;
+				return DELETE_SUCCESSFUL;
 			}catch(IndexOutOfBoundsException e){
-				String returnErrorMessage = null;
+				String returnErrorMessage = ERROR_GENERAL;
 				if(itemList.size() == 0){
 					returnErrorMessage =  ERROR_LIST_EMPTY;
 				}else if(index > itemList.size()){
@@ -131,12 +137,12 @@ public class ItemList {
 				}
 				}
 				else {
-					result = "Task is already marked as completed!";
+					return "Task is already marked as completed!";
 				}
 				
-				return result;
+				return DONE_SUCCESSFUL;
 			}catch(IndexOutOfBoundsException e){
-				String returnErrorMessage = null;
+				String returnErrorMessage = ERROR_GENERAL;
 				if(itemList.size() == 0){
 					returnErrorMessage =  ERROR_LIST_EMPTY;
 				}else if(index > itemList.size()){
@@ -171,12 +177,12 @@ public class ItemList {
 				}
 				}
 				else {
-					result = "Task is already mark as uncompleted!";
+					return "Task is already mark as uncompleted!";
 				}
 				
-				return result;
+				return UNDONE_SUCCESSFUL;
 			}catch(IndexOutOfBoundsException e){
-				String returnErrorMessage = null;
+				String returnErrorMessage = ERROR_GENERAL;
 				if(itemList.size() == 0){
 					returnErrorMessage =  ERROR_LIST_EMPTY;
 				}else if(index > itemList.size()){
