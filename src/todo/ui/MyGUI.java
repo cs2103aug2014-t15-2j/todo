@@ -190,6 +190,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	
 	// This method defines individual item panel
 	public JPanel createItemPane(int index) {
+		if(index<dynamicList.size()){
         @SuppressWarnings("serial")
 		JPanel pane = new JPanel(){
 
@@ -224,11 +225,13 @@ public class MyGUI extends JFrame implements ActionListener {
         
         // Displaying item status
         JCheckBox checkBox = new JCheckBox();
+        
         if(dynamicList.get(index).getStatus()){
         	checkBox.setSelected(true);
         }else{
         	checkBox.setSelected(false);
         }
+        
         indexPane.add(checkBox, BorderLayout.CENTER);
         checkBox.setEnabled(false);
         
@@ -244,17 +247,33 @@ public class MyGUI extends JFrame implements ActionListener {
         JTextArea dateTimeTextArea = new JTextArea(18, 18);
         dateTimeTextArea.setFont(new Font("Verdana", Font.PLAIN, 12));
 
-        
-        dateTimeTextArea.setText(" Start: " + dynamicList.get(index).getStartDateTime() 
+        if(index<dynamicList.size()){
+        	String startDateTime;
+        	String dueDateTime;
+        	if(dynamicList.get(index).getStartDateTime() == null){
+        		startDateTime = " -";
+        	}else{
+        		startDateTime = dynamicList.get(index).getStartDateTime().toString();
+        	}
+
+        	if(dynamicList.get(index).getDueDateTime() == null){
+        		dueDateTime = " -";
+        	}else{
+        		dueDateTime = dynamicList.get(index).getStartDateTime().toString();
+        	}
+        	
+        	
+        dateTimeTextArea.setText(" Start: " + startDateTime
         	    + "\n" + "\n" 
-        		+ " Due: " + dynamicList.get(index).getDueDateTime());
+        		+ " Due : " + dueDateTime);
         dateTimeTextArea.setEditable(false);
-        
+        }
         Border dateTimeBorder = BorderFactory.createLineBorder(Color.ORANGE, 1);
         dateTimeTextArea.setBorder(dateTimeBorder);
         pane.add(dateTimeTextArea, BorderLayout.EAST);
         
         // Defines description TextArea
+        
         String displayDescription = "";
         displayDescription = dynamicList.get(index).getDescription();
         String displayLocation = "";
@@ -278,9 +297,13 @@ public class MyGUI extends JFrame implements ActionListener {
         Border descriBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
         descriTextArea.setBorder(descriBorder);
         pane.add(descriTextArea, BorderLayout.CENTER);
-        
+		
         pane.setBackground(Color.WHITE);
         return pane;
+		}else{
+			JPanel pane = new JPanel();
+        return pane;
+		}
     }
 	
 	// This method defines text field panel

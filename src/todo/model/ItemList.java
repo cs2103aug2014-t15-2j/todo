@@ -16,12 +16,18 @@ public class ItemList {
 		public static final String ERROR_INDEX_NEGATIVE = "Invalid index used - Negative Index";
 		public static final String ERROR_INDEX_EXCEEDED = "Invalid index used - Index out of range";
 		public static final String ERROR_LIST_EMPTY = "The list is empty. ";
+		public static final String ERROR_GENERAL = "invalid command";
+		
 		//System Messages
 		private static final String MESSAGE_ADDED ="%1$s"+" "+"is added.";
 		private static final String MESSAGE_DELETED = "\"" + "%1$s" + "\"" + " is deleted.";
 		private static final String MESSAGE_COMPLETED = "\"" + "%1$s" + "\"" + " is marked as completed.";
 		private static final String MESSAGE_UNCOMPLETED = "\"" + "%1$s" + "\"" + " is marked as uncompleted.";
 		private static final String MESSAGE_CLEARED ="All tasks are cleared.";
+		
+		public static final String DELETE_SUCCESSFUL = "Delete operation successful";
+		public static final String DONE_SUCCESSFUL = "Done operation successful";
+		public static final String UNDONE_SUCCESSFUL = "Undone operation successful";
 	
 		//Attributes
 		private ArrayList <Item> itemList = new ArrayList <Item> ();
@@ -90,9 +96,9 @@ public class ItemList {
 				itemList.remove(index - 1);
 				Item.setItemQtyAfterDeletion();
 				
-				return result;
+				return DELETE_SUCCESSFUL;
 			}catch(IndexOutOfBoundsException e){
-				String returnErrorMessage = null;
+				String returnErrorMessage = ERROR_GENERAL;
 				if(itemList.size() == 0){
 					returnErrorMessage =  ERROR_LIST_EMPTY;
 				}else if(index > itemList.size()){
@@ -108,9 +114,12 @@ public class ItemList {
 		
 		// Done item
 		public String done(int index){
+			String result = "";
+		
 			try{
+				if(!itemList.get(index-1).getStatus()){
 				String doneItemDescription = itemList.get(index - 1).getDescription();
-				String result = String.format(MESSAGE_COMPLETED, doneItemDescription);
+				result = String.format(MESSAGE_COMPLETED, doneItemDescription);
 				itemList.get(index - 1).setStatusDone();;
 				//Add item to list of completed item:
 				completedList.add(itemList.get(index-1));
@@ -126,10 +135,14 @@ public class ItemList {
 				else {
 					uncompletedList.remove(deleteIndex);
 				}
+				}
+				else {
+					return "Task is already marked as completed!";
+				}
 				
-				return result;
+				return DONE_SUCCESSFUL;
 			}catch(IndexOutOfBoundsException e){
-				String returnErrorMessage = null;
+				String returnErrorMessage = ERROR_GENERAL;
 				if(itemList.size() == 0){
 					returnErrorMessage =  ERROR_LIST_EMPTY;
 				}else if(index > itemList.size()){
@@ -142,10 +155,12 @@ public class ItemList {
 		
 		// Undone item
 		public String undone(int index){
+			String result = "";
 			try{
+				if(itemList.get(index-1).getStatus()){
 				String undoneItemDescription = itemList.get(index - 1).getDescription();
 				itemList.get(index - 1).setStatusUndone();;
-				String result = String.format(MESSAGE_UNCOMPLETED, undoneItemDescription);
+				 result = String.format(MESSAGE_UNCOMPLETED, undoneItemDescription);
 				//Add item to list of uncompleted item:
 				uncompletedList.add(itemList.get(index-1));
 				//Find itemId of the item that was mark as done
@@ -160,9 +175,14 @@ public class ItemList {
 				else {
 					completedList.remove(deleteIndex);
 				}
-				return result;
+				}
+				else {
+					return "Task is already mark as uncompleted!";
+				}
+				
+				return UNDONE_SUCCESSFUL;
 			}catch(IndexOutOfBoundsException e){
-				String returnErrorMessage = null;
+				String returnErrorMessage = ERROR_GENERAL;
 				if(itemList.size() == 0){
 					returnErrorMessage =  ERROR_LIST_EMPTY;
 				}else if(index > itemList.size()){
@@ -300,6 +320,34 @@ public class ItemList {
 				}
 			}
 			return itemWithTargetTags;			
+		}
+		public ArrayList<Item> filterByLocation(String locationString){
+			String[] splitedTags = locationString.split("\\W+");
+			//String filteredList = ""; -remove later
+			ArrayList<Item> itemWithTargetLocation = new ArrayList<Item>();
+			int matchNumber = splitedTags.length;
+			int currentMatchNumber;
+			
+			for(Item i : itemList){
+				currentMatchNumber = 0;
+				String locationCompared = "";
+				for(int j = 0; j < i.getTags().size(); j++){
+					for(int k = 0; k <splitedTags.length; k++){
+						locationCompared = splitedTags[k];
+						if(i.getLocation().equals(locationCompared)){
+							currentMatchNumber++;
+							break;
+						}
+					}
+				}
+				if(currentMatchNumber == matchNumber){
+					//String appendString = i.toString(); --remove later
+					//filteredList += appendString; --to remove later
+					//filteredList += "\n";
+					itemWithTargetLocation.add(i);
+				}
+			}
+			return itemWithTargetLocation;			
 		}
 		
 		// Assumption: the dateTime refers to startDateTime

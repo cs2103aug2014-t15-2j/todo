@@ -33,6 +33,7 @@ public class Logic {
 
 	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
 	private static final String ERROR_MISSING_TAGS = "Invalid: Missing Tag Names.";
+	private static final String ERROR_MISSING_LOCATION = "Invalid: Missing location name";
 	private static final String ERROR_INVALID_COMMAND = "Invalid command";
 	private static final String ERROR_INVALID_PARAM = "Invalid parameter";
 	
@@ -207,7 +208,8 @@ public class Logic {
 			setSystemMessage(result);
 		}
 
-		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)){
+		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)&&(!getSystemMessage().equals(AddCommand.INVALID_START_DUE))){
+			System.out.println(getSystemMessage());
 			stateHistory.undo();
 			result = MESSAGE_ADD_TIP;
 			setSystemMessage(result);
@@ -216,7 +218,7 @@ public class Logic {
 		return mItemList.getAllItems();
 	}
 
-	private ArrayList<Item> read(String userInput) {  // --< FINAL VERSION SHOULD BE RETURNING ARRAYLIST OF ITEMS INSTEAD OF STRING
+	private ArrayList<Item> read(String userInput) {  
 		String systemMessage = "";
 		ArrayList<Item> filteredItems = new ArrayList<Item>();
 		// Filter by tags
@@ -233,6 +235,20 @@ public class Logic {
 				setSystemMessage(systemMessage);
 				filteredItems = mItemList.filterByTags(tagString);
 			}
+			//Filer by Location
+		} else if (userInput.contains("@")){
+			int	locationPosition = userInput.indexOf("#");
+			String locationString = "";
+			locationString = userInput.substring(locationPosition + 1,
+					userInput.length());
+			if (locationString.isEmpty()) {
+				systemMessage = ERROR_MISSING_LOCATION;
+				setSystemMessage(systemMessage);
+			} else {
+				systemMessage =String.format(MESSAGE_SHOW_FILTERED, locationString) ;
+				setSystemMessage(systemMessage);
+				filteredItems = mItemList.filterByLocation(locationString);
+			}
 			// Filter by completed/uncompleted
 		} else if ((userInput.contains("completed") || userInput
 				.contains("done"))
@@ -246,7 +262,7 @@ public class Logic {
 			filteredItems = mItemList.showUncompletedList();
 			systemMessage = MESSAGE_SHOW_UNCOMPLETED;
 			setSystemMessage(systemMessage);
-
+			
 			// Filter by dateTime using standard format yyyy/MM/dd
 		} else if (userInput.contains("on")) {
 			int hasOnPosition = userInput.indexOf("n");
@@ -342,10 +358,12 @@ public class Logic {
 		saveState();
 		String[] arr = userInput.split(" ", 2);
 		String result = "";
+		int num = 0;
+		int numOfItems = 0;
 
 		if (arr.length > 1) {
 			ArrayList<Integer> indexList = NLP.getInstance().batchIndexParser(arr[1]);
-			int numberOfItems = indexList.size();
+			numOfItems = indexList.size();
 			if (!indexList.isEmpty()) {
 				while (!indexList.isEmpty()) {
 					Integer thisIndex = indexList.remove(indexList.size() - 1);
@@ -362,20 +380,10 @@ public class Logic {
 					default:
 						result = ERROR_INVALID_COMMAND;
 					}
-				}
-				if(numberOfItems > 1){
-					switch (type) {
-					case DELETE:
-						result = numberOfItems + ITEMS_ARE_DELETED;
-						break;
-					case DONE:
-						result = numberOfItems + ITEMS_ARE_DONE;
-						break;
-					case UNDONE:
-						result = numberOfItems + ITEMS_ARE_UNDONE;
-						break;
-					default:
-						// should not reach here
+					if(result.equals(ItemList.DELETE_SUCCESSFUL) ||
+							result.equals(ItemList.DONE_SUCCESSFUL) ||
+							 result.equals(ItemList.UNDONE_SUCCESSFUL)){
+						num++;
 					}
 				}
 			} else {
@@ -397,15 +405,18 @@ public class Logic {
 			}
 		}
 
-		if(result.equals("Invalid parameter") || result.equals("Invalid command type.") || result.equals(ItemList.ERROR_LIST_EMPTY) || 
-				result.equals(ItemList.ERROR_INDEX_EXCEEDED) || result.equals(ItemList.ERROR_INDEX_NEGATIVE) ||
-				result.equals(MESSAGE_DELETE_TIP) || result.equals(MESSAGE_DONE_TIP) ||
-				result.equals(MESSAGE_UNDONE_TIP)){
+		if(num == 0){
 			stateHistory.undo();
 		}
 		
+		if(num != 0 && num != numOfItems){
+			this.setSystemMessage("Some operations have passed, some haven't");
+		}else{
+			this.setSystemMessage(result);
+		}
+		
 		saveFile();
-		this.setSystemMessage(result);
+
 		return mItemList.getAllItems();
 	}
 
