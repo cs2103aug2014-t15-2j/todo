@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -137,21 +138,28 @@ public class MyGUI extends JFrame implements ActionListener {
           gbc.anchor = GridBagConstraints.NORTH;
           gbc.gridx = 0;
           gbc.weightx = 1.0;
+          //gbc.weighty = 1; 
           gbc.gridy = 0;
-          gbc.weighty = 1.0;  
-          gbc.fill = GridBagConstraints.HORIZONTAL;           
+          gbc.fill = GridBagConstraints.HORIZONTAL; 
+          gbc.gridwidth = GridBagConstraints.REMAINDER;
           
           for(int i = 0; i < guiControl.getItemList().size(); i++){
               mainPane.add(createItemPane(i), gbc);            
           	  gbc.gridy++; 
-          	  gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+          	  //gbc.anchor = GridBagConstraints.FIRST_LINE_START;
           }
+          gbc.weighty = 1;
+          gbc.fill = GridBagConstraints.BOTH;
+          JPanel emptyPanel = new JPanel();
+          
+          mainPane.add(emptyPanel, gbc);
+          
 
         
       // For testing:  Border mainBorder = BorderFactory.createLineBorder(Color.BLUE, 2);
       //  mainPane.setBorder(mainBorder);
         
-        mainPane.setBackground(Color.WHITE);
+        //mainPane.setBackground(Color.WHITE);
        /* scrollPane = new JScrollPane(mainPane){
         	@Override
         	public Dimension getPreferredSize(){
@@ -334,13 +342,16 @@ public class MyGUI extends JFrame implements ActionListener {
            gbc.gridx = 0;
            gbc.weightx = 1.0;
            gbc.gridy = 0;
-           gbc.weighty = 1.0;  
+           //gbc.weighty = 1.0;  
            gbc.fill = GridBagConstraints.HORIZONTAL;           
            
            for(int i = 0; i < guiControl.getItemList().size(); i++){
                mainPane.add(createItemPane(i), gbc);            
            	   gbc.gridy++; 
            }
+           gbc.weighty = 1;
+           gbc.fill = GridBagConstraints.BOTH;
+           mainPane.add(new JPanel(), gbc);
            
            messageLabel.setText(guiControl.getSystemMessageControl());
            
