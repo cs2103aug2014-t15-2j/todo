@@ -277,12 +277,18 @@ public class MyGUI extends JFrame implements ActionListener {
         String displayLocation = "";
         if(dynamicList.get(index).getLocation().equals(null)){
         }else{
-        	displayLocation = "Location: " + dynamicList.get(index).getLocation();
+        	if(dynamicList.get(index).getLocation().equals("")){
+        		displayLocation = "Location:  -" ;
+        	}else{
+        		displayLocation = "Location: " + dynamicList.get(index).getLocation();
+        	}
         }
         String displayTags = "";
         if(dynamicList.get(index).getTags().equals(null)){
         }else{
-        	displayTags = dynamicList.get(index).getTags().toString();
+        	if(dynamicList.get(index).getTags().size() != 0){
+        		displayTags = dynamicList.get(index).getTags().toString();
+        	}
         }
         
         JTextArea descriTextArea = new JTextArea(20, 20);
