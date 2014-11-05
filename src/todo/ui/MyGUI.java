@@ -303,7 +303,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	// This method defines the message panel
 	public JPanel createMessagePane() {
 		JPanel pane = new JPanel(new BorderLayout());
-		messageLabel = new JLabel(guiControl.getSystemMessageControl());
+		messageLabel = new JLabel();
 		pane.add(messageLabel);
 	    pane.setBackground(Color.WHITE);
 		
