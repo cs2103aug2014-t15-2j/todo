@@ -259,7 +259,7 @@ public class MyGUI extends JFrame implements ActionListener {
         	if(dynamicList.get(index).getDueDateTime() == null){
         		dueDateTime = " -";
         	}else{
-        		dueDateTime = dynamicList.get(index).getStartDateTime().toString();
+        		dueDateTime = dynamicList.get(index).getDueDateTime().toString();
         	}
         	
         	
