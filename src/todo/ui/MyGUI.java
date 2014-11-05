@@ -37,7 +37,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	
 	public GUIcontrol guiControl = null;
 	protected JTextField textField;
-	public JLabel label;
+	public JLabel messageLabel;
 	public JScrollPane scrollPane;
 	public JPanel mainPane;
 	
@@ -263,7 +263,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	// This method defines the current time panel
 	public JPanel createTimePane() {
 		JPanel pane = new JPanel(new BorderLayout());
-		label = new JLabel("Current Time: " + LocalDateTime.now().toString());
+		JLabel label = new JLabel("Current Time: " + LocalDateTime.now().toString());
 		pane.add(label);
 		pane.setBackground(Color.WHITE);
 		
@@ -273,8 +273,8 @@ public class MyGUI extends JFrame implements ActionListener {
 	// This method defines the message panel
 	public JPanel createMessagePane() {
 		JPanel pane = new JPanel(new BorderLayout());
-		label = new JLabel(guiControl.getSystemMessageControl());
-		pane.add(label);
+		messageLabel = new JLabel(guiControl.getSystemMessageControl());
+		pane.add(messageLabel);
 	    pane.setBackground(Color.WHITE);
 		
 		return pane;
@@ -331,6 +331,9 @@ public class MyGUI extends JFrame implements ActionListener {
                mainPane.add(createItemPane(i), gbc);
            	gbc.gridy++; 
            }
+           
+           messageLabel.setText(guiControl.getSystemMessageControl());
+           
            mainPane.revalidate();
 
 	//	this.setVisible(false);
