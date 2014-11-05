@@ -315,6 +315,9 @@ public class MyGUI extends JFrame implements ActionListener {
 	//	SwingUtilities.updateComponentTreeUI(MyGUI.this);
 
            mainPane.removeAll();
+           mainPane.revalidate();
+           mainPane.repaint();
+           
            GridBagConstraints gbc = new GridBagConstraints();
            gbc.insets = new Insets(4, 4, 4, 4);
            gbc.gridx = 0;
