@@ -1,6 +1,13 @@
 package todo.command;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
 
 import todo.logic.Logic;
 import todo.model.DateTime;
@@ -18,12 +25,14 @@ public class AddCommand implements Command {
 	private ArrayList<String> tagList;
 	private String statusMessage;
 
+
 	public AddCommand() {
 
 	}
 
 	@Override
-	public String execute() {
+	public String execute() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException {
+		Logic logic = Logic.getInstanceLogic();
 		if (description.equals("")) {
 			statusMessage = DESCRIPTION_EMPTY;
 			return statusMessage;
@@ -39,7 +48,7 @@ public class AddCommand implements Command {
 		Item newItem = new Item(description, start, due, location, tagList);
 		Logic.getItemList().add(newItem);
 		statusMessage = ADD_SUCCESSFUL;
-
+		logic.setSystemMessage(statusMessage);
 		return statusMessage;
 	}
 

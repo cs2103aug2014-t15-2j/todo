@@ -207,7 +207,8 @@ public class Logic {
 			setSystemMessage(result);
 		}
 
-		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)){
+		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)&&(!getSystemMessage().equals(AddCommand.INVALID_START_DUE))){
+			System.out.println(getSystemMessage());
 			stateHistory.undo();
 			result = MESSAGE_ADD_TIP;
 			setSystemMessage(result);

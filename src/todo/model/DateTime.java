@@ -99,7 +99,6 @@ public class DateTime {
 			if ((startDate != null) && (dueDate != null)) {
 				if (dueDate.isBefore(startDate)) {
 					invalid = true;
-					System.out.println("Invalid Date Input");
 				} else {
 					invalid = false;
 				}
