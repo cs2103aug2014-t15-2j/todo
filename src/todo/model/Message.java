@@ -18,7 +18,7 @@ public class Message {
 	}
 	
 	public void correctDateFormat(){
-		StringUtil.correctDateFormat(text);
+		text = StringUtil.correctDateFormat(text);
 	}
 	
 	public String withoutQuotation(){

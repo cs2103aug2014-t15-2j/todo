@@ -58,8 +58,7 @@ public class NLPUtil {
 				// exchange start time and due time
 				dateTimeList.add(dateTimeList.remove(0));
 			}
-			msg.setText(NLPUtil.deletePreposition(msg.getText(), twoWordBeforeDate, groupText));
-			msg.setText(NLPUtil.deletePreposition(msg.getText(), wordBeforeDate, groupText));
+			NLPUtil.deleteDateTimeText(msg, groupText);
 		}else{
 			LogUtil.Log(TAG, "No date time detected");
 		}
@@ -116,15 +115,20 @@ public class NLPUtil {
 		return tagList;
 	}
 	
-	protected static String deletePreposition(String msg, String wordBeforeDate, String groupText){
+	protected static void deleteDateTimeText(Message msg, String groupText){
+		String wordBeforeDate = msg.getWordBeforeSubstring(groupText);
+		String twoWordsBeforeDate = msg.getTwoWordsBeforeSubstring(groupText);
 		// delete preposition before date
-		if (Arrays.asList(NLPConfig.preStart).contains(wordBeforeDate)
+		if (Arrays.asList(NLPConfig.preStart).contains(twoWordsBeforeDate)
+				|| Arrays.asList(NLPConfig.preDue).contains(twoWordsBeforeDate)){
+			msg.setText(msg.getText().replace(twoWordsBeforeDate + " " + groupText, ""));
+		}else if (Arrays.asList(NLPConfig.preStart).contains(wordBeforeDate)
 				|| Arrays.asList(NLPConfig.preDue).contains(wordBeforeDate)){
-			return msg.replace(wordBeforeDate + " " + groupText, "");
+			msg.setText(msg.getText().replace(wordBeforeDate + " " + groupText, ""));
 		}else if( wordBeforeDate.length() >0 && wordBeforeDate.charAt(wordBeforeDate.length()-1) == ':'){
-			return msg.replace(": " + groupText, "");
-		}else{ // no preposition
-			return msg.replace(groupText, "");
+			msg.setText(msg.getText().replace(": " + groupText, ""));
+		}else { // no preposition
+			msg.setText(msg.getText().replace(groupText, ""));
 		}
 	}
 	
