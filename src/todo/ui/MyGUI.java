@@ -246,9 +246,24 @@ public class MyGUI extends JFrame implements ActionListener {
         dateTimeTextArea.setFont(new Font("Verdana", Font.PLAIN, 12));
 
         if(index<dynamicList.size()){
-        dateTimeTextArea.setText(" Start: " + dynamicList.get(index).getStartDateTime() 
+        	String startDateTime;
+        	String dueDateTime;
+        	if(dynamicList.get(index).getStartDateTime() == null){
+        		startDateTime = " -";
+        	}else{
+        		startDateTime = dynamicList.get(index).getStartDateTime().toString();
+        	}
+
+        	if(dynamicList.get(index).getDueDateTime() == null){
+        		dueDateTime = " -";
+        	}else{
+        		dueDateTime = dynamicList.get(index).getStartDateTime().toString();
+        	}
+        	
+        	
+        dateTimeTextArea.setText(" Start: " + startDateTime
         	    + "\n" + "\n" 
-        		+ " Due: " + dynamicList.get(index).getDueDateTime());
+        		+ " Due : " + dueDateTime);
         dateTimeTextArea.setEditable(false);
         }
         Border dateTimeBorder = BorderFactory.createLineBorder(Color.ORANGE, 1);
