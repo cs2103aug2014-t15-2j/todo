@@ -118,6 +118,8 @@ public class NLPUtil {
 		if (Arrays.asList(NLPConfig.preStart).contains(wordBeforeDate)
 				|| Arrays.asList(NLPConfig.preDue).contains(wordBeforeDate)){
 			return msg.replace(wordBeforeDate + " " + groupText, "");
+		}else if( wordBeforeDate.charAt(wordBeforeDate.length()-1) == ':'){
+			return msg.replace(": " + groupText, "");
 		}else{ // no preposition
 			return msg.replace(groupText, "");
 		}
