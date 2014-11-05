@@ -52,6 +52,11 @@ public class DateTimeTest {
 		//Create a LocalDateTime from string
 		LocalDateTime mno = LocalDateTime.parse(xyzString,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 		System.out.println("the localdateTime after conversion is "+mno);
+		//
+		String yyString = xyzString.substring(0,10);
+		System.out.println("yyString = "+yyString);
+		LocalDate yy = LocalDate.parse(yyString,DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		System.out.println(yy);
 	}
 
 }

@@ -157,6 +157,7 @@ public class Logic {
 			break;
 			
 		}
+		
 		return itemsForGUI;
 	}
 
@@ -410,8 +411,8 @@ public class Logic {
 	public static ItemList getItemList() {
 		return mItemList;
 	}
-	public ArrayList<Item> getItemsforGUI () {
-		return this.itemsForGUI;
+	public ArrayList<Item> getItemsforGUI (ArrayList<Item> listForGUI) {
+		return listForGUI;
 	}
 
 	// For GUI testing purpose

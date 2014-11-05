@@ -9,6 +9,7 @@ import todo.util.LogUtil;
 import todo.logic.Logic;
 import todo.util.StringUtil;
 import todo.model.*;
+import todo.ui.*;
 
 public class UIMain {
 	
@@ -27,6 +28,7 @@ public class UIMain {
 		CommandType mCommandType;
 		scanner = new Scanner(System.in);
 		logic = Logic.getInstanceLogic();
+		GUIcontrol guiControl = new GUIcontrol();
 		
 		do{
 			String userInput = requestForCommand();
@@ -34,9 +36,10 @@ public class UIMain {
 			mCommandType = logic.getCommandType(StringUtil.getFirstWord(userInput));
 			LogUtil.Log(TAG, mCommandType.toString());
 			ArrayList<Item> returnValue = new ArrayList<Item>();
-			returnValue = (logic.executeCommand(userInput));
+			returnValue = (guiControl.sendToGUI(userInput));
 			System.out.println("Status:");
 			System.out.println(logic.getSystemMessage());
+			
 			System.out.println(printArrayList(returnValue));
 		}while(mCommandType != CommandType.EXIT);
 		scanner.close();

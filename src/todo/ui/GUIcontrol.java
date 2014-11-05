@@ -27,7 +27,7 @@ public class GUIcontrol {
 		allTasks.checkStatus();
 		ArrayList<Item> completedTasks = new ArrayList<Item>();
 		ArrayList<Item> unCompletedTasks = new ArrayList<Item>();
-		ArrayList<Item> itemsForGUI = new ArrayList<Item>();
+		
 		allTasks.showUncompletedList();
 	}
 
@@ -45,8 +45,9 @@ public class GUIcontrol {
 		return unCompletedTasks;
 
 	}
-	public ArrayList<Item> sendtoGUI(ArrayList<Item>itemsForGUI) {
-		itemsForGUI = logic.getItemsforGUI ();
+	public ArrayList<Item> sendToGUI(String userInput) throws Exception {
+		ArrayList<Item> itemsForGUI = new ArrayList<Item>();
+		itemsForGUI = logic.getItemsforGUI(logic.executeCommand(userInput));
 		return itemsForGUI;
 	}
 	public String getSystemMessageControl () {
