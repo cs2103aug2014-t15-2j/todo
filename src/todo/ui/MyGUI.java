@@ -99,7 +99,7 @@ public class MyGUI extends JFrame implements ActionListener {
 				}
 				
 				try {
-					dynamicList = guiControl.getItemList().getAllItems();
+					dynamicList = guiControl.sendToGUI("show");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -390,7 +390,7 @@ public class MyGUI extends JFrame implements ActionListener {
            //gbc.weighty = 1.0;  
            gbc.fill = GridBagConstraints.HORIZONTAL;           
            
-           for(int i = 0; i < guiControl.getItemList().size(); i++){
+           for(int i = 0; i < dynamicList.size(); i++){
                mainPane.add(createItemPane(i), gbc);            
            	   gbc.gridy++; 
            }
