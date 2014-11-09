@@ -21,11 +21,9 @@ import todo.model.DateTime;
 import todo.model.Message;
 import todo.util.LogUtil;
 import todo.util.StringUtil;
-
+//@author A0105570N
 /**
  * This class contains all the utility methods used by NLP
- * @author siwei
- *
  */
 public class NLPUtil {
 	private static String TAG = "NLPUtil";

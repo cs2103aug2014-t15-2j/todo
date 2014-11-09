@@ -18,13 +18,10 @@ import todo.model.Item;
 import todo.model.Message;
 import todo.util.LogUtil;
 import todo.util.StringUtil;
-
+//@author A0105570N
 /**
  * There are four parsers in an instance of NLP:
  * Add Parser, Update Parser, Index Parser, and General parser
- * 
- * @author siwei
- *
  */
 public class NLP {
 	private static NLP NLPSingleton = null;

@@ -13,6 +13,7 @@ import todo.logic.Logic;
 import todo.model.DateTime;
 import todo.model.Item;
 
+//@author A0105570N
 public class AddCommand implements Command {
 	public static String ADD_SUCCESSFUL = "New item added.";
 	public static String DESCRIPTION_EMPTY = "Item description is empty, please consider using quotation marks.";
@@ -33,11 +34,14 @@ public class AddCommand implements Command {
 	@Override
 	public String execute() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException {
 		Logic logic = Logic.getInstanceLogic();
+		
+		// empty message check
 		if (description.equals("")) {
 			statusMessage = DESCRIPTION_EMPTY;
 			return statusMessage;
 		}
 
+		// start date/time & due date/time validation
 		if (this.start != null && this.due != null) {
 			if (DateTime.isInValidDate(this.start.getDate(), this.due.getDate())) {
 				statusMessage = INVALID_START_DUE;
@@ -45,6 +49,7 @@ public class AddCommand implements Command {
 			}
 		}
 
+		// create a new item
 		Item newItem = new Item(description, start, due, location, tagList);
 		Logic.getItemList().add(newItem);
 		statusMessage = ADD_SUCCESSFUL;

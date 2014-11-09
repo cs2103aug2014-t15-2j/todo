@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 
 import todo.ui.GUI;
 
+//@author A0105570N-unused
 public class GUIMain {
 
 	public static void main(String arg[]) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException, TransformerException{
@@ -20,7 +21,7 @@ public class GUIMain {
 	
 	private static void createAndShowGUI() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException {
         //Create and set up the window.
-        JFrame frame = new JFrame("TextDemo");
+        JFrame frame = new JFrame("JustDidIt");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
         //Add contents to the window.
@@ -31,6 +32,4 @@ public class GUIMain {
         frame.pack();
         frame.setVisible(true);
     }
-	
-	
 }

@@ -1,11 +1,10 @@
 package todo.nlp;
 
 import java.util.HashMap;
-
+//@author A0105570N
 /**
  * This class is used by NLP general parser.
  * Match a command that cannot be determined with a valid command
- * @author siwei
  *
  */
 public class NLPLibrary {

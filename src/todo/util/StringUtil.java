@@ -1,5 +1,6 @@
 package todo.util;
 
+//@author A0105570N
 public class StringUtil {
 
 	/**

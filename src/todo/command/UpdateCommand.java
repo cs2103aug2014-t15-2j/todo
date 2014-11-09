@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import todo.model.DateTime;
 import todo.model.Item;
 
+//@author A0105570N
 public class UpdateCommand implements Command {
 	public static String UPDATE_SUCCESSFUL = "Updated.";
 	public static String UPDATE_FAILED = "Update failed.";
-	public static String EMPTY = "";
+	public static String EMPTY_STRING = "";
 
 	private Item item;
 	private String description;
@@ -18,6 +19,7 @@ public class UpdateCommand implements Command {
 	private ArrayList<String> tagList;
 	private String statusMessage;
 
+	// when value is true, force to update/delete/clear
 	private boolean updateStart;
 	private boolean updateDue;
 	private boolean updateLocation;
@@ -38,7 +40,7 @@ public class UpdateCommand implements Command {
 			item.setDueDateTime(due);
 			updated = true;
 		}
-		if (updateLocation || location != EMPTY) {
+		if (updateLocation || location != EMPTY_STRING) {
 			item.setLocation(location);
 			updated = true;
 		}

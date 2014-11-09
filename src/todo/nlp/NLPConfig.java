@@ -1,9 +1,7 @@
 package todo.nlp;
-
+//@author A0105570N
 /**
  * This class configs all the keywords used by NLP
- * @author siwei
- *
  */
 public class NLPConfig {
 	// Date/time keywords
