@@ -10,6 +10,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
@@ -129,6 +131,11 @@ public class MyGUI extends JFrame implements ActionListener {
                 textField = new JTextField(50);
         		textField.setFont(new Font("Verdana", Font.BOLD, 14));
         		textField.setBackground(Color.WHITE);
+        		frame.addWindowListener(new WindowAdapter(){
+        			public void windowOpened(WindowEvent e){
+        				textField.requestFocus();
+        			}
+        		});
         		
         		gbc.gridy++;
         		frame.add(createTextFieldPane(), gbc);
