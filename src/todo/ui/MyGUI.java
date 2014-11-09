@@ -401,11 +401,7 @@ public class MyGUI extends JFrame implements ActionListener {
            mainPane.add(new JPanel(), gbc);
            
            messageLabel.setText(guiControl.getSystemMessageControl());
-           
-           if(guiControl.getSystemMessageControl().contains("")){
-        	   
-           }
-           
+
            mainPane.revalidate();
 
 	//	this.setVisible(false);
