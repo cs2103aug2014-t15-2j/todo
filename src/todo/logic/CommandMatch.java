@@ -18,7 +18,10 @@ public class CommandMatch {
 	 * @return predefined CommandType enum
 	 */
 	public CommandType determineCommandType(String commandString) {
-
+		if(commandString == null){
+			return CommandType.INVALID;
+		}
+		
 		switch (commandString.toLowerCase()) {
 		// ----------Possible cases of 'create'-----------
 		case "create":
