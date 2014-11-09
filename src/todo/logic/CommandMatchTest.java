@@ -15,7 +15,13 @@ public class CommandMatchTest {
 		//Boundary test case, null
 		assertEquals(CommandType.CREATE, commandMatch.determineCommandType("Add"));
 		
-		//Boundary test case, non-null
+		//Boundary test case, positive integer string
+		assertEquals(CommandType.INVALID, commandMatch.determineCommandType("65424"));
+		
+		//Boundary test case, negative integer string
+		assertEquals(CommandType.INVALID, commandMatch.determineCommandType("-65424"));
+		
+		//Boundary test case, non-null string
 		assertEquals(CommandType.INVALID, commandMatch.determineCommandType(null));
 	}
 
