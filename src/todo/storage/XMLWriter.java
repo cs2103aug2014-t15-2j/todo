@@ -137,7 +137,7 @@ public class XmlWriter {
 		} else {
 			String hasTimeText = String.valueOf(sdt.hasTime());
 			sdtHasTime.appendChild(doc.createTextNode(hasTimeText));
-			sdtDateTime.appendChild(doc.createTextNode(sdt.toString()));
+			sdtDateTime.appendChild(doc.createTextNode(sdt.writeString()));
 		}
 
 		startDateTime.appendChild(sdtHasTime);
@@ -158,7 +158,7 @@ public class XmlWriter {
 		} else {
 			String hasTimeText = String.valueOf(ddt.hasTime());
 			ddtHasTime.appendChild(doc.createTextNode(hasTimeText));
-			ddtDateTime.appendChild(doc.createTextNode(ddt.toString()));
+			ddtDateTime.appendChild(doc.createTextNode(ddt.writeString()));
 		}
 
 		dueDateTime.appendChild(ddtHasTime);

@@ -67,6 +67,9 @@ public class DateTime {
 		return output;
 	}
 	
+	public String writeString(){
+		return this.date.toString().replace("T", " ").substring(0, 16);
+	}
 	/**
 	 * This method clones the object itself
 	 * @return an exact cloned copy of itself
