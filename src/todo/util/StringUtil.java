@@ -7,8 +7,8 @@ public class StringUtil {
 	
 	/**
 	 * This method check a string contains any string in a string array
-	 * @param str the string to be checked
-	 * @param list a string array
+	 * @param str: the string to be checked
+	 * @param list: a string array
 	 * @return boolean
 	 */
 	public static boolean stringContainListSubstring(String str, String[] list){
@@ -20,6 +20,12 @@ public class StringUtil {
 		return false;
 	}
 	
+	/**
+	 * This method delete all the substring in a list from a given string
+	 * @param str: the string to be processed
+	 * @param list: a string array
+	 * @return processed string
+	 */
 	public static String stringDeleteListSubstring(String str, String[] list){
 		for (int i = 0; i < list.length; i++){
 			String currentSubstring = list[i];
@@ -162,17 +168,19 @@ public class StringUtil {
 			int idx = str.indexOf("@(");
 			
 			// if there is an escape character
-			if (idx-1 >=0 && str.charAt(idx-1) == '\\'){
-				return getBracketLocation(str.substring(idx+1, str.length()));
+			if (idx - 1 >= 0 && str.charAt(idx-1) == '\\'){
+				return getBracketLocation(str.substring(idx + 1, str.length()));
 			}
 			idx++;
-			while(idx+1<str.length() && str.charAt(idx+1) != ')'){
-				toDelete += str.charAt(idx+1);
+			// add char until encounter a ')'
+			while(idx + 1 < str.length() && str.charAt(idx + 1) != ')'){
+				toDelete += str.charAt(idx + 1);
 				idx++;
 			}
-			if(idx+1<str.length() && str.charAt(idx+1) == ')'){
+			if(idx + 1 < str.length() && str.charAt(idx + 1) == ')'){
 				toDelete += ")";
 			}else{
+				// to the end of the string, bracket is not matched
 				toDelete = "";
 			}
 		}
@@ -201,20 +209,35 @@ public class StringUtil {
 	 */
 	public static String correctDateFormat(String str){
 		String[] arr = str.split(" ");
+		String first;
+		String second;
+		String third;
 		for(int i = 0; i < arr.length; i++){
 			String[] arr2 = arr[i].split("/");
-			if (arr2.length == 3
-			&& isInteger(arr2[0])
-			&& isInteger(arr2[1])
-			&& isInteger(arr2[2])){
-				if(Integer.valueOf(arr2[0]) > 12){
-					str = str.replace(arr[i], arr2[1]+"/"+arr2[0]+"/"+arr2[2]);
+			if (arr2.length == 3){
+				// day/month/year format
+				first = arr2[0];
+				second = arr2[1];
+				third = arr2[2];
+				if (isInteger(first) && isInteger(second) && isInteger(third)){
+					if(Integer.valueOf(first) > 12){
+						// the first number should be day
+						// construct the new date format
+						String newDateString = second+"/"+first+"/"+third;
+						str = str.replace(arr[i], newDateString);
+					}
 				}
-			}else if (arr2.length == 2
-			&& isInteger(arr2[0])
-			&& isInteger(arr2[1])){
-				if(Integer.valueOf(arr2[0]) > 12){
-					str = str.replace(arr[i], arr2[1]+"/"+arr2[0]);
+			}else if (arr2.length == 2){
+				// day/month format
+				first = arr2[0];
+				second = arr2[1];
+				if (isInteger(first) && isInteger(second)){
+					if(Integer.valueOf(first) > 12){
+						// the first number should be day
+						// construct the new date format
+						String newDateString = second+"/"+first;
+						str = str.replace(arr[i], newDateString);
+					}
 				}
 			}
 		}
