@@ -71,6 +71,7 @@ public class Message {
 	// delete given string from the text
 	public void deleteSubstring(String str){
 		text = text.replace(str, StringUtil.EMPTY_STRING);
+		trim();
 	}
 	
 	// change the first letter of the text to upper case
