@@ -12,8 +12,11 @@ public class CommandMatchTest {
 	public void test() {
 		CommandMatch commandMatch = new CommandMatch();
 		
-		//Boundary test case, null
-		assertEquals(CommandType.CREATE, commandMatch.determineCommandType("Add"));
+		//Boundary test case, non-null string all small letters
+		assertEquals(CommandType.CREATE, commandMatch.determineCommandType("add"));
+		
+		//Boundary test case, non-null string mix of capital and small letters
+		assertEquals(CommandType.READ, commandMatch.determineCommandType("lISt"));
 		
 		//Boundary test case, positive integer string
 		assertEquals(CommandType.INVALID, commandMatch.determineCommandType("65424"));
@@ -21,7 +24,7 @@ public class CommandMatchTest {
 		//Boundary test case, negative integer string
 		assertEquals(CommandType.INVALID, commandMatch.determineCommandType("-65424"));
 		
-		//Boundary test case, non-null string
+		//Boundary test case, null
 		assertEquals(CommandType.INVALID, commandMatch.determineCommandType(null));
 	}
 
