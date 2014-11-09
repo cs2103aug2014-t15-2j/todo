@@ -17,6 +17,12 @@ import todo.model.Item;
 import todo.model.ItemList;
 import todo.model.DateTime;
 
+/**
+ * This class writes to external file with destination - Storage.FILE_DESTINATION.
+ * 
+ * @author Lui
+ *
+ */
 public class XmlWriter {
 
 	public XmlWriter() {
@@ -32,7 +38,7 @@ public class XmlWriter {
 	 * @throws TransformerException
 	 */
 	public void write(ItemList iL) throws ParserConfigurationException, TransformerException {
-		Document doc = initializeDocument();
+		Document doc = initDocument();
 		Element root = createRoot(doc);
 
 		appendItemQuantity(doc, root);
@@ -55,7 +61,7 @@ public class XmlWriter {
 		serialise(doc);
 	}
 
-	private Document initializeDocument() throws ParserConfigurationException {
+	private Document initDocument() throws ParserConfigurationException {
 		DocumentBuilderFactory dBF = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dB = dBF.newDocumentBuilder();
 		Document doc = dB.newDocument();

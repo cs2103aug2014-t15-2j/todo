@@ -3,6 +3,12 @@ package todo.model;
 import java.text.ParseException;
 import java.util.Stack;
 
+/**
+ * This class maintains previous and future states for user to undo and redo.
+ * 
+ * @author Lui
+ *
+ */
 public class StateHistory {
 
 	private Stack<ItemList> history;
@@ -20,6 +26,10 @@ public class StateHistory {
 	 * @throws ParseException
 	 */
 	public void saveStateToHistory(ItemList targetState) throws ParseException {
+		/* targetState should be already initialized in Logic before it is
+			passed in. If it is null, there must be bug somewhere. */
+		assert (targetState != null) : "Parameter should not be null";
+
 		ItemList clonedState = new ItemList();
 		copyItemList(targetState, clonedState);
 
@@ -33,6 +43,10 @@ public class StateHistory {
 	 * @throws ParseException
 	 */
 	public void saveStateToFuture(ItemList targetState) throws ParseException {
+		/* targetState should be already initialized in Logic before it is
+			passed in. If it is null, there must be bug somewhere. */
+		assert (targetState != null) : "Parameter should not be null";
+
 		ItemList clonedState = new ItemList();
 		copyItemList(targetState, clonedState);
 

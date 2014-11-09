@@ -22,6 +22,12 @@ import todo.model.Item;
 import todo.model.ItemList;
 import todo.model.DateTime;
 
+/**
+ * This class reads from external file with destination - Storage.FILE_DESTINATION.
+ * 
+ * @author Lui
+ *
+ */
 public class XmlReader {
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Storage.DATE_FORMAT);
 
@@ -45,14 +51,14 @@ public class XmlReader {
 			return new ItemList();
 		}
 
-		Document doc = initializeDocument(file);
+		Document doc = initDocument(file);
 		ItemList newItemList = buildItemList(doc);
 		setItemStaticAttributes(doc);
 
 		return newItemList;
 	}
 
-	private Document initializeDocument(File newFile) throws ParserConfigurationException, SAXException, IOException {
+	private Document initDocument(File newFile) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory dBF = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dB = dBF.newDocumentBuilder();
 		Document doc = dB.parse(newFile);
@@ -131,8 +137,7 @@ public class XmlReader {
 		Node sdtDateTime = sdtElement.getElementsByTagName(Storage.XML_DATE_TIME).item(Storage.ZERO);
 
 		if (!sdtDateTime.getTextContent().equals(Storage.EMPTY)) {
-			LocalDateTime sDate = LocalDateTime.parse(
-					sdtDateTime.getTextContent(), formatter);
+			LocalDateTime sDate = LocalDateTime.parse(sdtDateTime.getTextContent(), formatter);
 			if (sdtHasTime.getTextContent().equals(Storage.TRUE)) {
 				newItem.setStartDateTime(new DateTime(sDate, true));
 			} else {
