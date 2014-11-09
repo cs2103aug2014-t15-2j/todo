@@ -36,10 +36,6 @@ public class Logic {
 	private static final String ERROR_MISSING_LOCATION = "Invalid: Missing location name";
 	private static final String ERROR_INVALID_COMMAND = "Invalid command";
 	private static final String ERROR_INVALID_PARAM = "Invalid parameter";
-	
-	private static final String ITEMS_ARE_DELETED = " items are deleted";
-	private static final String ITEMS_ARE_DONE = " items are marked as completed.";
-	private static final String ITEMS_ARE_UNDONE = " items are marked as uncompleted.";
 
 	private static final String MESSAGE_ADD_TIP = "Add command : add a new event or task.\neg add project meeting tomorrow @utown #cs2103 \n";
 	private static final String MESSAGE_DELETE_TIP = "delete a existing event or task.\ne.g. delete 3";
