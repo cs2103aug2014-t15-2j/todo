@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 import todo.logic.Logic;
 import todo.model.DateTime;
 import todo.model.Item;
+import todo.util.StringUtil;
 
 //@author A0105570N
 public class AddCommand implements Command {
@@ -36,7 +37,7 @@ public class AddCommand implements Command {
 		Logic logic = Logic.getInstanceLogic();
 		
 		// empty message check
-		if (description.equals("")) {
+		if (description.equals(StringUtil.EMPTY_STRING)) {
 			statusMessage = DESCRIPTION_EMPTY;
 			return statusMessage;
 		}

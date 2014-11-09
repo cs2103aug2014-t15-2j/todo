@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 import todo.model.DateTime;
 import todo.model.Item;
+import todo.util.StringUtil;
 
 //@author A0105570N
 public class UpdateCommand implements Command {
 	public static String UPDATE_SUCCESSFUL = "Updated.";
 	public static String UPDATE_FAILED = "Update failed.";
-	public static String EMPTY_STRING = "";
 
 	private Item item;
 	private String description;
@@ -32,22 +32,31 @@ public class UpdateCommand implements Command {
 	@Override
 	public String execute() {
 
+		// update start date/time
 		if (updateStart || start != null) {
 			item.setStartDateTime(start);
 			updated = true;
 		}
+		
+		// update due date/time
 		if (updateDue || due != null) {
 			item.setDueDateTime(due);
 			updated = true;
 		}
-		if (updateLocation || location != EMPTY_STRING) {
+		
+		// update location
+		if (updateLocation || location != StringUtil.EMPTY_STRING) {
 			item.setLocation(location);
 			updated = true;
 		}
+		
+		// update description
 		if (description != null) {
 			item.setDescription(description);
 			updated = true;
 		}
+		
+		// update tag list
 		if (tagList != null && tagList.size() != 0) {
 			for (String tag : tagList) {
 				if (item.getTags().contains(tag)) {
@@ -58,11 +67,14 @@ public class UpdateCommand implements Command {
 			}
 			updated = true;
 		}
+		
+		// clean tag list
 		if (cleanTag) {
 			item.setTags(new ArrayList<String>());
 			updated = true;
 		}
 
+		// check if there is anything updated, then result status
 		if (updated) {
 			statusMessage = UPDATE_SUCCESSFUL;
 		} else {

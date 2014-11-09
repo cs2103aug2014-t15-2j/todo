@@ -27,6 +27,10 @@ import todo.util.StringUtil;
  */
 public class NLPUtil {
 	private static String TAG = "NLPUtil";
+	private static String DELIMITER_COMMA = ",";
+	private static String DELIMITER_SLASH = "/";
+	private static String DELIMITER_SPACE = " ";
+	
 	public static Parser parser = new Parser();
 	
 	// Extractors
@@ -45,12 +49,14 @@ public class NLPUtil {
 		dateTimeList.add(null);
 		
 		if (groups.size() != 0){
+			// there is date/time in the command
 			DateGroup group = groups.get(0);
 			String groupText = group.getText();
 			LogUtil.Log(TAG, "Detect data/time: "+groupText);
 			dateTimeList = NLPUtil.getDateTime(group);
 			String wordBeforeDate = msg.getWordBeforeSubstring(groupText);
 			String twoWordBeforeDate = msg.getTwoWordsBeforeSubstring(groupText);
+			// if the word(s) before the date/time text is a due type preposition
 			if (Arrays.asList(NLPConfig.preDue).contains(twoWordBeforeDate)
 					|| Arrays.asList(NLPConfig.preDue).contains(wordBeforeDate)){
 				// exchange start time and due time
@@ -65,13 +71,16 @@ public class NLPUtil {
 	
 	/**
 	 * Extract location
+	 * There are two type of location:
+	 * 1. Long location: @(long location)
+	 * 2. Normal location: @location
 	 * @param msg
 	 * @return location string
 	 */
 	protected static String extractLocation(Message msg){
 		String location = "";
 		String locationString = StringUtil.getBracketLocation(msg.getText());
-		// look for long location
+		// look for long location (location with more than one word)
 		if (locationString.length() > 2){
 			location = locationString.substring(2, locationString.length()-1);
 			msg.deleteSubstring(locationString);
@@ -81,6 +90,7 @@ public class NLPUtil {
 		msg.trim();
 		// look for one-word location
 		String[] strArray = msg.getText().split(" ");
+		// find all words that start with "@" from the array
 		for(int i = strArray.length-1; i >= 0 ; i--){
 			if (strArray[i].length() > 1 && strArray[i].charAt(0) == '@'){
 				location = strArray[i].substring(1);
@@ -92,6 +102,7 @@ public class NLPUtil {
 	
 	/**
 	 * Extract tags
+	 * Tags are all the words after #
 	 * @param msg
 	 * @return array list of tags
 	 */
@@ -113,25 +124,35 @@ public class NLPUtil {
 		return tagList;
 	}
 	
+	/**
+	 * Delete the date/time text and possible prepositions from Message
+	 * @param msg: The message that contains the whole input
+	 * @param groupText: Date/time text
+	 */
 	protected static void deleteDateTimeText(Message msg, String groupText){
 		String wordBeforeDate = msg.getWordBeforeSubstring(groupText);
 		String twoWordsBeforeDate = msg.getTwoWordsBeforeSubstring(groupText);
 		// delete preposition before date
 		if (Arrays.asList(NLPConfig.preStart).contains(twoWordsBeforeDate)
 				|| Arrays.asList(NLPConfig.preDue).contains(twoWordsBeforeDate)){
+			// the two word before the date/time is a preposition
 			msg.setText(msg.getText().replace(twoWordsBeforeDate + " " + groupText, ""));
 		}else if (Arrays.asList(NLPConfig.preStart).contains(wordBeforeDate)
 				|| Arrays.asList(NLPConfig.preDue).contains(wordBeforeDate)){
+			// the word before date/time is a preposition
 			msg.setText(msg.getText().replace(wordBeforeDate + " " + groupText, ""));
 		}else if( wordBeforeDate.length() >0 && wordBeforeDate.charAt(wordBeforeDate.length()-1) == ':'){
+			// the word before date/time is a colon
 			msg.setText(msg.getText().replace(": " + groupText, ""));
-		}else { // no preposition
+		}else {
+			// no preposition
 			msg.setText(msg.getText().replace(groupText, ""));
 		}
 	}
 	
 	/**
 	 * Read indexes from a string
+	 * E.g. "1,7,3-5,7-8" -> [1,3,4,5,7,8]
 	 * @param str
 	 * @return array list of integers
 	 */
@@ -143,18 +164,18 @@ public class NLPUtil {
 			str = "1-"+Logic.getInstanceLogic().getItemListSize();
 		}
 		
-		// Matching delimiter in the string. "," -> "/"
+		// Matching delimiter in the string with precedence： "," > "/" > " "
 		if (str.contains(",")){
-			delimiter = ",";
-			str = StringUtil.trimString(str);
-		}else if (str.contains("/")){
-			delimiter = "/";
-			str = StringUtil.trimString(str);
+			delimiter = DELIMITER_COMMA;
+		}else if (str.contains(DELIMITER_SLASH)){
+			delimiter = DELIMITER_SLASH;
 		}else{
-			delimiter = " ";
+			delimiter = DELIMITER_SPACE;
 		}
-
+		
+		str = StringUtil.trimString(str);
 		String[] arr = str.split(delimiter);
+		// look for all indices
 		for (String s: arr){
 			s = s.trim();
 			if (StringUtil.isInteger(s)){
@@ -168,7 +189,10 @@ public class NLPUtil {
 				String[] subArr = s.split("-");
 				if (subArr.length == 2 && StringUtil.isInteger(subArr[0]) && StringUtil.isInteger(subArr[1]) 
 					&& Integer.valueOf(subArr[0]) < Integer.valueOf(subArr[1])){
+					// the strings before and after "-" are integers
+					// and the first integer is greater than the second integer
 					for (int i = Integer.valueOf(subArr[0]); i < (Integer.valueOf(subArr[1])+1); i++){
+						// generate integers in the range
 						if(!result.contains(i)){
 							result.add(i);
 						}
@@ -180,8 +204,14 @@ public class NLPUtil {
 		return result;
 	}
 	
-
+	/**
+	 * Get list of date/time
+	 * Process the raw date/time data got from Natty
+	 * @param group DateGruop
+	 * @return a list of DateTime
+	 */
 	protected static List<DateTime> getDateTime(DateGroup group){
+		String DATE_TIME_SEPARATOR = "DATE_TIME ";
 		List<DateTime> dateTimeList = new ArrayList<DateTime>();
 		Date startDate = null;
 		Date dueDate = null;
@@ -195,20 +225,21 @@ public class NLPUtil {
 			// has both start time and due time
 			startDate = group.getDates().get(0);
 			dueDate = group.getDates().get(1);
+			// syntaxTree is a string that contains the hierarchies of date/time
 			syntaxTree = group.getSyntaxTree().toStringTree();
-			String[] syntaxTreeArray = syntaxTree.split("DATE_TIME ");
-			if(StringUtil.stringContainSub(syntaxTreeArray[1], NLPConfig.timeKeyword)){
+			String[] syntaxTreeArray = syntaxTree.split(DATE_TIME_SEPARATOR);
+			if(StringUtil.stringContainListSubstring(syntaxTreeArray[1], NLPConfig.timeKeyword)){
 				// if start date has time
 				startDateHasTime = true;
 			}
-			if(StringUtil.stringContainSub(syntaxTreeArray[2], NLPConfig.timeKeyword)){
+			if(StringUtil.stringContainListSubstring(syntaxTreeArray[2], NLPConfig.timeKeyword)){
 				// if due date has time
 				dueDateHasTime = true;
 			}
 		}else if(group.getDates().size() == 1){
 			// only start time or due time
 			syntaxTree = group.getSyntaxTree().toStringTree();
-			if(StringUtil.stringContainSub(syntaxTree, NLPConfig.timeKeyword)){
+			if(StringUtil.stringContainListSubstring(syntaxTree, NLPConfig.timeKeyword)){
 				// if has time
 				startDateHasTime = true;
 			}
@@ -229,46 +260,59 @@ public class NLPUtil {
 	
 	
 	/**
+	 * Look for DateGroup by using Natty
 	 * Add all the DateGroups found from a given string into a list
 	 * @param msgToDetectDate the given string
 	 * @return the list of DateGroups
 	 */
 	protected static List<DateGroup> getDateGroups(String msgToDetectDate){
+		// escape all the Natty holiday cases
+		msgToDetectDate = StringUtil.stringDeleteListSubstring(msgToDetectDate, NLPConfig.nattyHoliday);
+		
+		// call Natty to find date/time
 		List<DateGroup> groups = parser.parse(msgToDetectDate);
-		String tempTextToDetect = "";
+		String tempTextToDetect = ""; // used to store the previous step's text
 		
 		// escape wrong date time parse by Natty
 		// skip when the date text is an integer
 		// or a word in the filterOut list
 		while (groups.size() > 0 && (StringUtil.isInteger(groups.get(0).getText())
 				|| Arrays.asList(NLPConfig.filterOut).contains(groups.get(0).getText()))){
+			
 			String currentTextToDetect = groups.get(0).getText();
-			LogUtil.Log(TAG, "Text to detect data/time: "+currentTextToDetect);
+			//LogUtil.Log(TAG, "Text to detect data/time: "+currentTextToDetect);
 			if (currentTextToDetect.equals(tempTextToDetect)){
+				// if the new date/time text found is the same as the previous step
 				groups.clear();
 				break;
 			}
-			// prevent infinite loop
+			// record the current text to prevent infinite loop
 			tempTextToDetect = currentTextToDetect;
 			msgToDetectDate = msgToDetectDate.replace(groups.get(0).getText(), "");
 			if(msgToDetectDate.equals("")){
+				// nothing found in the text
 				groups.clear();
 				break;
 			}
+			// call Natty to look for DateGrup
 			groups = parser.parse(msgToDetectDate);
 		}
 		
-		//escape when the first integer of the date/time is a part of the description
-		//if the first char is an integer, and there is no space before it
-		if(groups.size() > 0 && StringUtil.isInteger(groups.get(0).getText().charAt(0)+"") 
-				&& msgToDetectDate.indexOf(groups.get(0).getText()) > 0
-				&& msgToDetectDate.charAt(msgToDetectDate.indexOf(groups.get(0).getText())-1) != ' '){
-			msgToDetectDate = groups.get(0).getText().substring(1);
-			//delete all the subsequent integers
-			while (StringUtil.isInteger(msgToDetectDate.charAt(0)+"")){
-				msgToDetectDate = msgToDetectDate.substring(1);
+		// escape when the first integer of the date/time is a part of the description
+		// if the first char is an integer, and there is no space before it
+		// the is to prevent Natty get number text which is part of the description
+		if (groups.size() > 0){
+			String groupText = groups.get(0).getText();
+			if( StringUtil.isInteger(groupText.charAt(0)+"") 
+					&& msgToDetectDate.indexOf(groupText) > 0
+					&& msgToDetectDate.charAt(msgToDetectDate.indexOf(groupText)-1) != ' '){
+				msgToDetectDate = groups.get(0).getText().substring(1);
+				//delete all the subsequent integers
+				while (StringUtil.isInteger(msgToDetectDate.charAt(0)+"")){
+					msgToDetectDate = msgToDetectDate.substring(1);
+				}
+				groups = parser.parse(msgToDetectDate);
 			}
-			groups = parser.parse(msgToDetectDate);
 		}
 		
 		return groups;

@@ -23,11 +23,13 @@ public class NLPLibrary {
 		return NLPLibrarySingpleton;
 	}
 	
+	// initialize library
 	private static void initLibrary(){
 		library.put("just did everything", "done all");
 		library.put("kill the whole shit", "delete all");
 		library.put("wtf did i do", "undo");
 		library.put("go back", "undo");
+		library.put("shut down", "exit");
 	}
 	
 	public String parse(String str){

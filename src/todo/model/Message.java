@@ -10,7 +10,6 @@ import todo.util.StringUtil;
  *
  */
 public class Message {
-	public static String EMPTY_STRING = "";
 	public static String LOCATION_SYMBOL = "@";
 	public static String LOCATION_SYMBOL_WITH_ESCAPE = "\\\\@";
 	public static String TAG_SYMBOL = "#";
@@ -62,7 +61,7 @@ public class Message {
 	}
 	
 	public boolean isEmpty(){
-		return text.equals(EMPTY_STRING);
+		return text.equals(StringUtil.EMPTY_STRING);
 	}
 	
 	public void trim(){
@@ -71,7 +70,7 @@ public class Message {
 	
 	// delete given string from the text
 	public void deleteSubstring(String str){
-		text = text.replace(str, EMPTY_STRING);
+		text = text.replace(str, StringUtil.EMPTY_STRING);
 	}
 	
 	// change the first letter of the text to upper case

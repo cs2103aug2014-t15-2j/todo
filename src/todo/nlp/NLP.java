@@ -59,7 +59,7 @@ public class NLP {
 		List<DateTime> dateTimeList;
 		String location;
 		
-		LogUtil.Log(TAG, "Start NLP add parser");
+		//LogUtil.Log(TAG, "Start NLP add parser");
 		// Create a message object to go through info extraction process
 		Message message = new Message(msg);
 		
@@ -105,7 +105,7 @@ public class NLP {
 		ArrayList<String> tagList;
 		String location;
 		
-		LogUtil.Log(TAG, "Start NLP update parser");
+		//LogUtil.Log(TAG, "Start NLP update parser");
 		UpdateCommand updateCommand = new UpdateCommand();
 		updateCommand.setItem(item);
 		
@@ -169,7 +169,7 @@ public class NLP {
 	 * @throws ParseException
 	 */
 	public ArrayList<Integer> batchIndexParser(String indices) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException{
-		LogUtil.Log(TAG, "Start NLP index parser");
+		//LogUtil.Log(TAG, "Start NLP index parser");
 		return NLPUtil.readIndexList(indices);
 	}
 	
@@ -179,7 +179,7 @@ public class NLP {
 	 * @return if the input is in library, return standard command, otherwise, return original string
 	 */
 	public String generalParser(String input){
-		LogUtil.Log(TAG, "Start NLP general parser");
+		//LogUtil.Log(TAG, "Start NLP general parser");
 		return NLPLibrary.getInstance().parse(input);
 	}
 
