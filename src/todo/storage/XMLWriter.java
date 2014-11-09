@@ -17,11 +17,9 @@ import todo.model.Item;
 import todo.model.ItemList;
 import todo.model.DateTime;
 
+//@author A0098155W
 /**
  * This class writes to external file with destination - Storage.FILE_DESTINATION.
- * 
- * @author Lui
- *
  */
 public class XmlWriter {
 

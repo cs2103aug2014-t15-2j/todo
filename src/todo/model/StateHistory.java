@@ -3,11 +3,9 @@ package todo.model;
 import java.text.ParseException;
 import java.util.Stack;
 
+//@author A0098155W
 /**
  * This class maintains previous and future states for user to undo and redo.
- * 
- * @author Lui
- *
  */
 public class StateHistory {
 
@@ -66,6 +64,16 @@ public class StateHistory {
 			clonedState.add(targetState.getItem(i).cloneItem());
 		}
 	}
+	
+	/**
+	 * Pops all states from future stack, i.e. user is not able to redo after
+	 * this method.
+	 */
+	public void popAllFromFuture() {
+		while (!future.empty()) {
+			future.pop();
+		}
+	}
 
 	public boolean canUndo() {
 		return history.empty() ? false : true;
@@ -81,15 +89,5 @@ public class StateHistory {
 
 	public ItemList redo() {
 		return future.pop();
-	}
-
-	/**
-	 * Pops all states from future stack, i.e. user is not able to redo after
-	 * this method.
-	 */
-	public void popAllFromFuture() {
-		while (!future.empty()) {
-			future.pop();
-		}
 	}
 }

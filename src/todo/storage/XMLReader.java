@@ -22,11 +22,9 @@ import todo.model.Item;
 import todo.model.ItemList;
 import todo.model.DateTime;
 
+//@author A0098155W
 /**
  * This class reads from external file with destination - Storage.FILE_DESTINATION.
- * 
- * @author Lui
- *
  */
 public class XmlReader {
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Storage.DATE_FORMAT);

@@ -33,6 +33,7 @@ public class CommandMatch {
 			return CommandType.CREATE;
 		case "+":
 			return CommandType.CREATE;
+			
 		// ----------Possible cases of 'read'-----------
 		case "read":
 			return CommandType.READ;
@@ -76,6 +77,7 @@ public class CommandMatch {
 			return CommandType.DELETE;
 		case "-":
 			return CommandType.DELETE;
+			
 		// ---------Possible cases of 'done'------------
 		case "done":
 			return CommandType.DONE;
@@ -87,19 +89,25 @@ public class CommandMatch {
 			return CommandType.DONE;
 		case ">":
 			return CommandType.DONE;
+			
 		// ---------Possible cases of 'undone'------------
 		case "undone":
 			return CommandType.UNDONE;
 		case "<":
 			return CommandType.UNDONE;
+			
 		// ---------Possible cases of 'clear'-----------
 		case "clear" :
 			return CommandType.CLEAR;
 		case "empty" :
 			return CommandType.CLEAR;
+			
 		// ----------Possible cases of 'undo'-----------
 		case "undo":
 			return CommandType.UNDO;
+		case "revert":
+			return CommandType.UNDO;
+			
 		// ----------Possible cases of 'redo'-----------
 		case "redo":
 			return CommandType.REDO;
@@ -111,6 +119,7 @@ public class CommandMatch {
 			return CommandType.EXIT;
 		case "close":
 			return CommandType.EXIT;
+			
 		// ----------otherwise, 'invalid'-----------
 		default:
 			return CommandType.INVALID;

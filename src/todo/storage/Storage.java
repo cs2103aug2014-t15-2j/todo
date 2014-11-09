@@ -13,12 +13,10 @@ import org.xml.sax.SAXException;
 
 import todo.model.ItemList;
 
+//@author A0098155W
 /**
  * This is the facade class of Storage component that interacts which outside
  * components.
- *
- * @author Lui
- *
  */
 public class Storage {
 

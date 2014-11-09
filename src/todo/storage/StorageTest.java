@@ -19,11 +19,9 @@ import todo.model.DateTime;
 import todo.model.Item;
 import todo.model.ItemList;
 
+//@author A0098155W
 /**
  * Unit test for Storage class.
- * 
- * @author Lui
- *
  */
 public class StorageTest {
 

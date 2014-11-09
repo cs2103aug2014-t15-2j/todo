@@ -11,11 +11,9 @@ import org.junit.Test;
 
 import todo.storage.Storage;
 
+//@author A0098155W
 /**
- * Unit Test for StateHistory class.
- * 
- * @author Lui
- *
+ * Unit Test for StateHistory class.*
  */
 public class StateHistoryTest {
 
