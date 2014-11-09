@@ -280,7 +280,7 @@ public class NLPUtil {
 				|| Arrays.asList(NLPConfig.filterOut).contains(groups.get(0).getText()))){
 			
 			String currentTextToDetect = groups.get(0).getText();
-			//LogUtil.Log(TAG, "Text to detect data/time: "+currentTextToDetect);
+			LogUtil.Log(TAG, "Text to detect data/time: "+currentTextToDetect);
 			if (currentTextToDetect.equals(tempTextToDetect)){
 				// if the new date/time text found is the same as the previous step
 				groups.clear();
@@ -303,6 +303,7 @@ public class NLPUtil {
 		// the is to prevent Natty get number text which is part of the description
 		if (groups.size() > 0){
 			String groupText = groups.get(0).getText();
+			LogUtil.Log(TAG, "Group text: "+groupText);
 			if( StringUtil.isInteger(groupText.charAt(0)+"") 
 					&& msgToDetectDate.indexOf(groupText) > 0
 					&& msgToDetectDate.charAt(msgToDetectDate.indexOf(groupText)-1) != ' '){

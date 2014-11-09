@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
+import todo.model.DateTime;
+import todo.model.Message;
 import todo.util.StringUtil;
 
 //@author A0105570N
@@ -30,22 +32,28 @@ public class NLPTest {
 
 	@Test
 	public void addParserTest() throws Exception {
-		// correct date format -> remove quoted content -> get first word before substring
-		// -> get bracket location -> remove full quotation
-		// step1 remove quoted content & correct date format & get date groups
-		// step2 find possible date time
-		// step3 find long location
-		// step4 find out one word location and all the tags
-		// step5 delete all the escape characters
-		// step6 if the whole sentence is quoted, then delete the quotation marks
 		
-		// TODO
-		/*
-		NLP nlp = NLP.getInstance();
-		String input = "Finish homework by next monday";
-		Item add = nlp.addParser(input);
-		assertEquals(add.getDescription(), "Finish homework");
-		*/
+		Message message = new Message("participate event @soc from 11 nov to 10 dec #tag #gat");
+		
+		// step1 correct date format
+		message.correctDateFormat();
+		// step2 find possible date time
+		List<DateTime> dateTimeList = NLPUtil.extractDateTime(message);
+		assertEquals(dateTimeList.get(0).toString(), "2014-11-11");
+		assertEquals(dateTimeList.get(1).toString(), "2014-12-10");
+		// step3 find location
+		assertEquals(NLPUtil.extractLocation(message), "soc");
+		// step4 find tags
+		assertEquals(NLPUtil.extractTags(message).get(1), "gat");
+		// step5 delete escape characters
+		message.deleteEscapeCharaster();
+		// step6 delete whole sentence quotation marks
+		message.deleteFullQuote();
+		// step7 trim and format message as description
+		message.trim();
+		message.formatText();
+		assertEquals(message.getText(), "Participate event");
+		
 	}
 	
 	@Test

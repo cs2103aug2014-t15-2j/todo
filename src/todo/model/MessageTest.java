@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+//@author A0105570N
 public class MessageTest {
 
 	@Before
