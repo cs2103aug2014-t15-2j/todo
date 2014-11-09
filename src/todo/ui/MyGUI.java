@@ -347,6 +347,10 @@ public class MyGUI extends JFrame implements ActionListener {
 		
 		userInput = textField.getText();
 		
+		if(userInput.contains("exit")){
+			System.exit(0);
+		}
+		
 		textField.setText("");
 		
 		try {
@@ -397,6 +401,10 @@ public class MyGUI extends JFrame implements ActionListener {
            mainPane.add(new JPanel(), gbc);
            
            messageLabel.setText(guiControl.getSystemMessageControl());
+           
+           if(guiControl.getSystemMessageControl().contains("")){
+        	   
+           }
            
            mainPane.revalidate();
 

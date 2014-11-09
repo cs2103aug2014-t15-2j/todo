@@ -144,6 +144,8 @@ public class Logic {
 		case REDO:
 			itemsForGUI = redo();
 			break;
+		case EXIT:
+			System.exit(0);
 		
 		case INVALID:
 			LogUtil.Log(TAG, "invalid command, invoke NLP general parser");
