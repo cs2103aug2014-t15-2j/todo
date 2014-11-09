@@ -46,6 +46,7 @@ public class DateTime {
 	}
 
 	public String toString() {
+		/* unwanted characters show up when command "add meet profs in 5 hours " is entered
 		String output;
 	
 		if (hasTime) {
@@ -55,12 +56,17 @@ public class DateTime {
 			output = this.date.toLocalDate().toString();
 		}
 		return output;
+		*/
+		String output = this.date.toString().replace("T", " ");
+		
+		if (hasTime) {
+			output = output.substring(0, 16);
+		}else{
+			output = output.substring(0, 10);
+		}
+		return output;
 	}
 	
-	public String writeString(){
-		return this.date.toString().replace("T", " ").substring(0, 16);
-	}
-
 	/**
 	 * This method clones the object itself
 	 * @return an exact cloned copy of itself
