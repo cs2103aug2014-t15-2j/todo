@@ -168,8 +168,9 @@ public class Logic {
 		return itemsForGUI;
 	}
 
-	private ArrayList<Item> undo() {
-		if (stateHistory.canUndo() && stateHistory.saveStateToFuture(mItemList)) {
+	private ArrayList<Item> undo() throws ParseException {
+		if (stateHistory.canUndo()) {
+			stateHistory.saveStateToFuture(mItemList);
 			mItemList = stateHistory.undo();
 			
 			this.setSystemMessage(MESSAGE_UNDO_SUCCESS);
@@ -180,8 +181,9 @@ public class Logic {
 		return mItemList.getAllItems();
 	}
 
-	private ArrayList<Item> redo() {
-		if (stateHistory.canRedo() && stateHistory.saveStateToHistory(mItemList)) {
+	private ArrayList<Item> redo() throws ParseException {
+		if (stateHistory.canRedo()) {
+			stateHistory.saveStateToHistory(mItemList);
 			mItemList = stateHistory.redo();
 
 			this.setSystemMessage(MESSAGE_REDO_SUCCESS);
@@ -287,7 +289,7 @@ public class Logic {
 	}
 
 	private ArrayList<Item> clear() throws ParserConfigurationException,
-			TransformerException {
+			TransformerException, ParseException {
 		saveState();
 		String result = "";
 		result = mItemList.clear();
@@ -297,7 +299,7 @@ public class Logic {
 	}
 
 	private ArrayList<Item> update(String userInput)
-			throws ParserConfigurationException, TransformerException {
+			throws ParserConfigurationException, TransformerException, ParseException {
 		saveState();
 		String updateInfo = "";
 		String[] arr;
@@ -430,7 +432,7 @@ public class Logic {
 
 	}
 
-	private void saveState() {
+	private void saveState() throws ParseException {
 		stateHistory.saveStateToHistory(mItemList);
 		stateHistory.popAllFromFuture();
 	}

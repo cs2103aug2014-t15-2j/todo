@@ -8,58 +8,39 @@ public class StateHistory {
 	private Stack<ItemList> history;
 	private Stack<ItemList> future;
 
-	/**
-	 * Default constructor of StateHistory
-	 */
 	public StateHistory() {
 		history = new Stack<ItemList>();
 		future = new Stack<ItemList>();
 	}
 
 	/**
-	 * Save a ItemList's state onto history stack
+	 * Save a ItemList's state onto history stack.
 	 * 
 	 * @param targetState
-	 * @return 'true' if the state was successfully pushed onto the history
-	 *         state, otherwise 'false'
+	 * @throws ParseException
 	 */
-	public boolean saveStateToHistory(ItemList targetState) {
-		try {
-			ItemList clonedState = new ItemList();
-			copyItemList(targetState, clonedState);
+	public void saveStateToHistory(ItemList targetState) throws ParseException {
+		ItemList clonedState = new ItemList();
+		copyItemList(targetState, clonedState);
 
-			history.push(clonedState);
-		} catch (Exception e) {
-			// Something is wrong, save history has failed
-			return false;
-		}
-
-		return true;
+		history.push(clonedState);
 	}
 
 	/**
-	 * Save a ItemList's state onto future stack
+	 * Save a ItemList's state onto future stack.
 	 * 
 	 * @param targetState
-	 * @return 'true' if the state was successfully pushed onto the future
-	 *         stack, otherwise 'false'
+	 * @throws ParseException
 	 */
-	public boolean saveStateToFuture(ItemList targetState) {
-		try {
-			ItemList clonedState = new ItemList();
-			copyItemList(targetState, clonedState);
+	public void saveStateToFuture(ItemList targetState) throws ParseException {
+		ItemList clonedState = new ItemList();
+		copyItemList(targetState, clonedState);
 
-			future.push(clonedState);
-		} catch (Exception e) {
-			// Something is wrong, save future has failed
-			return false;
-		}
-
-		return true;
+		future.push(clonedState);
 	}
 
 	/**
-	 * This method clones the entire targetState into a clonedState
+	 * Clones the entire targetState into a clonedState
 	 * 
 	 * @param targetState
 	 * @param clonedState
@@ -88,6 +69,10 @@ public class StateHistory {
 		return future.pop();
 	}
 
+	/**
+	 * Pops all states from future stack, i.e. user is not able to redo after
+	 * this method.
+	 */
 	public void popAllFromFuture() {
 		while (!future.empty()) {
 			future.pop();
