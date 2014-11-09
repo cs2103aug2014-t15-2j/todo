@@ -131,6 +131,7 @@ public class MyGUI extends JFrame implements ActionListener {
                 textField = new JTextField(50);
         		textField.setFont(new Font("Verdana", Font.BOLD, 14));
         		textField.setBackground(Color.WHITE);
+        		// Activate the textField when open the GUI
         		frame.addWindowListener(new WindowAdapter(){
         			public void windowOpened(WindowEvent e){
         				textField.requestFocus();
@@ -353,10 +354,6 @@ public class MyGUI extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent evt) {
 		
 		userInput = textField.getText();
-		
-		if(userInput.contains("exit")){
-			System.exit(0);
-		}
 		
 		textField.setText("");
 		
