@@ -47,6 +47,14 @@ public class Logic {
 	private static final String MESSAGE_SHOW_UNCOMPLETED = "Showing all uncompleted tasks";
 	private static final String MESSAGE_SHOW_COMPLETED = "Showing all completed tasks";
 	private static final String MESSAGE_SHOW_FILTERED = "Showing task(s) labeled with" + " " + "%1$s";
+	
+	private static final String LOGIC_HASHTAG = "#";
+	private static final String LOGIC_AT ="@";
+	private static final String LOGIC_EMPTY_STRING  = "";
+	private static final String LOGIC_COMPLETED = "completed";
+	private static final String LOGIC_UNCOMPLETED = "uncompleted";
+	private static final String LOGIC_DONE = "done";
+	private static final String LOGIC_UNDONE = "undone";
 
 	/**
 	 * Private constructor for singleton Logic
@@ -59,6 +67,7 @@ public class Logic {
 	 */
 	private Logic() throws DOMException, ParserConfigurationException,
 			SAXException, IOException, ParseException {
+		//Calls functions to initialise all required values by reading from external file
 		storage = new Storage();
 		command = new CommandMatch();
 		mItemList = storage.readDataFromFile();
@@ -69,7 +78,7 @@ public class Logic {
 	/**
 	 * Method to get the Logic singleton
 	 * 
-	 * @return
+	 * @return logic instance
 	 * @throws DOMException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
@@ -85,11 +94,15 @@ public class Logic {
 
 		return logicSingleton;
 	}
-
+	
+	
 	public int getItemListSize() {
 		return Logic.mItemList.size();
 	}
-
+	/**
+	 * This method determines the command type by matching the command to be executed to user input
+	 * 
+	 */
 	public CommandType getCommandType(String commandTypeString) {
 		CommandType result;
 		// if the first word is an integer, then command type is update
@@ -196,7 +209,7 @@ public class Logic {
 		saveState();
 		String content;
 		String[] arr = userInput.split(" ", 2);
-		String result = "";
+		String result = LOGIC_EMPTY_STRING ;
 
 		if (arr.length > 1) {
 			content = arr[1];
@@ -218,52 +231,31 @@ public class Logic {
 	}
 
 	private ArrayList<Item> read(String userInput) {  
-		String systemMessage = "";
+		String systemMessage = LOGIC_EMPTY_STRING ;
 		ArrayList<Item> filteredItems = new ArrayList<Item>();
-		// Filter by tags
-		if ((userInput.contains("#"))) {
-			int hashTagPosition = userInput.indexOf("#");
-			String tagString = "";
-			tagString = userInput.substring(hashTagPosition + 1,
-					userInput.length());
-			if (tagString.isEmpty()) {
-				systemMessage = ERROR_MISSING_TAGS;
-				setSystemMessage(systemMessage);
-			} else {
-				systemMessage =String.format(MESSAGE_SHOW_FILTERED, tagString) ;
-				setSystemMessage(systemMessage);
-				filteredItems = mItemList.filterByTags(tagString);
-			}
-			//Filer by Location
-		} else if (userInput.contains("@")){
-			int	locationPosition = userInput.indexOf("#");
-			String locationString = "";
-			locationString = userInput.substring(locationPosition + 1,
-					userInput.length());
-			if (locationString.isEmpty()) {
-				systemMessage = ERROR_MISSING_LOCATION;
-				setSystemMessage(systemMessage);
-			} else {
-				systemMessage =String.format(MESSAGE_SHOW_FILTERED, locationString) ;
-				setSystemMessage(systemMessage);
-				filteredItems = mItemList.filterByLocation(locationString);
-			}
-			// Filter by completed/uncompleted
-		} else if ((userInput.contains("completed") || userInput
-				.contains("done"))
-				&& !(userInput.contains("undone") || userInput
-						.contains("uncompleted"))) {
-			filteredItems = mItemList.showCompletedList();
-			systemMessage = MESSAGE_SHOW_COMPLETED;
-			setSystemMessage(systemMessage);
-		} else if ((userInput.contains("undone") || userInput
-				.contains("uncompleted"))) {
-			filteredItems = mItemList.showUncompletedList();
-			systemMessage = MESSAGE_SHOW_UNCOMPLETED;
-			setSystemMessage(systemMessage);
-			
+		// Search for items in the item list with the matching hash tags
+		if ((userInput.contains(LOGIC_HASHTAG))) {
+			filteredItems =getFilteredHashTags(userInput);
+		}	
+		
+		// Search for items in the item list with the matching location
+		 else if (userInput.contains(LOGIC_AT)){
+			 filteredItems = getFilteredLocation (userInput);
+		}
+		
+		// Search for items in the item list with the status completed
+		
+		 else if (checkCompletedInput(userInput)) {
+			filteredItems= getFilteredCompleted();
+		} 
+		
+		// Search for items in the item list with the status uncompleted
+		 else if ((userInput.contains(LOGIC_UNDONE) || userInput
+				.contains(LOGIC_UNCOMPLETED))) {
+			 filteredItems = getFilteredUnompleted();
+		}	
 			// Filter by dateTime using standard format yyyy/MM/dd
-		} else if (userInput.contains("on")) {
+		 else if (userInput.contains("on")) {
 			int hasOnPosition = userInput.indexOf("n");
 			String dateString = "";
 			dateString = userInput.substring(hasOnPosition + 2,
@@ -424,7 +416,7 @@ public class Logic {
 	}
 
 	public void setSystemMessage(String message) {
-		this.finalMessage = "";
+		this.finalMessage = LOGIC_EMPTY_STRING;
 		this.finalMessage = message;
 
 	}
@@ -445,6 +437,72 @@ public class Logic {
 	public ArrayList<Item> getItemsforGUI (ArrayList<Item> listForGUI) {
 		return listForGUI;
 	}
+	
+	private ArrayList<Item> getFilteredHashTags (String userInput){
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> filterByHashTags = new ArrayList<Item> ();
+		int hashTagPosition = userInput.indexOf(LOGIC_HASHTAG);
+		String tagString = LOGIC_EMPTY_STRING;
+		tagString = userInput.substring(hashTagPosition + 1,
+				userInput.length());
+		if (tagString.isEmpty()) {
+			systemMessage = ERROR_MISSING_TAGS;
+			setSystemMessage(systemMessage);
+		} else {
+			systemMessage =String.format(MESSAGE_SHOW_FILTERED, tagString) ;
+			setSystemMessage(systemMessage);
+			filterByHashTags = mItemList.filterByTags(tagString);
+		}
+		return filterByHashTags;
+	}
+	
+	private ArrayList<Item> getFilteredLocation (String userInput){
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> filterByLocation = new ArrayList<Item> ();
+		int	locationPosition = userInput.indexOf(LOGIC_AT);
+		String locationString = LOGIC_EMPTY_STRING;
+		locationString = userInput.substring(locationPosition + 1,
+				userInput.length());
+		if (locationString.isEmpty()) {
+			systemMessage = ERROR_MISSING_LOCATION;
+			setSystemMessage(systemMessage);
+		} else {
+			systemMessage =String.format(MESSAGE_SHOW_FILTERED, locationString) ;
+			setSystemMessage(systemMessage);
+			filterByLocation = mItemList.filterByLocation(locationString);
+		}
+		return filterByLocation;
+	}
+	
+	private ArrayList<Item> getFilteredCompleted() {
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> filterByCompleted = new ArrayList<Item> ();
+		filterByCompleted = mItemList.showCompletedList();
+		systemMessage = MESSAGE_SHOW_COMPLETED;
+		setSystemMessage(systemMessage);
+		return filterByCompleted;
+	}
+	
+	private ArrayList<Item> getFilteredUnompleted() {
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> filterByUncompleted = new ArrayList<Item> ();
+		filterByUncompleted = mItemList.showUncompletedList();
+		systemMessage = MESSAGE_SHOW_UNCOMPLETED;
+		setSystemMessage(systemMessage);
+		return filterByUncompleted;
+	}
+	
+	private boolean checkCompletedInput(String userInput){
+		userInput = userInput.toLowerCase();
+		if((userInput.contains(LOGIC_COMPLETED) || userInput.contains(LOGIC_DONE))
+		&& !(userInput.contains(LOGIC_UNDONE) || userInput.contains(LOGIC_UNCOMPLETED))) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 
 	// For GUI testing purpose
 	public String getListString() {
