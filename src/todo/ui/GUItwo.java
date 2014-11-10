@@ -5,6 +5,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
  
+//@author A0115992-unused
+//These codes are not used because the layout is not suitable.
 public class GUItwo extends JFrame{
     JRadioButton RtoLbutton;
     JRadioButton LtoRbutton;
