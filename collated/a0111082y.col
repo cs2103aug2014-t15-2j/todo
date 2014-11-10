@@ -1,0 +1,2000 @@
+//@author: a0111082y
+
+
+
+	/**
+	 * origin: todo\logic\Logic.java
+	 */
+
+
+public class Logic {
+
+	private static String TAG = "Logic";
+	private static Logic logicSingleton;
+	private Storage storage;
+	private CommandMatch command;
+	private static ItemList mItemList;
+	private StateHistory stateHistory;
+	private boolean fastUpdate;
+	private String finalMessage = "Status: ";
+	private ArrayList<Item> itemsForGUI = new ArrayList<Item>();
+
+	private static final String ERROR_UNRECOGNISED_COMMAND = "Command not recognised.";
+	private static final String ERROR_MISSING_TAGS = "Invalid: Missing Tag Names.";
+	private static final String ERROR_MISSING_LOCATION = "Invalid: Missing location name";
+	private static final String ERROR_INVALID_COMMAND = "Invalid command";
+	private static final String ERROR_INVALID_PARAM = "Invalid parameter";
+	private static final String ERROR_BATCH_PARTIAL_SUCCESS = "Some operations did not complete sucessfully";
+	private static final String ERROR_INVALID_DATE_PARAMETER = "Invalid: Missing date for filter.";
+
+	private static final String MESSAGE_ADD_TIP = "Add command : add a new event or task.\neg add project meeting tomorrow @utown #cs2103 \n";
+	private static final String MESSAGE_DELETE_TIP = "Delete a existing event or task.\ne.g. delete 3";
+	private static final String MESSAGE_DONE_TIP = "Set an item as done.\ne.g. done 3";
+	private static final String MESSAGE_UNDONE_TIP = "Set an item as undone.\ne.g. undone 3";
+	private static final String MESSAGE_UNDO_SUCCESS = "You have successfully undone the previous action.";
+	private static final String MESSAGE_CANNOT_UNDO = "No action can be undone.";
+	private static final String MESSAGE_REDO_SUCCESS = "You have successfully redo the previous action.";
+	private static final String MESSAGE_CANNOT_REDO = "No action to redo.";
+	private static final String MESSAGE_SHOW_UNCOMPLETED = "Showing all uncompleted tasks";
+	private static final String MESSAGE_SHOW_COMPLETED = "Showing all completed tasks";
+	private static final String MESSAGE_SHOW_FILTERED = "Showing task(s) labeled with" + " " + "%1$s";
+	private static final String MESSAGE_SHOW_ALL = "Showing all tasks";
+	private static final String MESSAGE_ITEM_NOT_FOUND = "Could not find required item, showing all items";
+	private static final String MESSAGE_INVOKE_NLP_GENERAL_PARSER = "invalid command, invoke NLP general parser";
+	
+	private static final String LOGIC_HASHTAG = "#";
+	private static final String LOGIC_AT = "@";
+	private static final String LOGIC_EMPTY_STRING  = "";
+	private static final String LOGIC_COMPLETED = "completed";
+	private static final String LOGIC_UNCOMPLETED = "uncompleted";
+	private static final String LOGIC_DONE = "done";
+	private static final String LOGIC_UNDONE = "undone";
+	private static final String LOGIC_ON = "on";
+	private static final String LOGIC_N = "n";
+	private static final String LOGIC_UPDATE_INDEX= "update index ";
+	private static final String LOGIC_TODAY= "today";
+	private static final String LOGIC_ADDTIME = " 11:00";
+	
+	/**
+	 * Private constructor for singleton Logic
+	 * 
+	 * @throws ParseException
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws DOMException
+	 */
+	private Logic() throws DOMException, ParserConfigurationException,
+			SAXException, IOException, ParseException {
+		//Calls functions to initialise all required values by reading from external file
+		storage = new Storage();
+		command = new CommandMatch();
+		mItemList = storage.readDataFromFile();
+		mItemList.checkStatus();
+		stateHistory = new StateHistory();
+	}
+
+	/**
+	 * Method to get the Logic singleton
+	 * 
+	 * @return logic instance
+	 * @throws DOMException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public static Logic getInstanceLogic() throws DOMException,
+			ParserConfigurationException, SAXException, IOException,
+			ParseException {
+		if (logicSingleton == null) {
+			logicSingleton = new Logic();
+		}
+
+		return logicSingleton;
+	}
+	
+	
+	public int getItemListSize() {
+		return Logic.mItemList.size();
+	}
+	/**
+	 * This method determines the command type by matching the command to be executed to user input
+	 * 
+	 */
+	public CommandType getCommandType(String commandTypeString) {
+		CommandType result;
+		// if the first word is an integer, then command type is update
+		// otherwise, parse the command
+		if (StringUtil.isInteger(commandTypeString)) {
+			result = CommandType.UPDATE;
+			fastUpdate = true;
+		} else {
+			result = command.determineCommandType(commandTypeString);
+			fastUpdate = false;
+		}
+		return result;
+	}
+
+	/**
+	 * This method executes whichever commandType it receives accordingly
+	 * 
+	 * @param commandType
+	 * @throws Exception
+	 */
+	public ArrayList<Item> executeCommand(String userInput) throws Exception {
+		CommandType commandType = getCommandType(StringUtil
+				.getFirstWord(userInput));
+		userInput = StringUtil.trimString(userInput);
+
+		switch (commandType) {
+		case CREATE:
+			itemsForGUI = add(userInput);
+			break;
+		case READ:
+			itemsForGUI = read(userInput);
+			break;
+		case UPDATE:
+			itemsForGUI = update(userInput);
+			break;
+		case DELETE:
+			itemsForGUI = simpleOperation(CommandType.DELETE, userInput);
+			break;
+		case DONE:
+			itemsForGUI = simpleOperation(CommandType.DONE, userInput);
+			break;
+		case UNDONE:
+			itemsForGUI = simpleOperation(CommandType.UNDONE, userInput);
+			break;
+		case CLEAR:
+			itemsForGUI = clear();
+			break;
+		case UNDO:
+			itemsForGUI = undo();
+			break;
+		case REDO:
+			itemsForGUI = redo();
+			break;
+		case EXIT:
+			System.exit(0);
+		
+		case INVALID:
+			LogUtil.Log(TAG, MESSAGE_INVOKE_NLP_GENERAL_PARSER);
+			String standardInput = NLP.getInstance().generalParser(userInput);
+			if (userInput != standardInput) {
+				executeCommand(standardInput);
+			} else {
+				this.setSystemMessage(ERROR_UNRECOGNISED_COMMAND);
+				
+			}
+			break;
+		default:
+			// shouldn't reach here.
+			break;
+			
+		}
+		
+		return itemsForGUI;
+	}
+
+	private ArrayList<Item> undo() throws ParseException {
+		if (stateHistory.canUndo()) {
+			stateHistory.saveStateToFuture(mItemList);
+			mItemList = stateHistory.undo();
+			
+			this.setSystemMessage(MESSAGE_UNDO_SUCCESS);
+		} else {
+			this.setSystemMessage(MESSAGE_CANNOT_UNDO);
+		}
+
+		return mItemList.getAllItems();
+	}
+
+	private ArrayList<Item> redo() throws ParseException {
+		if (stateHistory.canRedo()) {
+			stateHistory.saveStateToHistory(mItemList);
+			mItemList = stateHistory.redo();
+
+			this.setSystemMessage(MESSAGE_REDO_SUCCESS);
+		} else {
+			this.setSystemMessage(MESSAGE_CANNOT_REDO); 
+		}
+
+		return mItemList.getAllItems();
+	}
+
+	private ArrayList<Item> add(String userInput) throws ParserConfigurationException,
+			TransformerException, DOMException, SAXException, IOException, ParseException {
+		saveState();
+		String content;
+		String[] arr = userInput.split(" ", 2);
+		String result = LOGIC_EMPTY_STRING ;
+
+		if (arr.length > 1) {
+			content = arr[1];
+			result = NLP.getInstance().addParser(content).execute();
+			setSystemMessage(result);
+		} 
+		// When add command does now come along with item description
+		else {
+			result += MESSAGE_ADD_TIP;
+			setSystemMessage(result);
+		}
+		
+		// When add operation is not successful due to other errors 
+		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)&&(!getSystemMessage().equals(AddCommand.INVALID_START_DUE))){
+			stateHistory.undo();
+			result = MESSAGE_ADD_TIP;
+			setSystemMessage(result);
+		}
+		saveFile();
+		return mItemList.getAllItems();
+	}
+
+	private ArrayList<Item> read(String userInput) {  
+		
+		ArrayList<Item> filteredItems = new ArrayList<Item>();
+		
+		// Search for items in the item list with the matching hash tags
+		if ((userInput.contains(LOGIC_HASHTAG))) {
+			filteredItems = getFilteredHashTags(userInput);
+			if (filteredItems.size()==0) {
+				filteredItems = replaceEmptyFilteredList();
+			}
+		}	
+		
+		// Search for items in the item list with the matching location
+		else if (userInput.contains(LOGIC_AT)){
+			 filteredItems = getFilteredLocation (userInput);
+			 if (filteredItems.size()==0) {
+					filteredItems = replaceEmptyFilteredList();
+				}
+		}
+		
+		// Search for items in the item list with the status completed
+		else if (checkCompletedInput(userInput)) {
+			filteredItems = getFilteredCompleted();
+			if (filteredItems.size()==0) {
+				filteredItems = replaceEmptyFilteredList();
+			}
+		} 
+		
+		// Search for items in the item list with the status uncompleted
+		else if (checkUncompletedInput(userInput)) {
+			 filteredItems = getFilteredUnompleted();
+			 if (filteredItems.size()==0) {
+					filteredItems = replaceEmptyFilteredList();
+				}
+		}	
+		
+		// Filter by dateTime using standard format yyyy-MM-dd
+		else if (userInput.contains(LOGIC_ON)) {
+			filteredItems = getFilteredDate(userInput);
+		}
+		
+		// FilteredList not required, returns the full list of items
+		else {
+			filteredItems = getFullList();
+		}
+		return filteredItems;
+	}
+
+	private ArrayList<Item> clear() throws ParserConfigurationException,
+			TransformerException, ParseException {
+		saveState();
+		String result = "";
+		result = mItemList.clear();
+		this.setSystemMessage(result);
+		saveFile();
+		return mItemList.getAllItems();
+	}
+
+	private ArrayList<Item> update(String userInput)
+			throws ParserConfigurationException, TransformerException, ParseException {
+		saveState();
+		String updateInfo = "";
+		String[] arr;
+		int updateIndex = -1;
+		int arrLen;
+		String result = "";
+
+		if (fastUpdate) {
+			// start with item index
+			arr = userInput.split(" ", 2);
+			arrLen = 2;
+		} else {
+			// start with update command
+			arr = userInput.split(" ", 3);
+			arrLen = 3;
+		}
+
+		if (arr.length == arrLen && StringUtil.isInteger(arr[arrLen - 2])) {
+			updateInfo = arr[arrLen - 1];
+			updateIndex = Integer.valueOf(arr[arrLen - 2]);
+		} else {
+			result = UpdateCommand.UPDATE_FAILED;
+		}
+
+		if (!updateInfo.isEmpty() && mItemList.validIndex(updateIndex - 1)) {
+			result = NLP.getInstance().updateParser(mItemList.getItem(updateIndex - 1), updateInfo).execute();
+			saveFile();
+			LogUtil.Log(TAG, LOGIC_UPDATE_INDEX + (updateIndex - 1));
+		} else {
+			result = UpdateCommand.UPDATE_FAILED;
+		}
+		
+		if(result.equals(UpdateCommand.UPDATE_FAILED)){
+			stateHistory.undo();
+		}
+		
+		this.setSystemMessage(result);
+		return mItemList.getAllItems();
+	}
+
+	/**
+	 * simple operations include delete, done, undone takes in only index
+	 * numbers
+	 * 
+	 * @param type
+	 * @param userInput
+	 * @return string
+	 * @throws TransformerException
+	 * @throws ParserConfigurationException
+	 * @throws ParseException
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws DOMException
+	 */
+	private ArrayList<Item> simpleOperation(CommandType type, String userInput)
+			throws ParserConfigurationException, TransformerException,
+			DOMException, SAXException, IOException, ParseException {
+		saveState();
+		String[] arr = userInput.split(" ", 2);
+		String result = "";
+		int num = 0;
+		int numOfItems = 0;
+
+		if (arr.length > 1) {
+			ArrayList<Integer> indexList = NLP.getInstance().batchIndexParser(arr[1]);
+			numOfItems = indexList.size();
+			if (!indexList.isEmpty()) {
+				while (!indexList.isEmpty()) {
+					Integer thisIndex = indexList.remove(indexList.size() - 1);
+					switch (type) {
+					case DELETE:
+						result = mItemList.delete(thisIndex);
+						break;
+					case DONE:
+						result = mItemList.done(thisIndex);
+						break;
+					case UNDONE:
+						result = mItemList.undone(thisIndex);
+						break;
+					default:
+						result = ERROR_INVALID_COMMAND;
+					}
+					if(result.equals(ItemList.DELETE_SUCCESSFUL) ||
+							result.equals(ItemList.DONE_SUCCESSFUL) ||
+							 result.equals(ItemList.UNDONE_SUCCESSFUL)){
+						num++;
+					}
+				}
+			} else {
+				result = ERROR_INVALID_PARAM;
+			}
+		} else {
+			switch (type) {
+			case DELETE:
+				result = MESSAGE_DELETE_TIP;
+				break;
+			case DONE:
+				result = MESSAGE_DONE_TIP;
+				break;
+			case UNDONE:
+				result = MESSAGE_UNDONE_TIP;
+				break;
+			default:
+				result = ERROR_INVALID_COMMAND;
+			}
+		}
+
+		if(num == 0){
+			stateHistory.undo();
+		}
+		
+		if(num != 0 && num != numOfItems){
+			this.setSystemMessage(ERROR_BATCH_PARTIAL_SUCCESS);
+		}else{
+			this.setSystemMessage(result);
+		}
+		
+		saveFile();
+
+		return mItemList.getAllItems();
+	}
+
+	public String getSystemMessage() {
+		return this.finalMessage;
+	}
+
+	public void setSystemMessage(String message) {
+		this.finalMessage = LOGIC_EMPTY_STRING;
+		this.finalMessage = message;
+
+	}
+
+	private void saveState() throws ParseException {
+		stateHistory.saveStateToHistory(mItemList);
+		stateHistory.popAllFromFuture();
+	}
+
+	private void saveFile() throws ParserConfigurationException,
+			TransformerException {
+		storage.saveDataToFile(mItemList);
+	}
+
+	public static ItemList getItemList() {
+		return mItemList;
+	}
+	public ArrayList<Item> getItemsforGUI (ArrayList<Item> listForGUI) {
+		return listForGUI;
+	}
+	
+	private ArrayList<Item> getFilteredHashTags (String userInput){
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> filterByHashTags = new ArrayList<Item> ();
+		int hashTagPosition = userInput.indexOf(LOGIC_HASHTAG);
+		String tagString = LOGIC_EMPTY_STRING;
+		tagString = userInput.substring(hashTagPosition + 1,
+				userInput.length());
+		if (tagString.isEmpty()) {
+			systemMessage = ERROR_MISSING_TAGS;
+			setSystemMessage(systemMessage);
+		} else {
+			systemMessage =String.format(MESSAGE_SHOW_FILTERED, tagString) ;
+			setSystemMessage(systemMessage);
+			filterByHashTags = mItemList.filterByTags(tagString);
+		}
+		return filterByHashTags;
+	}
+	
+	private ArrayList<Item> getFilteredLocation (String userInput){
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> filterByLocation = new ArrayList<Item> ();
+		int	locationPosition = userInput.indexOf(LOGIC_AT);
+		String locationString = LOGIC_EMPTY_STRING;
+		locationString = userInput.substring(locationPosition + 1,
+				userInput.length());
+		if (locationString.isEmpty()) {
+			systemMessage = ERROR_MISSING_LOCATION;
+			setSystemMessage(systemMessage);
+		} else {
+			systemMessage =String.format(MESSAGE_SHOW_FILTERED, locationString) ;
+			setSystemMessage(systemMessage);
+			filterByLocation = mItemList.filterByLocation(locationString);
+		}
+		return filterByLocation;
+	}
+	
+	private ArrayList<Item> getFilteredCompleted() {
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> filterByCompleted = new ArrayList<Item> ();
+		filterByCompleted = mItemList.showCompletedList();
+		systemMessage = MESSAGE_SHOW_COMPLETED;
+		setSystemMessage(systemMessage);
+		return filterByCompleted;
+	}
+	
+	private ArrayList<Item> getFilteredUnompleted() {
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> filterByUncompleted = new ArrayList<Item> ();
+		filterByUncompleted = mItemList.showUncompletedList();
+		systemMessage = MESSAGE_SHOW_UNCOMPLETED;
+		setSystemMessage(systemMessage);
+		return filterByUncompleted;
+	}
+	
+	private ArrayList<Item> getFilteredDate(String userInput) {
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> filterByDate = new ArrayList<Item> ();
+		int hasOnPosition = userInput.indexOf(LOGIC_N);
+		String dateString = LOGIC_EMPTY_STRING;
+		//Extract date from userInput
+		dateString = userInput.substring(hasOnPosition + 2,
+				userInput.length());
+		
+		// Case: Users wants to find task that are due today
+		
+		if(dateString.contains(LOGIC_TODAY)){
+			dateString = LocalDateTime.now().toLocalDate().toString().replace("T", " ");
+			dateString = dateString.concat(LOGIC_ADDTIME);
+			//System.out.println(dateString);
+		}
+		else {
+		dateString = dateString.concat(LOGIC_ADDTIME);
+		}
+		//System.out.println(dateString.length());
+		if (dateString.length()==16) {
+			systemMessage =String.format(MESSAGE_SHOW_FILTERED, dateString.substring(0, 10)) ;
+			setSystemMessage(systemMessage);
+			filterByDate = mItemList.filterByDateTime(dateString);
+		} else {
+			setSystemMessage(ERROR_INVALID_DATE_PARAMETER);
+		}
+		return filterByDate;
+	}
+	
+	/* Replace an empty filtered list with the full list of items when the above function could not find 
+	 * what the user is searching for
+	 */
+	private ArrayList<Item> replaceEmptyFilteredList() {
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> replaced = new ArrayList<Item> ();
+		replaced = mItemList.getAllItems();
+		systemMessage = MESSAGE_ITEM_NOT_FOUND;
+		setSystemMessage(systemMessage);
+		return replaced;
+	}
+	
+	private ArrayList<Item> getFullList() {
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> fullList = new ArrayList<Item> ();
+		fullList = mItemList.getAllItems();
+		systemMessage = MESSAGE_SHOW_ALL;
+		setSystemMessage(systemMessage);
+		return fullList;
+	}
+	
+	private boolean checkCompletedInput(String userInput){
+		userInput = userInput.toLowerCase();
+		if((userInput.contains(LOGIC_COMPLETED) || userInput.contains(LOGIC_DONE))
+		&& !(userInput.contains(LOGIC_UNDONE) || userInput.contains(LOGIC_UNCOMPLETED))) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	private boolean checkUncompletedInput(String userInput){
+		userInput = userInput.toLowerCase();
+		if ((userInput.contains(LOGIC_UNDONE) || userInput
+				.contains(LOGIC_UNCOMPLETED))) {
+			return true;
+		}
+		else {
+		return false;
+		}
+	}
+
+	// For GUI testing purpose
+	public String getListString() {
+		return mItemList.toString();
+	}
+
+}
+
+	// End of segment: todo\logic\Logic.java
+
+
+
+
+
+	/**
+	 * origin: todo\logic\LogicTest.java
+	 */
+
+public class LogicTest {
+
+	@Before
+	public void setUp() throws Exception {
+	}
+
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	@Test
+	public void test() throws Exception {
+		Logic logic = Logic.getInstanceLogic();
+		logic.executeCommand("add project meeting on 1 Nov #meeting");
+		String addedString = "project meeting |Start: 2014-11-01 |Tags: [meeting] |Status: Uncompleted";
+		String newList = logic.getListString();
+		assertEquals(newList.substring(newList.length()-addedString.length()-2).trim(), addedString);
+	}
+
+}
+
+	// End of segment: todo\logic\LogicTest.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\DateTime.java
+	 */
+
+public class DateTime {
+	public static final String DATE_WITH_TIME = "MM/dd/yyyy HH:mm:ss";
+	public static final String DATE_WITHOUT_TIME = "MM/dd/yyyy";
+
+	private boolean hasTime;
+	private LocalDateTime date;
+
+	public DateTime(Date date) {
+		this.date = convertDateToLocalDateTime (date);
+		this.hasTime = true;
+	}
+
+	public DateTime(Date date, boolean hasTime) {
+		this.date = convertDateToLocalDateTime (date);
+		this.hasTime = hasTime;
+	}
+	
+	public DateTime(LocalDateTime date, boolean hasTime) {
+		this.date = date;
+		this.hasTime = hasTime;
+	}
+
+	public void setDate(Date date) {
+		this.date = convertDateToLocalDateTime (date);
+	}
+
+	public void setDate(Date date, boolean hasTime) {
+		this.date = convertDateToLocalDateTime (date);
+		this.hasTime = hasTime;
+	}
+
+	public LocalDateTime getDate() {
+		return this.date;
+	}
+
+	public boolean hasTime() {
+		return this.hasTime;
+	}
+	//This methods converts a dateTime object to a string format
+	public String toString() {
+		
+		String output = this.date.toString().replace("T", " ");
+		
+		if (hasTime) {
+			output = output.substring(0, 16);
+		}else{
+			output = output.substring(0, 10);
+		}
+		return output;
+	}
+	//Format the string for writing into xml file
+	
+	public String writeString(){
+		return this.date.toString().replace("T", " ").substring(0, 16);
+	}
+	/**
+	 * This method clones the object itself
+	 * @return an exact cloned copy of itself
+	 * @throws ParseException
+	 */
+	
+	// This method provides deep clonning function or the datetime object.
+	public DateTime cloneDateTime() throws ParseException {
+		
+		DateTime clonnedDateTime = null;
+		if (this.hasTime()){
+			Instant instant = this.date.toInstant(ZoneOffset.of("+08"));
+			Date clonnedDate = Date.from(instant);
+			clonnedDateTime = new DateTime(clonnedDate,true);
+		}
+		else {
+			Instant instant = this.date.toInstant(ZoneOffset.of("+08"));
+			Date clonnedDate = Date.from(instant);
+			clonnedDateTime = new DateTime(clonnedDate,false);
+			
+		}
+
+		return clonnedDateTime;
+	}
+	
+	public LocalDateTime convertDateToLocalDateTime (Date targetDate){
+		Instant instant = Instant.ofEpochMilli(targetDate.getTime());
+		LocalDateTime formattedDate = LocalDateTime.ofInstant(instant, ZoneOffset.of("+08"));
+		
+		return formattedDate;
+		
+	}
+
+	// This method checks if the due date is before the start date
+		public static boolean isInValidDate(LocalDateTime startDate,
+				LocalDateTime dueDate) {
+			boolean invalid;
+			if ((startDate != null) && (dueDate != null)) {
+				if (dueDate.isBefore(startDate)) {
+					invalid = true;
+				} else {
+					invalid = false;
+				}
+			} else {
+				invalid = true;
+			}
+			
+			return invalid;
+
+	}
+}
+
+	// End of segment: todo\model\DateTime.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\DateTimeTest.java
+	 */
+
+	@Test
+	public final void test() {
+
+		LocalDateTime dateTime = LocalDateTime.now();
+		// default format
+		System.out.println("Default format of LocalDateTime=" + dateTime);
+		// specific format
+		System.out.println(dateTime.format(DateTimeFormatter
+				.ofPattern("d::MMM::uuuu HH::mm::ss")));
+		System.out.println(dateTime.format(DateTimeFormatter.BASIC_ISO_DATE));
+
+		Instant timestamp = Instant.now();
+		// default format
+		System.out.println("Default format of Instant= " + timestamp);
+
+		// Parse examples
+		LocalDateTime dt = LocalDateTime.parse("27::Apr::2014 21::39",
+				DateTimeFormatter.ofPattern("d::MMM::uuuu HH::mm"));
+		System.out.println("Default format after parsing = " + dt);
+		Date aDate = new Date();
+		DateTime abc = new DateTime(aDate);
+		//Create a LocalDateTime from date
+		LocalDateTime xyz = abc.convertDateToLocalDateTime (aDate);
+		
+		//Generate default string version of localDateTime
+		System.out.println("the localdateTime is "+xyz);
+		
+		//Get the string of the localdateTime and trims it to remove extra characters
+		String xyzString = xyz.toString().replace('T', ' ');
+		System.out.println("new string = "+xyzString);
+		xyzString=xyzString.substring(0,16);
+		System.out.println("new string2 = "+xyzString);
+		
+		//Create a LocalDateTime from string
+		LocalDateTime mno = LocalDateTime.parse(xyzString,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+		System.out.println("the localdateTime after conversion is "+mno);
+		//
+		String yyString = xyzString.substring(0,10);
+		System.out.println("yyString = "+yyString);
+		LocalDate yy = LocalDate.parse(yyString,DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		System.out.println(yy);
+	}
+
+}
+
+	// End of segment: todo\model\DateTimeTest.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\Item.java
+	 */
+
+public class Item implements Comparable<Item> {
+
+	private static final boolean unImportant = false;
+	private static int itemQty = 0;
+	private int itemId = 0;
+	private static int lastItemId = 0;
+	private boolean importance = unImportant;
+	
+	private static final String EMPTYSTRING = "";
+	private static final String START = " |Start: ";
+	private static final String DUE =" |Due: ";
+	private static final String LOCATION = " |Location: ";
+	private static final String TAGS = " |TAGS: ";
+	private static final String STATUS = " |Status: ";
+	private static final String UNCOMPLETED = "Uncompleted";
+	private static final String COMPLETED = "Completed";
+	private static final String IMPORTANT = "Important";
+	
+	private String description;
+	private DateTime startDateTime = null;
+	private DateTime dueDateTime = null;
+	private String location = EMPTYSTRING;
+	private ArrayList<String> tags = new ArrayList<String>();
+	private boolean isCompleted = false;
+
+	// Constructors
+
+	// Default Constructor
+	public Item() {
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+	}
+
+	/**
+	 * This method is a constructor that creates an item object with only
+	 * description
+	 * 
+	 * @param description
+	 */
+	public Item(String description) {
+		setDescription(description);
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+	}
+
+	// Constructor with description and start time.
+
+	/**
+	 * This method is a constructor that creates an item object with only
+	 * description and startDateTime
+	 * 
+	 * @param description
+	 * @param startDateTime
+	 */
+	public Item(String description, DateTime startDateTime) {
+		setDescription(description);
+		setStartDateTime(startDateTime);
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+	}
+
+	/**
+	 * This method is a constructor that creates an item object with the
+	 * following attributes
+	 * 
+	 * @param description
+	 * @param importance
+	 * @param tags
+	 */
+	public Item(String description, boolean importantance,
+			ArrayList<String> tags) {
+		setDescription(description);
+		setImportance(importantance);
+		setTags(tags);
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+	}
+
+	/**
+	 * This method is a constructor that creates an item object with the
+	 * following attributes
+	 * 
+	 * @param description
+	 * @param startDateTime
+	 * @param dueDateTime
+	 * @param importance
+	 * @param tags
+	 */
+	public Item(String description, DateTime startDateTime,
+			DateTime dueDateTime, boolean importantance, ArrayList<String> tags) {
+		setDescription(description);
+		setStartDateTime(startDateTime);
+		setDueDateTime(dueDateTime);
+		setImportance(importance);
+		setTags(tags);
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+	}
+
+	/**
+	 * This method is a constructor that creates an item object with the
+	 * following attributes
+	 * 
+	 * @param description
+	 * @param location
+	 * @param importance
+	 * @param tags
+	 */
+	public Item(String description, String location, boolean importance,
+			ArrayList<String> tags) {
+		setDescription(description);
+		setLocation(location);
+		setImportance(importance);
+		setTags(tags);
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+	}
+
+	/**
+	 * This method is a constructor that creates an item object with the
+	 * following attributes
+	 * 
+	 * @param description
+	 * @param startDateTime
+	 * @param dueDateTime
+	 * @param location
+	 * @param tags
+	 */
+	public Item(String description, DateTime startDateTime,
+			DateTime dueDateTime, String location, ArrayList<String> tags) {
+		setDescription(description);
+		setStartDateTime(startDateTime);
+		setDueDateTime(dueDateTime);
+		setLocation(location);
+		setTags(tags);
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+		
+	}
+
+	/**
+	 * This method is a constructor that creates an item object with all
+	 * attributes
+	 * 
+	 * @param description
+	 * @param startDateTime
+	 * @param dueDateTime
+	 * @param location
+	 * @param importance
+	 * @param tags
+	 */
+	public Item(String description, DateTime startDateTime,
+			DateTime dueDateTime, String location, boolean importance,
+			ArrayList<String> tags) {
+		setDescription(description);
+		setStartDateTime(startDateTime);
+		setDueDateTime(dueDateTime);
+		setLocation(location);
+		setImportance(importance);
+		setTags(tags);
+		setItemID(getLastItemId());
+		itemQty++;
+		lastItemId++;
+		
+	}
+
+	/**
+	 * This method is a constructor that takes in an item object and clones it.
+	 * 
+	 * @param itemId
+	 * @param description
+	 * @param startDateTime
+	 * @param dueDateTime
+	 * @param location
+	 * @param importance
+	 * @param tags
+	 * @param status
+	 */
+	private Item(int itemId, String description, DateTime startDateTime,
+			DateTime dueDateTime, String location, boolean importance,
+			ArrayList<String> tags, boolean status) {
+		setDescription(description);
+		setStartDateTime(startDateTime);
+		setDueDateTime(dueDateTime);
+		setLocation(location);
+		setImportance(importance);
+		setTags(tags);
+		setItemID(itemId);
+		if (status) {
+			setStatusDone();
+		}
+		if (!status) {
+			setStatusUndone();
+		}
+	}
+
+	// Accessors
+
+	public static int getItemQty() {
+		return itemQty;
+	}
+
+	public int getItemId() {
+		return itemId;
+	}
+
+	public static int getLastItemId() {
+		return lastItemId;
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public DateTime getStartDateTime() {
+		return this.startDateTime;
+	}
+
+	public DateTime getDueDateTime() {
+		return this.dueDateTime;
+	}
+
+	public String getLocation() {
+		return this.location;
+	}
+
+	public boolean getImportance() {
+		return this.importance;
+	}
+
+	public ArrayList<String> getTags() {
+		return this.tags;
+	}
+
+	public boolean getStatus() {
+		return this.isCompleted;
+	}
+
+	// Modifiers
+	public static void setItemQty(int itemQty) {
+		Item.itemQty = itemQty;
+	}
+
+	public static void setItemQtyAfterDeletion() {
+		Item.itemQty = itemQty--;
+		assert itemQty >= 0;
+	}
+
+	public static void setLastItemID(int lastItemID) {
+		Item.lastItemId = lastItemID;
+		assert lastItemID >= 0;
+	}
+
+	public void setItemID(int lastItemId) {
+		itemId = lastItemId + 1;
+		assert itemId > 0;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setStartDateTime(DateTime startDateTime) {
+		this.startDateTime = startDateTime;
+	}
+
+	public void setDueDateTime(DateTime dueDateTime) {
+		this.dueDateTime = dueDateTime;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public void setImportance(boolean newImportance) {
+		this.importance = newImportance;
+	}
+
+	public void setTags(ArrayList<String> tagList) {
+		this.tags = tagList;
+	}
+
+	public void addTag(String newTag) {
+		this.tags.add(newTag);
+	}
+
+	public void deleteTaf(String tag) {
+		this.tags.remove(tag);
+	}
+
+	public void setStatusDone() {
+		this.isCompleted = true;
+	}
+
+	public void setStatusUndone() {
+		this.isCompleted = false;
+	}
+
+	// Display item
+	public String toString() {
+		String result = "";
+		/*
+		 * For Testing of itemID result = result.concat("ItemID "); result =
+		 * result.concat(String.valueOf(this.itemId)); result =
+		 * result.concat(" ");
+		 */
+		result = result.concat(EMPTYSTRING);
+		result = result.concat(description);
+
+		if (startDateTime != null) {
+			result = result.concat(START);
+			result = result.concat(getStartDateTime().toString());
+		}
+
+		if (dueDateTime != null) {
+			result = result.concat(DUE);
+			result = result.concat(getDueDateTime().toString());
+		}
+
+		if (!location.equals(EMPTYSTRING)) {
+			result = result.concat(LOCATION);
+			result = result.concat(getLocation());
+		}
+
+		if (tags != null) {
+			if (!tags.isEmpty()) {
+				result = result.concat(TAGS);
+				result = result.concat(getTags().toString());
+			}
+		}
+
+		result = result.concat(STATUS);
+		if (getStatus()) {
+			result = result.concat(COMPLETED);
+		}
+		if (!getStatus()) {
+			result = result.concat(UNCOMPLETED);
+		}
+		if (getImportance()) {
+			result = result.concat(IMPORTANT);
+		}
+		return result;
+
+	}
+
+	// Clone Item - Takes in an item and returns an exact copy of the item
+	// without changing the itemQty and item number
+	public Item cloneItem() throws ParseException {
+		int itemId = this.getItemId();
+		String description = this.getDescription();
+
+		DateTime startDateTime = null;
+		if (this.getStartDateTime() != null) {
+			startDateTime = this.getStartDateTime().cloneDateTime();
+		}
+
+		DateTime dueDateTime = null;
+		if (this.getDueDateTime() != null) {
+			dueDateTime = this.getDueDateTime().cloneDateTime();
+		}
+
+		String location = this.getLocation();
+		boolean importance = this.getImportance();
+		ArrayList<String> tags = cloneTags(this.getTags());
+		boolean status = this.getStatus();
+
+		Item clonned = new Item(itemId, description, startDateTime,
+				dueDateTime, location, importance, tags, status);
+		return clonned;
+	}
+
+	@Override
+	public int compareTo(Item toCompare) {
+		return this.itemId > toCompare.getItemId() ? 1
+				: (this.itemId < toCompare.getItemId() ? -1 : 0);
+	}
+
+	private ArrayList<String> cloneTags(ArrayList<String> tags) {
+		ArrayList<String> clonnedTagList = new ArrayList<String>();
+		for (int j = 0; j < tags.size(); j++) {
+			String cloneTag = new String(tags.get(j));
+			clonnedTagList.add(cloneTag);
+		}
+		return clonnedTagList;
+	}
+
+	
+	
+
+}
+
+	// End of segment: todo\model\Item.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	// Done item
+	public String done(int index) {
+		String result = "";
+
+		try {
+			if (!itemList.get(index - 1).getStatus()) {
+				String doneItemDescription = itemList.get(index - 1)
+						.getDescription();
+				result = String.format(MESSAGE_COMPLETED, doneItemDescription);
+				itemList.get(index - 1).setStatusDone();
+				;
+				// Add item to list of completed item:
+				completedList.add(itemList.get(index - 1));
+				// Find itemId of the item that was mark as done
+				int target = itemList.get(index - 1).getItemId();
+				// Search for the index of the item in the uncompleted list
+				int deleteIndex = searchIndex(uncompletedList, target);
+				// Remove the item from the uncompleted list
+				if (deleteIndex == -1) {
+					String errorMessage = ERROR_NOT_FOUND;
+					return errorMessage;
+				} else {
+					uncompletedList.remove(deleteIndex);
+				}
+			} else {
+				return ERROR_ALREADY_COMPLETED;
+			}
+
+			return DONE_SUCCESSFUL;
+		} catch (IndexOutOfBoundsException e) {
+			String returnErrorMessage = ERROR_GENERAL;
+			if (itemList.size() == 0) {
+				returnErrorMessage = ERROR_LIST_EMPTY;
+			} else if (index > itemList.size()) {
+				returnErrorMessage = ERROR_INDEX_EXCEEDED;
+			}
+
+			return returnErrorMessage;
+		}
+	}
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	// Undone item
+	public String undone(int index) {
+		String result = "";
+		try {
+			if (itemList.get(index - 1).getStatus()) {
+				String undoneItemDescription = itemList.get(index - 1)
+						.getDescription();
+				itemList.get(index - 1).setStatusUndone();
+				;
+				result = String.format(MESSAGE_UNCOMPLETED,
+						undoneItemDescription);
+				// Add item to list of uncompleted item:
+				uncompletedList.add(itemList.get(index - 1));
+				// Find itemId of the item that was mark as done
+				int target = itemList.get(index - 1).getItemId();
+				// Search for the index of the item in the completed list
+				int deleteIndex = searchIndex(completedList, target);
+				// Remove the item from the completed list
+				if (deleteIndex == -1) {
+					String errorMessage = ERROR_NOT_FOUND;
+					return errorMessage;
+				} else {
+					completedList.remove(deleteIndex);
+				}
+			} else {
+				return ERROR_ALREADY_UNCOMPLETED;
+			}
+
+			return UNDONE_SUCCESSFUL;
+		} catch (IndexOutOfBoundsException e) {
+			String returnErrorMessage = ERROR_GENERAL;
+			if (itemList.size() == 0) {
+				returnErrorMessage = ERROR_LIST_EMPTY;
+			} else if (index > itemList.size()) {
+				returnErrorMessage = ERROR_INDEX_EXCEEDED;
+			}
+
+			return returnErrorMessage;
+		}
+	}
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	// Display the whole itemList in string format
+	public String toString() {
+		String result = "";
+		if (this.size() == 0) {
+			return ERROR_LIST_EMPTY;
+		} else {
+			for (int i = 0; i < this.size(); i++) {
+				result += ((i + 1) + ". " + this.getItem(i).toString() + "\n");
+			}
+		}
+		return result;
+	}
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	// Clear the whole itemList
+	public String clear() {
+		itemList.clear();
+		completedList.clear();
+		uncompletedList.clear();
+		String result = MESSAGE_CLEARED;
+
+		return result;
+	}
+
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	// Search certain key word in itemList
+	public String search(String searchKey) {
+		searchKey = searchKey.toLowerCase();
+		String result = EMPTYSTRING;
+		for (Item i : itemList) {
+			if (i.getDescription().contains(searchKey)) {
+				String appendString = i.getDescription() + " "
+						+ i.getStartDateTime();
+				result += appendString;
+			}
+		}
+
+		return result;
+	}
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	public ArrayList<Item> filterByLocation(String locationString) {
+		String[] splitedTags = locationString.split("\\W+");
+		
+		ArrayList<Item> itemWithTargetLocation = new ArrayList<Item>();
+		int matchNumber = splitedTags.length;
+		int currentMatchNumber;
+
+		for (Item i : itemList) {
+			currentMatchNumber = 0;
+			String locationCompared = "";
+			for (int j = 0; j < i.getTags().size(); j++) {
+				for (int k = 0; k < splitedTags.length; k++) {
+					locationCompared = splitedTags[k];
+					if (i.getLocation().equals(locationCompared)) {
+						currentMatchNumber++;
+						break;
+					}
+				}
+			}
+			if (currentMatchNumber == matchNumber) {
+				itemWithTargetLocation.add(i);
+			}
+		}
+		return itemWithTargetLocation;
+	}
+	
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	
+	/* Returns items with either start day or end date with the input date
+	 * Input string must follow the format  "yyyy-MM-dd HH:mm"
+	 */
+	public ArrayList<Item> filterByDateTime(String dateTimeString) {
+		ArrayList<Item> itemWithTargetDate = new ArrayList<Item>();
+		LocalDateTime searchDate = LocalDateTime.parse(dateTimeString,
+				formatter);
+		for (int i = 0; i < itemList.size(); i++) {
+			DateTime sDateTime = itemList.get(i).getStartDateTime();
+			DateTime dDateTime = itemList.get(i).getDueDateTime();
+			/*Compares the target date to both start date and due date attributes. adds it to the
+			* list if it is equals to the same date.	
+			*/
+			
+			//Case 1 - items with start date but no due date
+			if ((sDateTime != null) && (dDateTime == null )) {
+				LocalDateTime sItemDate = sDateTime.getDate();
+				if (sItemDate.toLocalDate().isEqual(searchDate.toLocalDate())){
+					itemWithTargetDate.add(itemList.get(i));
+				}
+			}
+			//Case 2 - items with due date but no start date
+			if ((sDateTime == null) &&(dDateTime != null )) {
+				LocalDateTime dItemDate = dDateTime.getDate();
+				if (dItemDate.toLocalDate().isEqual(searchDate.toLocalDate())){
+					itemWithTargetDate.add(itemList.get(i));
+				}
+			}
+			//Case 3 - items with both due date and start date
+			if ((sDateTime != null) &&(dDateTime != null )) {
+				LocalDateTime dItemDate = dDateTime.getDate();
+				LocalDateTime sItemDate = sDateTime.getDate();
+				
+				if ((dItemDate.toLocalDate().isEqual(searchDate.toLocalDate()))||(sItemDate.toLocalDate().isEqual(searchDate.toLocalDate()))){
+					itemWithTargetDate.add(itemList.get(i));
+				}
+			}
+			
+		}
+
+		return itemWithTargetDate;
+
+	}
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	public ArrayList<Item> showCompletedList() {
+
+		return completedList;
+	}
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	public ArrayList<Item> showUncompletedList() {
+
+		return uncompletedList;
+	}
+
+	public String showCompletedListString() {
+		String result = "";
+
+		if (completedList.size() == 0) {
+			return ERROR_LIST_EMPTY;
+		} else {
+			for (int i = 0; i < completedList.size(); i++) {
+				result += ((i + 1) + ". " + completedList.get(i).toString() + "\n");
+			}
+		}
+		return result;
+	}
+
+	public String showUncompletedListString() {
+		String result = "";
+
+		if (uncompletedList.size() == 0) {
+			return ERROR_LIST_EMPTY;
+		} else {
+			for (int i = 0; i < uncompletedList.size(); i++) {
+				result += ((i + 1) + ". " + uncompletedList.get(i).toString() + "\n");
+			}
+		}
+		return result;
+	}
+
+	// With the itemId, searches the arrayList and returns the index where the
+	// item is stored
+	public static int searchIndex(ArrayList<Item> searchList, int key) {
+		int notfound = -1;
+		int start = 0;
+		int end = searchList.size();
+		while (start <= end) {
+			int mid = (start + end) / 2;
+
+			if (key == searchList.get(mid).getItemId()) {
+
+				return mid;
+
+			}
+			if (key < searchList.get(mid).getItemId()) {
+				end = mid - 1;
+
+			} else {
+				start = mid + 1;
+			}
+		}
+
+		return notfound;
+	}
+
+	// With the itemId, searches the ItemList and returns the index where the
+	// item is stored
+	public static int searchIndex(ItemList searchList, int key) {
+		int notfound = -1;
+		int start = 0;
+		int end = searchList.size();
+		while (start <= end) {
+			int mid = (start + end) / 2;
+
+			if (key == searchList.getItem(mid).getItemId()) {
+
+				return mid;
+
+			}
+			if (key < searchList.getItem(mid).getItemId()) {
+				end = mid - 1;
+
+			} else {
+				start = mid + 1;
+			}
+		}
+
+		return notfound;
+	}
+
+	// Check for item status and add it to the completed/uncompleted list
+	public void checkStatus() {
+		completedList.clear();
+		uncompletedList.clear();
+		for (int i = 0; i < itemList.size(); i++) {
+
+			if (itemList.get(i).getStatus() == true) {
+				completedList.add(itemList.get(i));
+			}
+
+			if (itemList.get(i).getStatus() == false) {
+				uncompletedList.add(itemList.get(i));
+			}
+
+		}
+	}
+
+}
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemTest.java
+	 */
+
+
+// NOTE SOME TEST CASES WRITTEN BEFORE EXTENSIVE MODIFICAL TO THE MODEL PACKAGE
+
+import org.junit.Test;
+public class ItemTest {
+	String item1 = "item-1";
+	String item2 = "item-2";
+	String item3 = "item-3";
+	String item4 = "item-4";
+	String location1 = "SchoolOfComputing";
+	String locatin2 = "Utown";
+	boolean important = true;
+	Date currentDate1 = new Date();
+	DateTime testDateTime1 = new DateTime(currentDate1);
+	Date currentDate2 = new Date();
+	DateTime testDateTime2 = new DateTime(currentDate2);
+	Date currentDate3 = new Date();
+	DateTime testDateTime3 = new DateTime(currentDate3);
+	Date currentDate4 = new Date();
+	DateTime testDateTime4 = new DateTime(currentDate4);
+	
+	
+	
+	
+	@Test
+	public void testItemConstructor() {
+		System.out.println("Currently testing: testItemConstructors: ");
+		Item abc = new Item (item1,testDateTime1);
+		Item def = new Item (item1,testDateTime1);
+		
+		assertEquals(abc.getDescription(),def.getDescription());
+		assertEquals(abc.getStartDateTime(),def.getStartDateTime());
+		System.out.println(currentDate4.getTime());
+		Instant instant = Instant.ofEpochMilli(currentDate4.getTime());
+		System.out.println("Instant from Date:\n" + instant);
+		Date date = Date.from(instant);
+		System.out.println("Date from Instant:\n" + date + " long: " + date.getTime());
+		LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneOffset.of("+8"));
+		System.out.println("LocalDateTime from Instant:\n" + ldt);
+	}
+		
+	
+	public void testTagsInput() {
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		Item jkl = new Item (item4,testDateTime4);
+		jkl.setTags(tagList);
+		assertEquals(tagList,jkl.getTags());
+		assertEquals(4,Item.getItemQty());
+		assertEquals(4,Item.getLastItemId());
+		System.out.println();
+	}
+	
+	@Test
+	public void testAllConstructors() {
+		System.out.println("Currently testing: testAllConstructors: ");
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		
+		Item abc1 = new Item(item1);
+		abc1.setStatusDone();
+		System.out.println(abc1.toString());
+		Item abc2 = new Item(item1,testDateTime1);
+		System.out.println(abc2.toString());
+		Item abc3 = new Item(item1,important,tagList);
+		System.out.println(abc3.toString());
+		Item abc4 = new Item(item1,location1, important, tagList);
+		System.out.println(abc4.toString());
+		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, important, tagList);
+		System.out.println(abc5.toString());
+		System.out.println();
+		
+	}
+	@Test
+	public void testItemList() {
+		System.out.println("Currently testing: testItemList: ");
+		ItemList myList = new ItemList();
+		
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		
+		Item abc1 = new Item(item1);
+		abc1.setStatusDone();
+		
+		Item abc2 = new Item(item1,testDateTime1);
+	
+		Item abc3 = new Item(item1,important,tagList);
+		
+		Item abc4 = new Item(item1,location1,important, tagList);
+		
+		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, important, tagList);
+
+		myList.add(abc1);
+		myList.add(abc2);
+		myList.add(abc3);
+		myList.add(abc4);
+		myList.add(abc5);
+		myList.toString();
+		System.out.println();
+	}
+	@Test
+	public void testItemListSort() {
+		System.out.println("Currently testing: testItemListSort: ");
+		ItemList myList = new ItemList();
+		
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		
+		Item abc1 = new Item(item1);
+		abc1.setStatusDone();
+		
+		Item abc2 = new Item(item1,testDateTime1);
+	
+		Item abc3 = new Item(item1,important,tagList);
+		
+		Item abc4 = new Item(item1,location1, important, tagList);
+		
+		Item abc5 = new Item(item1, testDateTime1, testDateTime2, location1, important, tagList);
+
+		myList.add(abc1);
+		myList.add(abc2);
+		myList.add(abc3);
+		myList.add(abc4);
+		myList.add(abc5);
+		myList.toString();
+		
+		//myList.sortByTimeDecreasing();
+		System.out.println(myList.toString());
+		System.out.println();
+		
+	}
+	
+	@Test
+	public void CompletedListDisplayTest() {
+		System.out.println("Currently testing: testItemListSort: ");
+		ItemList myList = new ItemList();
+		
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		
+		Item abc1 = new Item("item1");
+		abc1.setStatusDone();
+		
+		Item abc2 = new Item("item2",testDateTime1);
+	
+		Item abc3 = new Item("item3",important,tagList);
+		
+		Item abc4 = new Item("item4",location1, important, tagList);
+		abc4.setStatusDone();
+		
+		Item abc5 = new Item("item5", testDateTime1, testDateTime2, location1, important, tagList);
+
+		myList.add(abc1);
+		myList.add(abc2);
+		myList.add(abc3);
+		myList.add(abc4);
+		myList.add(abc5);
+		System.out.println(myList.toString());
+		System.out.println("Completed: ");
+		System.out.println(myList.showCompletedListString());
+		System.out.println("UnCompleted: ");
+		System.out.println(myList.showUncompletedListString());
+		
+		
+		
+	}
+	@Test
+	public void cloneTest() throws ParseException {
+		System.out.println("Currently testing: cloneTest: ");
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		Item abc5 = new Item("item5", testDateTime1, testDateTime2, location1, important, tagList);
+		
+	assertEquals(abc5.toString(),abc5.cloneItem().toString());
+	}
+	
+	@Test
+	public void searchIndexTest() {
+		System.out.println("Currently testing: testItemListSort: ");
+		ItemList myList = new ItemList();
+		
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		
+		Item abc1 = new Item("item1");
+		abc1.setStatusDone();
+		
+		Item abc2 = new Item("item2",testDateTime1);
+	
+		Item abc3 = new Item("item3",important,tagList);
+		
+		Item abc4 = new Item("item4",location1, important, tagList);
+		abc4.setStatusDone();
+		
+		Item abc5 = new Item("item5", testDateTime1, testDateTime2, location1, important, tagList);
+		System.out.println("BEFORE SORT");
+		
+		myList.add(abc3);
+		myList.add(abc4);
+		myList.add(abc5);
+		myList.add(abc1);
+		myList.add(abc2);
+		myList.toString();
+		System.out.println(myList.toString());
+		System.out.println("After SORT");
+		System.out.println(myList.toString());
+	
+		System.out.println ("key abc3 position : " +ItemList.searchIndex(myList, 16));
+		
+		
+		
+	}
+	@Test 
+	public void testDateComparing() {
+		System.out.println("Currently testing: testDateTimeComparing: ");
+		ItemList myList = new ItemList();
+		ArrayList<String> tagList = new ArrayList<String>();
+		tagList.add("homework");
+		tagList.add("school");
+		Item abc1 = new Item("item1");
+		abc1.setStatusDone();
+		Item abc2 = new Item("item2",testDateTime1);
+		Item abc3 = new Item("item3",important,tagList);
+		Item abc4 = new Item("item4",location1, important, tagList);
+		abc4.setStatusDone();
+		Item abc5 = new Item("item5", testDateTime1, testDateTime2, location1, important, tagList);
+		if (DateTime.isInValidDate(abc5.getStartDateTime().getDate(),abc5.getDueDateTime().getDate().minusHours(10))){
+			System.out.println("Invalid");
+		}
+		else {
+			System.out.println("Valid");
+		}
+	}
+}
+
+	// End of segment: todo\model\ItemTest.java
+
+
+
+
+
+	/**
+	 * origin: todo\ui\GUIcontrol.java
+	 */
+
+public class GUIcontrol {
+	private Logic logic;
+	private ItemList allTasks;
+	private ArrayList<Item> completedTasks;
+	private ArrayList<Item> unCompletedTasks;
+	private String systemMessage = "";
+
+	public GUIcontrol() throws DOMException, ParserConfigurationException,
+			SAXException, IOException, ParseException {
+		logic = Logic.getInstanceLogic();
+		allTasks = Logic.getItemList();
+		allTasks.checkStatus();
+		ArrayList<Item> completedTasks = new ArrayList<Item>();
+		ArrayList<Item> unCompletedTasks = new ArrayList<Item>();
+		
+		allTasks.showUncompletedList();
+	}
+
+	public ItemList getItemList() {
+		return allTasks;
+	}
+
+	public ArrayList<Item> getCompletedTasks() {
+		completedTasks = allTasks.showCompletedList();
+		return completedTasks;
+	}
+
+	public ArrayList<Item> getUnCompletedTasks() {
+		unCompletedTasks = allTasks.showUncompletedList();
+		return unCompletedTasks;
+
+	}
+	public ArrayList<Item> sendToGUI(String userInput) throws Exception {
+		ArrayList<Item> itemsForGUI = new ArrayList<Item>();
+		itemsForGUI = logic.getItemsforGUI(logic.executeCommand(userInput));
+		return itemsForGUI;
+	}
+	public String getSystemMessageControl () {
+		systemMessage= logic.getSystemMessage();
+		return this.systemMessage;
+	}
+
+	public String sendToLogic(String userInput) throws Exception {
+		String systemMessage = "SystemMessage:";
+		try {
+			logic.executeCommand(userInput);
+		} catch (ParserConfigurationException | TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		systemMessage = logic.getSystemMessage();
+		return systemMessage;
+	}
+}
+	// End of segment: todo\ui\GUIcontrol.java
+
+
+
+
+
+	/**
+	 * origin: todo\ui\GUIcontrolTest.java
+	 */
+
+public class GUIcontrolTest {
+
+	@Test
+	public final void testGUIcontrol() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException {
+		GUIcontrol controller = new GUIcontrol();
+		
+	}
+
+	@Test
+	public final void testGetItemList() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException {
+		GUIcontrol controller = new GUIcontrol();
+		System.out.println(controller.getItemList().toString());
+	}
+
+	@Test
+	public final void testGetCompletedTasks() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException {
+		GUIcontrol controller = new GUIcontrol();
+		System.out.println(controller.getCompletedTasks().toString());
+	}
+	
+
+	@Test
+	public final void testGetUnCompletedTasks() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException {
+		GUIcontrol controller = new GUIcontrol();
+		System.out.println(controller.getUnCompletedTasks().toString());
+	
+	}
+
+}
+
+	// End of segment: todo\ui\GUIcontrolTest.java
+
+
+
+
+
+	/**
+	 * origin: todo\UIMain.java
+	 */
+
+
+public class UIMain {
+	
+	private static String TAG = "UIMain";
+	private static Scanner scanner;
+	private static Logic logic;
+
+	public static void main(String arg[]) throws Exception{
+		
+		processor(new Scanner(System.in), System.out);
+	}
+	
+	public static void processor(Scanner input, PrintStream output) throws Exception {
+		  // Remainder of code
+
+		CommandType mCommandType;
+		scanner = new Scanner(System.in);
+		logic = Logic.getInstanceLogic();
+		GUIcontrol guiControl = new GUIcontrol();
+		
+		do{
+			String userInput = requestForCommand();
+			LogUtil.Log(TAG, userInput);
+			mCommandType = logic.getCommandType(StringUtil.getFirstWord(userInput));
+			LogUtil.Log(TAG, mCommandType.toString());
+			ArrayList<Item> returnValue = new ArrayList<Item>();
+			returnValue = (guiControl.sendToGUI(userInput));
+			System.out.println("Status:");
+			System.out.println(logic.getSystemMessage());
+			
+			System.out.println(printArrayList(returnValue));
+		}while(mCommandType != CommandType.EXIT);
+		scanner.close();
+	}
+		
+	private static String requestForCommand(){
+		System.out.print("command: ");
+		return scanner.nextLine().trim();
+	}
+	private static String printArrayList(ArrayList<Item> printTarget) {
+		String result = "";
+		if (printTarget.size() == 0){
+			return "The list is empty";
+		}else{
+			for (int i = 0; i < printTarget.size(); i++){
+				result += ((i+1) + ". " + printTarget.get(i).toString()+"\n");
+			}
+		}
+		return result;
+	}
+}
+
+	// End of segment: todo\UIMain.java
+
+
+
+
+

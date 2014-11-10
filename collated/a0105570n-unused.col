@@ -1,0 +1,35 @@
+//@author: a0105570n-unused
+
+
+
+	/**
+	 * origin: todo\GUIMain.java
+	 */
+
+public class GUIMain {
+
+	public static void main(String arg[]) throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException, TransformerException{
+		createAndShowGUI();
+	}
+	
+	private static void createAndShowGUI() throws DOMException, ParserConfigurationException, SAXException, IOException, ParseException {
+        //Create and set up the window.
+        JFrame frame = new JFrame("JustDidIt");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+ 
+        //Add contents to the window.
+        GUI mGUI = new GUI();
+        frame.add(mGUI);
+ 
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
+    }
+}
+
+	// End of segment: todo\GUIMain.java
+
+
+
+
+

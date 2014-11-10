@@ -1,0 +1,1020 @@
+//@author: a0098155w
+
+
+
+	/**
+	 * origin: todo\logic\CommandMatch.java
+	 */
+
+/**
+ * This class is used by Logic to determine what command type is entered
+ * by user.
+ */
+public class CommandMatch {
+
+	public CommandMatch() {
+
+	}
+
+	/**
+	 * Takes in a String and determines the command type it represents.
+	 * 
+	 * @param String containing command type
+	 * @return predefined CommandType enum
+	 */
+	public CommandType determineCommandType(String commandString) {
+		if (commandString == null) {
+			return CommandType.INVALID;
+		}
+
+		switch (commandString.toLowerCase()) {
+		// ---------Possible cases of 'create'----------
+		case "create":
+			return CommandType.CREATE;
+		case "c":
+			return CommandType.CREATE;
+		case "add":
+			return CommandType.CREATE;
+		case "a":
+			return CommandType.CREATE;
+		case "insert":
+			return CommandType.CREATE;
+		case "+":
+			return CommandType.CREATE;
+
+		// ----------Possible cases of 'read'-----------
+		case "read":
+			return CommandType.READ;
+		case "r":
+			return CommandType.READ;
+		case "ls":
+			return CommandType.READ;
+		case "list":
+			return CommandType.READ;
+		case "view":
+			return CommandType.READ;
+		case "display":
+			return CommandType.READ;
+		case "show":
+			return CommandType.READ;
+		case "all":
+			return CommandType.READ;
+
+		// ---------Possible cases of 'update'----------
+		case "update":
+			return CommandType.UPDATE;
+		case "u":
+			return CommandType.UPDATE;
+		case "edit":
+			return CommandType.UPDATE;
+		case "modify":
+			return CommandType.UPDATE;
+		case "change":
+			return CommandType.UPDATE;
+
+		// ---------Possible cases of 'delete'----------
+		case "delete":
+			return CommandType.DELETE;
+		case "d":
+			return CommandType.DELETE;
+		case "del":
+			return CommandType.DELETE;
+		case "remove":
+			return CommandType.DELETE;
+		case "cancel":
+			return CommandType.DELETE;
+		case "-":
+			return CommandType.DELETE;
+
+		// ---------Possible cases of 'done'------------
+		case "done":
+			return CommandType.DONE;
+		case "finish":
+			return CommandType.DONE;
+		case "finished":
+			return CommandType.DONE;
+		case "complete":
+			return CommandType.DONE;
+		case ">":
+			return CommandType.DONE;
+
+		// --------Possible cases of 'undone'------------
+		case "undone":
+			return CommandType.UNDONE;
+		case "<":
+			return CommandType.UNDONE;
+
+		// ---------Possible cases of 'clear'-----------
+		case "clear":
+			return CommandType.CLEAR;
+		case "empty":
+			return CommandType.CLEAR;
+
+		// ----------Possible cases of 'undo'-----------
+		case "undo":
+			return CommandType.UNDO;
+		case "revert":
+			return CommandType.UNDO;
+
+		// ----------Possible cases of 'redo'-----------
+		case "redo":
+			return CommandType.REDO;
+
+		// ----------Possible cases of 'exit'-----------
+		case "exit":
+			return CommandType.EXIT;
+		case "quit":
+			return CommandType.EXIT;
+		case "close":
+			return CommandType.EXIT;
+
+		// ----------Otherwise, 'invalid'-----------
+		default:
+			return CommandType.INVALID;
+		}
+	}
+
+}
+
+	// End of segment: todo\logic\CommandMatch.java
+
+
+
+
+
+	/**
+	 * origin: todo\logic\CommandMatchTest.java
+	 */
+
+/**
+* Unit test for CommandMatch class.
+*/
+public class CommandMatchTest {
+
+	@Test
+	public void test() {
+		CommandMatch commandMatch = new CommandMatch();
+		
+		//Boundary test case, null
+		assertEquals(CommandType.INVALID, commandMatch.determineCommandType(null));
+		
+		//Boundary test case, non-null string all small letters
+		assertEquals(CommandType.CREATE, commandMatch.determineCommandType("add"));
+		
+		//Boundary test case, non-null string mix of capital and small letters
+		assertEquals(CommandType.READ, commandMatch.determineCommandType("lISt"));
+		
+		//Boundary test case, positive integer string
+		assertEquals(CommandType.INVALID, commandMatch.determineCommandType("65424"));
+		
+		//Boundary test case, negative integer string
+		assertEquals(CommandType.INVALID, commandMatch.determineCommandType("-99"));
+		
+		
+		// Tests for all possible return enums
+		assertEquals(CommandType.CREATE, commandMatch.determineCommandType("add"));
+		assertEquals(CommandType.READ, commandMatch.determineCommandType("view"));
+		assertEquals(CommandType.UPDATE, commandMatch.determineCommandType("modify"));
+		assertEquals(CommandType.DELETE, commandMatch.determineCommandType("del"));
+		assertEquals(CommandType.DONE, commandMatch.determineCommandType("done"));
+		assertEquals(CommandType.UNDONE, commandMatch.determineCommandType("undone"));
+		assertEquals(CommandType.CLEAR, commandMatch.determineCommandType("clear"));
+		assertEquals(CommandType.INVALID, commandMatch.determineCommandType("1234"));
+		assertEquals(CommandType.UNDO, commandMatch.determineCommandType("undo"));
+		assertEquals(CommandType.REDO, commandMatch.determineCommandType("redo"));
+		assertEquals(CommandType.EXIT, commandMatch.determineCommandType("exit"));
+	}
+
+}
+
+	// End of segment: todo\logic\CommandMatchTest.java
+
+
+
+
+
+	/**
+	 * origin: todo\logic\StateHistory.java
+	 */
+
+/**
+ * This class maintains previous and future states for user to undo and redo.
+ */
+public class StateHistory {
+
+	private Stack<ItemList> history;
+	private Stack<ItemList> future;
+
+	public StateHistory() {
+		history = new Stack<ItemList>();
+		future = new Stack<ItemList>();
+	}
+
+	/**
+	 * Save a ItemList's state onto history stack.
+	 * 
+	 * @param targetState
+	 * @throws ParseException
+	 */
+	public void saveStateToHistory(ItemList targetState) throws ParseException {
+		/* targetState should be already initialized in Logic before it is
+			passed in. If it is null, there must be bug somewhere. */
+		assert (targetState != null) : "Parameter should not be null";
+
+		ItemList clonedState = new ItemList();
+		copyItemList(targetState, clonedState);
+
+		history.push(clonedState);
+	}
+
+	/**
+	 * Save a ItemList's state onto future stack.
+	 * 
+	 * @param targetState
+	 * @throws ParseException
+	 */
+	public void saveStateToFuture(ItemList targetState) throws ParseException {
+		/* targetState should be already initialized in Logic before it is
+			passed in. If it is null, there must be bug somewhere. */
+		assert (targetState != null) : "Parameter should not be null";
+
+		ItemList clonedState = new ItemList();
+		copyItemList(targetState, clonedState);
+
+		future.push(clonedState);
+	}
+
+	/**
+	 * Clones the entire targetState into a clonedState
+	 * 
+	 * @param targetState
+	 * @param clonedState
+	 * @throws ParseException
+	 */
+	private void copyItemList(ItemList targetState, ItemList clonedState)
+			throws ParseException {
+		for (int i = 0; i < targetState.size(); i++) {
+			clonedState.add(targetState.getItem(i).cloneItem());
+		}
+	}
+	
+	/**
+	 * Pops all states from future stack, i.e. user is not able to redo after
+	 * this method.
+	 */
+	public void popAllFromFuture() {
+		while (!future.empty()) {
+			future.pop();
+		}
+	}
+
+	public boolean canUndo() {
+		return history.empty() ? false : true;
+	}
+
+	public boolean canRedo() {
+		return future.empty() ? false : true;
+	}
+
+	public ItemList undo() {
+		return history.pop();
+	}
+
+	public ItemList redo() {
+		return future.pop();
+	}
+}
+
+	// End of segment: todo\logic\StateHistory.java
+
+
+
+
+
+	/**
+	 * origin: todo\logic\StateHistoryTest.java
+	 */
+
+/**
+ * Unit Test for StateHistory class.*
+ */
+public class StateHistoryTest {
+
+	@Test
+	public void testSaveStateToHistory() throws ParseException {
+		// the start Creation of dummy ItemList---------------
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Storage.DATE_FORMAT);
+		String description1 = "meet yy";
+		LocalDateTime startDateTime1 = LocalDateTime.parse("2014-11-10 21:00", formatter);
+		DateTime sdateTime1 = new DateTime(startDateTime1, true);
+		LocalDateTime dueDateTime1 = LocalDateTime.parse("2014-11-10 21:30", formatter);
+		DateTime ddateTime1 = new DateTime(dueDateTime1, true);
+		String location1 = "clementi";
+		boolean isImportant1 = true;
+		ArrayList<String> tagList1 = new ArrayList<String>();
+		Item item1 = new Item(description1, sdateTime1, ddateTime1, location1, isImportant1,
+								tagList1);
+		item1.setStatusDone();
+
+		String description2 = "meeting profs";
+		LocalDateTime startDateTime2 = LocalDateTime.parse("2014-11-04 21:00", formatter);
+		DateTime sdateTime2 = new DateTime(startDateTime2, false);
+		LocalDateTime dueDateTime2 = LocalDateTime.parse("2014-11-05 21:30", formatter);
+		DateTime ddateTime2 = new DateTime(dueDateTime2, true);
+		String location2 = "utown";
+		boolean isImportant2 = true;
+		ArrayList<String> tagList2 = new ArrayList<String>();
+		tagList2.add("Important");
+		tagList2.add("Bring Laptop");
+		Item item2 = new Item(description2, sdateTime2, ddateTime2, location2, isImportant2,
+								tagList2);
+
+		String description3 = "go to lecture";
+		LocalDateTime startDateTime3 = LocalDateTime.parse("2014-11-07 19:00", formatter);
+		DateTime sdateTime3 = new DateTime(startDateTime3, true);
+		LocalDateTime dueDateTime3 = LocalDateTime.parse("2014-11-08 20:30", formatter);
+		DateTime ddateTime3 = new DateTime(dueDateTime3, false);
+		String location3 = "lt19";
+		boolean isImportant3 = false;
+		ArrayList<String> tagList3 = new ArrayList<String>();
+		tagList3.add("bring textbook");
+		tagList3.add("last lecture");
+		Item item3 = new Item(description3, sdateTime3, ddateTime3, location3, isImportant3,
+								tagList3);
+
+		ItemList il = new ItemList();
+		il.add(item1);
+		il.add(item2);
+		il.add(item3);
+		// the end Creation of dummy ItemList---------------
+
+		StateHistory newStateHistory = new StateHistory();
+
+		// save once to history stack
+		newStateHistory.saveStateToHistory(il);
+
+		// once saved, should be able to undo, but not redo
+		assertEquals(true, newStateHistory.canUndo());
+		assertEquals(false, newStateHistory.canRedo());
+
+		// get the last pushed ItemList
+		ItemList poppedItemList = newStateHistory.undo();
+		
+		// once popped, there is no state in it, undo is false
+		assertEquals(false, newStateHistory.canUndo());
+		
+		// compare if the values are correct
+		Item savedItem1 = poppedItemList.getItem(0);
+		Item savedItem2 = poppedItemList.getItem(1);
+		Item savedItem3 = poppedItemList.getItem(2);
+
+		// check savedItem1's attributes
+		assertEquals("meet yy", savedItem1.getDescription());
+		assertEquals("clementi", savedItem1.getLocation());
+		assertEquals(true, savedItem1.getStatus());
+		assertEquals(true, savedItem1.getImportance());
+		assertEquals("2014-11-10 21:00", String.valueOf(savedItem1.getStartDateTime()));
+		assertEquals(true, savedItem1.getStartDateTime().hasTime());
+		assertEquals("2014-11-10 21:30", String.valueOf(savedItem1.getDueDateTime()));
+		assertEquals(true, savedItem1.getDueDateTime().hasTime());
+
+		// check savedItem2's attributes
+		assertEquals("meeting profs", savedItem2.getDescription());
+		assertEquals("utown", savedItem2.getLocation());
+		assertEquals(false, savedItem2.getStatus());
+		assertEquals(true, savedItem2.getImportance());
+		assertEquals("2014-11-04", String.valueOf(savedItem2.getStartDateTime()));
+		assertEquals(false, savedItem2.getStartDateTime().hasTime());
+		assertEquals("2014-11-05 21:30", String.valueOf(savedItem2.getDueDateTime()));
+		assertEquals(true, savedItem2.getDueDateTime().hasTime());
+		assertEquals("Important", savedItem2.getTags().get(0));
+		assertEquals("Bring Laptop", savedItem2.getTags().get(1));
+
+		// check savedItem3's attributes
+		assertEquals("go to lecture", savedItem3.getDescription());
+		assertEquals("lt19", savedItem3.getLocation());
+		assertEquals(false, savedItem3.getStatus());
+		assertEquals(false, savedItem3.getImportance());
+		assertEquals("2014-11-07 19:00", String.valueOf(savedItem3.getStartDateTime()));
+		assertEquals(true, savedItem3.getStartDateTime().hasTime());
+		assertEquals("2014-11-08", String.valueOf(savedItem3.getDueDateTime()));
+		assertEquals(false, savedItem3.getDueDateTime().hasTime());
+		assertEquals("bring textbook", savedItem3.getTags().get(0));
+		assertEquals("last lecture", savedItem3.getTags().get(1));
+
+		// save several same ItemList to future stack, then pop all
+		newStateHistory.saveStateToFuture(il);
+		newStateHistory.saveStateToFuture(il);
+		newStateHistory.saveStateToFuture(il);
+
+		// pop all from future stack
+		newStateHistory.popAllFromFuture();
+		// future states were all popped, redo shouldn't be allowed
+		assertEquals(false, newStateHistory.canRedo());
+	}
+
+}
+
+	// End of segment: todo\logic\StateHistoryTest.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\CommandType.java
+	 */
+
+/**
+ * These enums represent the only possible command types.
+ */
+public enum CommandType {
+	CREATE, READ, UPDATE, DELETE, DONE, UNDONE, CLEAR, INVALID, UNDO, REDO, EXIT
+};
+
+
+	// End of segment: todo\model\CommandType.java
+
+
+
+
+
+	/**
+	 * origin: todo\storage\Storage.java
+	 */
+
+/**
+ * This is the facade class of Storage component that interacts which outside
+ * components.
+ */
+public class Storage {
+
+	public static final String FILE_DESTINATION = "todo.xml";
+	public static final String FILE_YES = "yes";
+	public static final String FILE_INDENT = "{http://xml.apache.org/xslt}indent-amount";
+	public static final String FILE_INDENT_AMOUNT = "4";
+
+	public static final String XML_ITEM_LIST = "ItemList";
+	public static final String XML_ITEM_QUANTITY = "itemQty";
+	public static final String XML_LAST_ITEM_ID = "lastItemId";
+	public static final String XML_ITEM = "Item";
+	public static final String XML_ITEM_ID = "itemId";
+	public static final String XML_IMPORTANCE = "importance";
+	public static final String XML_DESCRIPTION = "description";
+	public static final String XML_START_DATE_TIME = "startDateTime";
+	public static final String XML_DUE_DATE_TIME = "dueDateTime";
+	public static final String XML_HAS_TIME = "hasTime";
+	public static final String XML_DATE_TIME = "DateTime";
+	public static final String XML_LOCATION = "location";
+	public static final String XML_TAG_LIST = "tagList";
+	public static final String XML_TAG = "tag";
+	public static final String XML_IS_COMPLETED = "isCompleted";
+
+	public static final String WARNING_READ_ERROR = "Error when reading external file";
+	public static final String WARNING_WRITE_ERROR = "Error when writing external file";
+
+	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+	public static final String EMPTY = "";
+	public static final String SPACE = " ";
+	public static final String TRUE = "true";
+	public static final String CAPITAL_T = "T";
+	public static final int ZERO = 0;
+	public static final int ONE = 1;
+
+	private XmlReader xmlReader;
+	private XmlWriter xmlWriter;
+
+	private static final Logger logger = Logger.getLogger(Storage.class .getName());
+
+	public Storage() {
+		xmlWriter = new XmlWriter();
+		xmlReader = new XmlReader();
+	}
+
+	public ItemList readDataFromFile() {
+		ItemList newItemList = null;
+
+		try {
+			newItemList = xmlReader.read();
+		} catch (ParserConfigurationException | SAXException | IOException |
+				DOMException | ParseException ex) {
+			logger.setLevel(Level.WARNING);
+			logger.warning(WARNING_READ_ERROR);
+			logger.warning(ex.toString());
+		}
+		
+		return newItemList;
+	}
+
+	public void saveDataToFile(ItemList mItemList) {
+		try {
+			xmlWriter.write(mItemList);
+		} catch (ParserConfigurationException | TransformerException ex) {
+			logger.setLevel(Level.WARNING);
+			logger.warning(WARNING_WRITE_ERROR);
+			logger.warning(ex.toString());
+		}
+	}
+}
+	// End of segment: todo\storage\Storage.java
+
+
+
+
+
+	/**
+	 * origin: todo\storage\StorageTest.java
+	 */
+
+/**
+ * Unit test for Storage class.
+ */
+public class StorageTest {
+
+	@Test
+	public void testCorrectnessOfStoredData()
+			throws ParserConfigurationException, TransformerException,
+			DOMException, SAXException, IOException, ParseException {
+
+		// the start Creation of dummy ItemList---------------
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Storage.DATE_FORMAT);
+		String description1 = "meet yy";
+		LocalDateTime startDateTime1 = LocalDateTime.parse("2014-11-10 21:00", formatter);
+		DateTime sdateTime1 = new DateTime(startDateTime1, true);
+		LocalDateTime dueDateTime1 = LocalDateTime.parse("2014-11-10 21:30", formatter);
+		DateTime ddateTime1 = new DateTime(dueDateTime1, true);
+		String location1 = "clementi";
+		boolean isImportant1 = true;
+		ArrayList<String> tagList1 = new ArrayList<String>();
+		Item item1 = new Item(description1, sdateTime1, ddateTime1, location1, isImportant1, 
+								tagList1);
+		item1.setStatusDone();
+		
+		String description2 = "meeting profs";
+		LocalDateTime startDateTime2 = LocalDateTime.parse("2014-11-04 21:00", formatter);
+		DateTime sdateTime2 = new DateTime(startDateTime2, false);
+		LocalDateTime dueDateTime2 = LocalDateTime.parse("2014-11-05 21:30", formatter);
+		DateTime ddateTime2 = new DateTime(dueDateTime2, true);
+		String location2 = "utown";
+		boolean isImportant2 = true;
+		ArrayList<String> tagList2 = new ArrayList<String>();
+		tagList2.add("Important");
+		tagList2.add("Bring Laptop");
+		Item item2 = new Item(description2, sdateTime2, ddateTime2, location2, isImportant2,
+								tagList2);
+
+		String description3 = "go to lecture";
+		LocalDateTime startDateTime3 = LocalDateTime.parse("2014-11-07 19:00", formatter);
+		DateTime sdateTime3 = new DateTime(startDateTime3, true);
+		LocalDateTime dueDateTime3 = LocalDateTime.parse("2014-11-08 20:30", formatter);
+		DateTime ddateTime3 = new DateTime(dueDateTime3, false);
+		String location3 = "lt19";
+		boolean isImportant3 = false;
+		ArrayList<String> tagList3 = new ArrayList<String>();
+		tagList3.add("bring textbook");
+		tagList3.add("last lecture");
+		Item item3 = new Item(description3, sdateTime3, ddateTime3, location3, isImportant3,
+								tagList3);
+
+		ItemList il = new ItemList();
+		il.add(item1);
+		il.add(item2);
+		il.add(item3);
+		// the end Creation of dummy ItemList---------------
+		
+		Storage storage = new Storage();
+		// save to file
+		storage.saveDataToFile(il);
+		// read from file
+		ItemList savedil = storage.readDataFromFile();
+		
+		Item savedItem1 = savedil.getItem(0);
+		Item savedItem2 = savedil.getItem(1);
+		Item savedItem3 = savedil.getItem(2);
+
+		//check savedItem1's attributes
+		assertEquals("meet yy", savedItem1.getDescription());
+		assertEquals("clementi", savedItem1.getLocation());
+		assertEquals(true, savedItem1.getStatus());
+		assertEquals(true, savedItem1.getImportance());
+		assertEquals("2014-11-10 21:00", String.valueOf(savedItem1.getStartDateTime()));
+		assertEquals(true, savedItem1.getStartDateTime().hasTime());
+		assertEquals("2014-11-10 21:30", String.valueOf(savedItem1.getDueDateTime()));
+		assertEquals(true, savedItem1.getDueDateTime().hasTime());
+
+		//check savedItem2's attributes
+		assertEquals("meeting profs", savedItem2.getDescription());
+		assertEquals("utown", savedItem2.getLocation());
+		assertEquals(false, savedItem2.getStatus());
+		assertEquals(true, savedItem2.getImportance());
+		assertEquals("2014-11-04", String.valueOf(savedItem2.getStartDateTime()));
+		assertEquals(false, savedItem2.getStartDateTime().hasTime());
+		assertEquals("2014-11-05 21:30", String.valueOf(savedItem2.getDueDateTime()));
+		assertEquals(true, savedItem2.getDueDateTime().hasTime());
+		assertEquals("Important", savedItem2.getTags().get(0));
+		assertEquals("Bring Laptop", savedItem2.getTags().get(1));
+
+		//check savedItem3's attributes
+		assertEquals("go to lecture", savedItem3.getDescription());
+		assertEquals("lt19", savedItem3.getLocation());
+		assertEquals(false, savedItem3.getStatus());
+		assertEquals(false, savedItem3.getImportance());
+		assertEquals("2014-11-07 19:00", String.valueOf(savedItem3.getStartDateTime()));
+		assertEquals(true, savedItem3.getStartDateTime().hasTime());
+		assertEquals("2014-11-08", String.valueOf(savedItem3.getDueDateTime()));
+		assertEquals(false, savedItem3.getDueDateTime().hasTime());
+		assertEquals("bring textbook", savedItem3.getTags().get(0));
+		assertEquals("last lecture", savedItem3.getTags().get(1));
+	}
+
+}
+
+	// End of segment: todo\storage\StorageTest.java
+
+
+
+
+
+	/**
+	 * origin: todo\storage\XmlReader.java
+	 */
+
+/**
+ * This class reads from external file with destination - Storage.FILE_DESTINATION.
+ */
+public class XmlReader {
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Storage.DATE_FORMAT);
+
+	public XmlReader() {
+
+	}
+
+	/**
+	 * This method reads the xml file 'todo.xml' and returns an ItemList
+	 *
+	 * @return ItemList
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParseException
+	 * @throws DOMException
+	 */
+	public ItemList read() throws ParserConfigurationException, SAXException, IOException, DOMException, ParseException {
+		File file = new File(Storage.FILE_DESTINATION);
+		if (!file.exists()) {
+			return new ItemList();
+		}
+
+		Document doc = initDocument(file);
+		ItemList newItemList = buildItemList(doc);
+		setItemStaticAttributes(doc);
+
+		return newItemList;
+	}
+
+	private Document initDocument(File newFile) throws ParserConfigurationException, SAXException, IOException {
+		DocumentBuilderFactory dBF = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dB = dBF.newDocumentBuilder();
+		Document doc = dB.parse(newFile);
+		doc.getDocumentElement().normalize();
+		
+		return doc;
+	}
+
+	/**
+	 * This method sets two Item's static attributes.
+	 * 
+	 * @param doc
+	 */
+	private void setItemStaticAttributes(Document doc) {
+		Node itemQty = doc.getElementsByTagName(Storage.XML_ITEM_QUANTITY).item(Storage.ZERO);
+		Item.setItemQty(Integer.parseInt(itemQty.getTextContent()));
+
+		Node lastItemId = doc.getElementsByTagName(Storage.XML_LAST_ITEM_ID).item(Storage.ZERO);
+		Item.setLastItemID(Integer.parseInt(lastItemId.getTextContent()));
+	}
+
+	/**
+	 * This method traverses xml nodes, reads their values and stores into an
+	 * Itemlist that is to be returned
+	 *
+	 * @param doc
+	 * @return ItemList
+	 * @throws DOMException
+	 * @throws ParseException
+	 */
+	private ItemList buildItemList(Document doc) throws DOMException, ParseException {
+		ItemList newItemList = new ItemList();
+		NodeList items = doc.getElementsByTagName(Storage.XML_ITEM);
+
+		for (int i = 0; i < items.getLength(); i++) {
+			Item newItem = new Item();
+			setItemId(doc, i, newItem);
+			setImportance(doc, i, newItem);
+			setDescription(doc, i, newItem);
+			setStartDateTime(doc, i, newItem);
+			setDueDateTime(doc, i, newItem);
+			setLocation(doc, i, newItem);
+			setTagList(doc, i, newItem);
+			setStatus(doc, i, newItem);
+
+			newItemList.add(newItem);
+		}
+
+		return newItemList;
+	}
+
+	private void setItemId(Document doc, int i, Item newItem) {
+		Node itemId = doc.getElementsByTagName(Storage.XML_ITEM_ID).item(i);
+
+		// -1 because setItemId always + 1 before itemId is set
+		newItem.setItemID(Integer.parseInt(itemId.getTextContent()) - Storage.ONE);
+	}
+	
+	private void setImportance(Document doc, int i, Item newItem) {
+		Node importance = doc.getElementsByTagName(Storage.XML_IMPORTANCE).item(i);
+		
+		if (importance.getTextContent().equals(Storage.TRUE)) {
+			newItem.setImportance(true);
+		}
+	}
+	
+	private void setDescription(Document doc, int i, Item newItem) {
+		Node description = doc.getElementsByTagName(Storage.XML_DESCRIPTION).item(i);
+		newItem.setDescription(description.getTextContent());
+	}
+	
+	private void setStartDateTime(Document doc, int i, Item newItem) {
+		Node sdt = doc.getElementsByTagName(Storage.XML_START_DATE_TIME).item(i);
+		Element sdtElement = (Element) sdt;
+		Node sdtHasTime = sdtElement.getElementsByTagName(Storage.XML_HAS_TIME).item(Storage.ZERO);
+		Node sdtDateTime = sdtElement.getElementsByTagName(Storage.XML_DATE_TIME).item(Storage.ZERO);
+
+		if (!sdtDateTime.getTextContent().equals(Storage.EMPTY)) {
+			LocalDateTime sDate = LocalDateTime.parse(sdtDateTime.getTextContent(), formatter);
+			if (sdtHasTime.getTextContent().equals(Storage.TRUE)) {
+				newItem.setStartDateTime(new DateTime(sDate, true));
+			} else {
+				newItem.setStartDateTime(new DateTime(sDate, false));
+			}
+		}
+	}
+	
+	private void setDueDateTime(Document doc, int i, Item newItem) {
+		Node ddt = doc.getElementsByTagName(Storage.XML_DUE_DATE_TIME).item(i);
+		Element ddtElement = (Element) ddt;
+		Node ddtHastTime = ddtElement.getElementsByTagName(Storage.XML_HAS_TIME).item(Storage.ZERO);
+		Node ddtDateTime = ddtElement.getElementsByTagName(Storage.XML_DATE_TIME).item(Storage.ZERO);
+		
+		if (!ddtDateTime.getTextContent().equals(Storage.EMPTY)) {
+			LocalDateTime dDate = LocalDateTime.parse(ddtDateTime.getTextContent(), formatter);
+			
+			if (ddtHastTime.getTextContent().equals(Storage.TRUE)) {
+				newItem.setDueDateTime(new DateTime(dDate, true));
+			} else {
+				newItem.setDueDateTime(new DateTime(dDate, false));
+			}
+		}
+	}
+	
+	private void setLocation(Document doc, int i, Item newItem) {
+		Node location = doc.getElementsByTagName(Storage.XML_LOCATION).item(i);
+		newItem.setLocation(location.getTextContent());
+	}
+	
+	private void setTagList(Document doc, int i, Item newItem) {
+		Node tags = doc.getElementsByTagName(Storage.XML_TAG_LIST).item(i);
+		Element tagsElement = (Element) tags;
+		NodeList allTags = tagsElement.getElementsByTagName(Storage.XML_TAG);
+		ArrayList<String> newTags = new ArrayList<String>();
+		
+		for (int j = 0; j < allTags.getLength(); j++) {
+			newTags.add(allTags.item(j).getTextContent());
+		}
+		
+		newItem.setTags(newTags);
+	}
+	
+	private void setStatus(Document doc, int i, Item newItem) {
+		Node isCompleted = doc.getElementsByTagName(Storage.XML_IS_COMPLETED).item(i);
+		
+		if (isCompleted.getTextContent().equals(Storage.TRUE)) {
+			newItem.setStatusDone();
+		} else {
+			newItem.setStatusUndone();
+		}
+	}
+}
+
+	// End of segment: todo\storage\XmlReader.java
+
+
+
+
+
+	/**
+	 * origin: todo\storage\XmlWriter.java
+	 */
+
+/**
+ * This class writes to external file with destination - Storage.FILE_DESTINATION.
+ */
+public class XmlWriter {
+
+	public XmlWriter() {
+
+	}
+
+	/**
+	 * This method creates a XML file 'todo.xml' and stores data according to
+	 * the ItemList that gets passed in.
+	 *
+	 * @param ItemList
+	 * @throws ParserConfigurationException
+	 * @throws TransformerException
+	 */
+	public void write(ItemList iL) throws ParserConfigurationException, TransformerException {
+		Document doc = initDocument();
+		Element root = createRoot(doc);
+
+		appendItemQuantity(doc, root);
+		appendLastItemId(doc, root);
+
+		for (int i = 0; i < iL.size(); i++) {
+			Item curItem = iL.getItem(i);
+			Element item = appendItem(doc, root);
+
+			appendItemId(doc, curItem, item);
+			appendImportance(doc, curItem, item);
+			appendDescription(doc, curItem, item);
+			appendStartDateTime(doc, curItem, item);
+			appendDueDateTime(doc, curItem, item);
+			appendLocation(doc, curItem, item);
+			appendTagList(doc, curItem, item);
+			appendStatus(doc, curItem, item);
+		}
+
+		serialise(doc);
+	}
+
+	private Document initDocument() throws ParserConfigurationException {
+		DocumentBuilderFactory dBF = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dB = dBF.newDocumentBuilder();
+		Document doc = dB.newDocument();
+		
+		return doc;
+	}
+
+	private Element createRoot(Document doc) {
+		Element root = doc.createElement(Storage.XML_ITEM_LIST);
+		doc.appendChild(root);
+
+		return root;
+	}
+
+	private void appendItemQuantity(Document doc, Element root) {
+		Element itemQty = doc.createElement(Storage.XML_ITEM_QUANTITY);
+		itemQty.appendChild(doc.createTextNode(String.valueOf(Item.getItemQty())));
+		root.appendChild(itemQty);
+	}
+
+	private void appendLastItemId(Document doc, Element root) {
+		Element lastItemId = doc.createElement(Storage.XML_LAST_ITEM_ID);
+		String lastItemIdText = String.valueOf(Item.getLastItemId());
+		lastItemId.appendChild(doc.createTextNode(lastItemIdText));
+		root.appendChild(lastItemId);
+	}
+
+	private Element appendItem(Document doc, Element root) {
+		Element item = doc.createElement(Storage.XML_ITEM);
+		root.appendChild(item);
+
+		return item;
+	}
+
+	private void appendItemId(Document doc, Item curItem, Element item) {
+		Element itemId = doc.createElement(Storage.XML_ITEM_ID);
+		String itemIdText = String.valueOf(curItem.getItemId());
+		itemId.appendChild(doc.createTextNode(itemIdText));
+		item.appendChild(itemId);
+	}
+
+	private void appendImportance(Document doc, Item curItem, Element item) {
+		Element importance = doc.createElement(Storage.XML_IMPORTANCE);
+		String importanceText = String.valueOf(curItem.getImportance());
+		importance.appendChild(doc.createTextNode(importanceText));
+		item.appendChild(importance);
+	}
+
+	private void appendDescription(Document doc, Item curItem, Element item) {
+		Element description = doc.createElement(Storage.XML_DESCRIPTION);
+		String descriptionText = curItem.getDescription();
+
+		if (descriptionText == null) {
+			description.appendChild(doc.createTextNode(Storage.EMPTY));
+		} else {
+			description.appendChild(doc.createTextNode(descriptionText));
+		}
+
+		item.appendChild(description);
+	}
+
+	private void appendStartDateTime(Document doc, Item curItem, Element item) {
+		Element startDateTime = doc.createElement(Storage.XML_START_DATE_TIME);
+		item.appendChild(startDateTime);
+
+		DateTime sdt = curItem.getStartDateTime();
+		Element sdtHasTime = doc.createElement(Storage.XML_HAS_TIME);
+		Element sdtDateTime = doc.createElement(Storage.XML_DATE_TIME);
+
+		if (sdt == null) {
+			sdtHasTime.appendChild(doc.createTextNode(Storage.EMPTY));
+			sdtDateTime.appendChild(doc.createTextNode(Storage.EMPTY));
+		} else {
+			String hasTimeText = String.valueOf(sdt.hasTime());
+			sdtHasTime.appendChild(doc.createTextNode(hasTimeText));
+			sdtDateTime.appendChild(doc.createTextNode(sdt.writeString()));
+		}
+
+		startDateTime.appendChild(sdtHasTime);
+		startDateTime.appendChild(sdtDateTime);
+	}
+
+	private void appendDueDateTime(Document doc, Item curItem, Element item) {
+		Element dueDateTime = doc.createElement(Storage.XML_DUE_DATE_TIME);
+		item.appendChild(dueDateTime);
+
+		DateTime ddt = curItem.getDueDateTime();
+		Element ddtHasTime = doc.createElement(Storage.XML_HAS_TIME);
+		Element ddtDateTime = doc.createElement(Storage.XML_DATE_TIME);
+
+		if (ddt == null) {
+			ddtHasTime.appendChild(doc.createTextNode(Storage.EMPTY));
+			ddtDateTime.appendChild(doc.createTextNode(Storage.EMPTY));
+		} else {
+			String hasTimeText = String.valueOf(ddt.hasTime());
+			ddtHasTime.appendChild(doc.createTextNode(hasTimeText));
+			ddtDateTime.appendChild(doc.createTextNode(ddt.writeString()));
+		}
+
+		dueDateTime.appendChild(ddtHasTime);
+		dueDateTime.appendChild(ddtDateTime);
+	}
+
+	private void appendLocation(Document doc, Item curItem, Element item) {
+		Element location = doc.createElement(Storage.XML_LOCATION);
+		String locationText = curItem.getLocation();
+
+		if (locationText == null) {
+			location.appendChild(doc.createTextNode(Storage.EMPTY));
+		} else {
+			location.appendChild(doc.createTextNode(locationText));
+		}
+
+		item.appendChild(location);
+	}
+
+	private void appendTagList(Document doc, Item curItem, Element item) {
+		Element tags = doc.createElement(Storage.XML_TAG_LIST);
+		item.appendChild(tags);
+		ArrayList<String> tagsToBeStored = curItem.getTags();
+
+		for (int j = 0; j < tagsToBeStored.size(); j++) {
+			Element tag = doc.createElement(Storage.XML_TAG);
+			tag.appendChild(doc.createTextNode(tagsToBeStored.get(j)));
+			tags.appendChild(tag);
+		}
+	}
+
+	private void appendStatus(Document doc, Item curItem, Element item) {
+		Element isCompleted = doc.createElement(Storage.XML_IS_COMPLETED);
+		String isCompletedText = String.valueOf(curItem.getStatus());
+		isCompleted.appendChild(doc.createTextNode(isCompletedText));
+		item.appendChild(isCompleted);
+	}
+
+	/**
+	 * This method writes into the XML, i.e. 'todo.xml' with the Document being
+	 * passed in.
+	 *
+	 * @param doc
+	 * @throws TransformerException
+	 */
+	private void serialise(Document doc) throws TransformerException {
+		TransformerFactory transFactory = TransformerFactory.newInstance();
+		Transformer trans = transFactory.newTransformer();
+		DOMSource domSource = new DOMSource(doc);
+		StreamResult result = new StreamResult(new File(Storage.FILE_DESTINATION));
+
+		// Set todo.xml to be human-readable for advanced user to manipulate
+		trans.setOutputProperty(OutputKeys.INDENT, Storage.FILE_YES);
+		trans.setOutputProperty(Storage.FILE_INDENT, Storage.FILE_INDENT_AMOUNT);
+		trans.transform(domSource, result);
+	}
+}
+	// End of segment: todo\storage\XmlWriter.java
+
+
+
+
+

@@ -1,0 +1,712 @@
+//@author: a0115992x
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+
+
+public class ItemList {
+	// Error Messages
+	public static final String ERROR_INDEX_NEGATIVE = "Invalid index used - Negative Index";
+	public static final String ERROR_INDEX_EXCEEDED = "Invalid index used - Index out of range";
+	public static final String ERROR_LIST_EMPTY = "The list is empty. ";
+	public static final String ERROR_GENERAL = "invalid command";
+	public static final String ERROR_NOT_FOUND = "Item not found in target list";
+	public static final String ERROR_ALREADY_COMPLETED = "Task is already marked as completed!";
+	public static final String ERROR_ALREADY_UNCOMPLETED = "Task is already marked as uncompleted!";
+
+	// System Messages
+	private static final String MESSAGE_ADDED = "%1$s" + " " + "is added.";
+	private static final String MESSAGE_DELETED = "\"" + "%1$s" + "\""
+			+ " is deleted.";
+	private static final String MESSAGE_COMPLETED = "\"" + "%1$s" + "\""
+			+ " is marked as completed.";
+	private static final String MESSAGE_UNCOMPLETED = "\"" + "%1$s" + "\""
+			+ " is marked as uncompleted.";
+	private static final String MESSAGE_CLEARED = "All tasks are cleared.";
+
+	public static final String DELETE_SUCCESSFUL = "Delete operation successful";
+	public static final String DONE_SUCCESSFUL = "Done operation successful";
+	public static final String UNDONE_SUCCESSFUL = "Undone operation successful";
+
+	private static final String EMPTYSTRING = "";
+
+	// Attributes
+	private ArrayList<Item> itemList = new ArrayList<Item>();
+	private ArrayList<Item> completedList = new ArrayList<Item>();
+	private ArrayList<Item> uncompletedList = new ArrayList<Item>();
+	private DateTimeFormatter formatter = DateTimeFormatter
+			.ofPattern(Storage.DATE_FORMAT);
+
+	// Return the size of itemList
+	public int size() {
+		return itemList.size();
+	}
+
+	// Return a specific item from the itemList, the min. index is 0
+	public Item getItem(int index) {
+		if (index < 0) {
+			IndexOutOfBoundsException exObj1 = new IndexOutOfBoundsException(
+					ERROR_INDEX_NEGATIVE);
+			throw exObj1;
+		}
+
+		if (index >= itemList.size()) {
+			IndexOutOfBoundsException exObj2 = new IndexOutOfBoundsException(
+					ERROR_INDEX_EXCEEDED);
+			throw exObj2;
+		}
+
+		return itemList.get(index);
+	}
+
+	// Return the list of all items
+	public ArrayList<Item> getAllItems() {
+		return this.itemList;
+	}
+
+	// Return the list of completed items
+	public ArrayList<Item> getCompletedItems() {
+		return this.completedList;
+	}
+
+	// Return the list of uncompleted items
+	public ArrayList<Item> getUnCompletedItems() {
+		return this.uncompletedList;
+	}
+
+	// check if a index valid
+	public boolean validIndex(int index) {
+		assert index >= 0;
+		return index < (size() + 2) && index >= 0;
+	}
+
+	// Add item
+	public String add(Item item) {
+		assert item.getDescription() != null;
+		String itemDescription = item.getDescription();
+		String result = String.format(MESSAGE_ADDED, itemDescription);
+
+		itemList.add(item);
+		uncompletedList.add(item);
+
+		return result;
+	}
+
+	// Delete item, the min.index starts from 1
+	public String delete(int index) {
+		try {
+			String removedItemDescription = itemList.get(index - 1)
+					.getDescription();
+			String result = String.format(MESSAGE_DELETED,
+					removedItemDescription);
+			itemList.remove(index - 1);
+			Item.setItemQtyAfterDeletion();
+
+			return DELETE_SUCCESSFUL;
+		} catch (IndexOutOfBoundsException e) {
+			String returnErrorMessage = ERROR_GENERAL;
+			if (itemList.size() == 0) {
+				returnErrorMessage = ERROR_LIST_EMPTY;
+			} else if (index > itemList.size()) {
+				returnErrorMessage = ERROR_INDEX_EXCEEDED;
+			} else if (index <= 0) {
+				returnErrorMessage = ERROR_INDEX_NEGATIVE;
+			}
+
+			return returnErrorMessage;
+		}
+
+	}
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	// Sort the itemList by itemId in ascending order
+	public void sortByItemId() {
+		Collections.sort(itemList, new Comparator<Item>() {
+			public int compare(Item item1, Item item2) {
+				return item1.getItemId() - (item2.getItemId());
+			}
+		});
+
+	}
+
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	// Sort the itemList according to alphabetical order of description
+	public void sortByFirstAlphabet() {
+		Collections.sort(itemList, new Comparator<Item>() {
+			public int compare(Item item1, Item item2) {
+				return item1.getDescription().compareToIgnoreCase(
+						item2.getDescription());
+
+			}
+		});
+	}
+
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	// Sort the itemList from early to later by comparing start time
+	public void sortByTimeIncreasing() {
+		ArrayList<Item> listWithoutStartDateTime = new ArrayList<Item>();
+		// Extract items without start-time and stores them in a list
+		// temporarily
+		for (int i = 0; i < itemList.size(); i++) {
+			if (itemList.get(i).getStartDateTime() == null) {
+				listWithoutStartDateTime.add(itemList.get(i));
+				itemList.remove(i);
+				i--;
+			}
+		}
+		// Look through remaining list and sort by start-time, from earliest to
+		// latest
+		Collections.sort(itemList, new Comparator<Item>() {
+			public int compare(Item item1, Item item2) {
+				return item1.getStartDateTime().getDate()
+						.compareTo(item2.getStartDateTime().getDate());
+			}
+		});
+		for (Item item : listWithoutStartDateTime) {
+			itemList.add(item);
+		}
+	}
+
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	// Sort the itemList from latest first with items without startdatetime at
+	// the back
+	public void sortByTimeDecreasing() {
+		ArrayList<Item> listWithoutStartDateTime = new ArrayList<Item>();
+		// Extract items without start-time and stores them in a list
+		// temporarily
+		for (int i = 0; i < itemList.size(); i++) {
+			if (itemList.get(i).getStartDateTime() == null) {
+				listWithoutStartDateTime.add(itemList.get(i));
+				itemList.remove(i);
+				i--;
+			}
+		}
+		// Look through remaining list and sort by start-time, from earliest to
+		// latest
+		Collections.sort(itemList, new Comparator<Item>() {
+			public int compare(Item item1, Item item2) {
+				return item2.getStartDateTime().getDate()
+						.compareTo(item1.getStartDateTime().getDate());
+			}
+		});
+		for (Item item : listWithoutStartDateTime) {
+			itemList.add(item);
+		}
+
+	}
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemList.java
+	 */
+
+	public ArrayList<Item> filterByTags(String tagString) {
+		String[] splitedTags = tagString.split("\\W+");
+		ArrayList<Item> itemWithTargetTags = new ArrayList<Item>();
+		int matchNumber = splitedTags.length;
+		int currentMatchNumber;
+
+		for (Item i : itemList) {
+			currentMatchNumber = 0;
+			String tagCompared = "";
+			for (int j = 0; j < i.getTags().size(); j++) {
+				for (int k = 0; k < splitedTags.length; k++) {
+					tagCompared = splitedTags[k];
+					if (i.getTags().get(j).equals(tagCompared)) {
+						currentMatchNumber++;
+						break;
+					}
+				}
+			}
+			if (currentMatchNumber == matchNumber) {
+				itemWithTargetTags.add(i);
+			}
+		}
+		return itemWithTargetTags;
+	}
+	
+	// End of segment: todo\model\ItemList.java
+
+
+
+
+
+	/**
+	 * origin: todo\model\ItemListTest.java
+	 */
+
+public class ItemListTest {
+	String item1 = "item-1";
+	String item2 = "item-2";
+	String item3 = "item-3";
+	String item4 = "item-4";
+	
+	@Test
+	public void testSize() {
+		
+		ItemList myList = new ItemList();
+		
+		assertEquals(myList.size(), 0);
+		
+		Item itemA = new Item(item1);
+		myList.add(itemA);		
+		
+		assertEquals(myList.size(), 1);
+		
+		Item itemB = new Item(item2);
+		myList.add(itemB);
+		assertEquals(myList.size(), 2);
+		
+	}
+	
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testGetItem(){
+		Item itemA = new Item(item1);
+		Item itemB = new Item(item2);
+		
+		ItemList myList = new ItemList();
+		
+		myList.add(itemA);
+		myList.add(itemB);
+		
+		// This is a boundary case for the "valid index" partition
+		
+		assertEquals(myList.getItem(0), itemA);
+		assertEquals(myList.getItem(1), itemB);
+		
+		// This is a boundary case for the "negative index" partition
+		myList.getItem(-1);
+		myList.getItem(-2);
+	}
+	
+	@Test
+	public void testAdd(){
+		Item itemA = new Item(item1);
+		Item itemB = new Item(item2);
+		
+		ItemList myList = new ItemList();
+		
+		assertEquals(myList.size(), 0);
+		
+		myList.add(itemA);
+		assertEquals(myList.size(), 1);
+		
+		myList.add(itemB);
+		assertEquals(myList.size(), 2);
+		
+		assertEquals(myList.getItem(0), itemA);
+		
+	}
+	
+	@Test
+	public void testDelete(){
+		Item itemA = new Item(item1);
+		Item itemB = new Item(item2);
+		
+		ItemList myList = new ItemList();
+		
+		myList.add(itemA);
+		myList.add(itemB);
+		assertEquals(myList.size(),2);
+		
+		myList.delete(2);
+		assertEquals(myList.size(),1);
+		
+		myList.delete(1);
+		assertEquals(myList.size(),0);
+		
+	}
+
+}
+
+	// End of segment: todo\model\ItemListTest.java
+
+
+
+
+
+	/**
+	 * origin: todo\ui\MyGUI.java
+	 */
+
+
+@SuppressWarnings("serial")
+public class MyGUI extends JFrame implements ActionListener {
+	
+	// Layout setting strings
+	public static final String NAME_WINDOW = "JustDidIt";
+	public static final String FONT = "Verdana";
+	
+	// Command string
+	public static final String COMMAND_SHOW = "show";
+	
+	// Layout setting parameters
+	public static final int PARAM_INSETS = 4;
+	public static final int PARAM_GRIDX = 0;
+	public static final int PARAM_GRIDY = 0;
+	public static final int PARAM_WEIGHTX = 1;
+	public static final int PARAM_WEIGHTY = 1;
+	public static final int PARAM_DIMENSION_SCROLL = 400;
+	public static final int PARAM_DIMENSION_ITEMPANE = 50;
+	public static final int PARAM_BORDER = 0;
+	public static final int PARAM_FONT_SIZE_INDEX = 13;
+	
+	// Common parameters
+	public static final int PARAM_INIT = 0;
+	public static final int PARAM_INCRE = 1;
+	
+
+	public GUIcontrol guiControl = null;
+	protected JTextField textField;
+	public JLabel messageLabel;
+	public JScrollPane scrollPane;
+	public JPanel mainPane;
+	public String userInput;
+	public ArrayList<Item> dynamicList = new ArrayList<Item>();	
+
+	public static void main(String[] args) {
+		new MyGUI();
+	}
+
+	// This constructor defines the overall GUI layout
+	public MyGUI() {
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+					ex.printStackTrace();
+				}         
+
+				JFrame frame = new JFrame(NAME_WINDOW);
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);      
+
+				GridBagLayout gridbag = new GridBagLayout(); 
+				frame.setLayout(gridbag);                
+				frame.getContentPane().setBackground(Color.WHITE);
+
+				GridBagConstraints gbc = new GridBagConstraints();
+				gbc.insets = new Insets(PARAM_INSETS, PARAM_INSETS, PARAM_INSETS, PARAM_INSETS);
+				gbc.gridx = PARAM_GRIDX;
+				gbc.weightx = PARAM_WEIGHTX;
+				gbc.gridy = PARAM_GRIDY;
+				gbc.fill = GridBagConstraints.HORIZONTAL;
+
+				// Link MyGUI to GUIcontrol that can access Logic
+				try {
+					guiControl = new GUIcontrol();
+				} catch (DOMException | ParserConfigurationException
+						| SAXException | IOException | ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				try {
+					dynamicList = guiControl.sendToGUI(COMMAND_SHOW);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				gbc.gridy++;             
+				scrollPane = new JScrollPane(createMainItemPane()) {
+					@Override
+					public Dimension getPreferredSize() {
+						return new Dimension(PARAM_DIMENSION_SCROLL, PARAM_DIMENSION_SCROLL);
+					}           	
+					@Override
+					public Dimension getMinimumSize() {
+						return new Dimension(PARAM_DIMENSION_SCROLL, PARAM_DIMENSION_SCROLL);
+					}
+				};
+				scrollPane.setBackground(Color.WHITE);
+				frame.add(scrollPane, gbc);
+
+				gbc.gridy++;             
+				frame.add(createMessagePane(), gbc);
+
+				gbc.gridy++;
+				frame.add(createTextFieldPane(), gbc);    
+				
+				// Focus the textField when open the GUI
+				frame.addWindowListener(new WindowAdapter() {
+					public void windowOpened(WindowEvent e) {
+						textField.requestFocus();
+					}
+				});
+
+				frame.pack();
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
+			}
+		});
+	}
+
+	// This method gathers multiple item panels to a main panel
+	public JPanel createMainItemPane() {
+		mainPane = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(PARAM_INSETS, PARAM_INSETS, PARAM_INSETS, PARAM_INSETS);
+		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.gridx = PARAM_GRIDX;
+		gbc.weightx = PARAM_WEIGHTX;
+		gbc.gridy = PARAM_GRIDY;
+		gbc.fill = GridBagConstraints.HORIZONTAL; 
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+
+		for(int i = PARAM_INIT; i <dynamicList.size(); i++) {
+			mainPane.add(createItemPane(i), gbc);            
+			gbc.gridy++; 
+		}
+		gbc.weighty = PARAM_WEIGHTY ;
+		gbc.fill = GridBagConstraints.BOTH;
+		JPanel emptyPanel = new JPanel();
+
+		mainPane.add(emptyPanel, gbc);
+
+		return mainPane;
+	}
+
+	// This method defines individual item panel
+	public JPanel createItemPane(int index) {
+		
+		assert(index < dynamicList.size());
+		
+		if(index < dynamicList.size()) {
+			JPanel pane = new JPanel(){
+
+				@Override
+				public Dimension getPreferredSize() {
+					return new Dimension(PARAM_DIMENSION_ITEMPANE, PARAM_DIMENSION_ITEMPANE);
+				}
+
+				@Override
+				public Dimension getMinimumSize() {
+					return new Dimension(PARAM_DIMENSION_ITEMPANE, PARAM_DIMENSION_ITEMPANE);
+				}
+
+			};
+			pane.setLayout(new BorderLayout());
+
+			// Displaying item index
+			int displayIndex = index + PARAM_INCRE;
+			JPanel indexPane = new JPanel();
+			indexPane.setLayout(new BorderLayout());
+			JLabel indexLabel = new JLabel("   " + displayIndex + " ");
+			indexLabel.setFont(new Font(FONT, Font.BOLD, PARAM_FONT_SIZE_INDEX));
+			indexPane.add(indexLabel, BorderLayout.WEST);
+
+			// Displaying item completion status by check boxes
+			JCheckBox checkBox = new JCheckBox();
+			if(dynamicList.get(index).getStatus()) {
+				checkBox.setSelected(true);
+			}else{
+				checkBox.setSelected(false);
+			}
+			indexPane.add(checkBox, BorderLayout.CENTER);
+			checkBox.setEnabled(false);
+			
+			Border indexBorder = BorderFactory.createLineBorder(Color.ORANGE, 5);
+			indexPane.setBorder(indexBorder);
+			indexPane.setBackground(Color.WHITE);
+			checkBox.setBackground(Color.WHITE);
+			pane.add(indexPane, BorderLayout.WEST);
+
+			// Defines description TextArea
+			String displayDescription = "";
+			displayDescription = dynamicList.get(index).getDescription();
+			String displayLocation = "";
+			if(dynamicList.get(index).getLocation().equals(null)){
+			}else{
+				if(dynamicList.get(index).getLocation().equals("")){
+					displayLocation = "Location:  -" ;
+				}else{
+					displayLocation = "Location: " + dynamicList.get(index).getLocation();
+				}
+			}
+			String displayTags = "";
+			if(dynamicList.get(index).getTags().equals(null)){
+			}else{
+				if(dynamicList.get(index).getTags().size() != 0){
+					displayTags = dynamicList.get(index).getTags().toString();
+				}
+			}
+
+			JTextArea descriTextArea = new JTextArea(20, 20);
+			descriTextArea.setFont(new Font("Verdana", Font.PLAIN, 12));
+			descriTextArea.setText(" " + displayDescription
+					+ "\n" + " " + displayLocation
+					+ "\n" + " " + displayTags);
+			descriTextArea.setEditable(false);
+
+			Border descriBorder = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+			descriTextArea.setBorder(descriBorder);
+			pane.add(descriTextArea, BorderLayout.CENTER);
+			
+			// Defines DateTime TextArea
+			JTextArea dateTimeTextArea = new JTextArea(18, 18);
+			dateTimeTextArea.setFont(new Font(FONT, Font.PLAIN, 12));
+
+			if(index<dynamicList.size()){
+				String startDateTime;
+				String dueDateTime;
+				if(dynamicList.get(index).getStartDateTime() == null){
+					startDateTime = " -";
+				}else{
+					startDateTime = dynamicList.get(index).getStartDateTime().toString();
+				}
+				if(dynamicList.get(index).getDueDateTime() == null){
+					dueDateTime = " -";
+				}else{
+					dueDateTime = dynamicList.get(index).getDueDateTime().toString();
+				}
+				dateTimeTextArea.setText(" Start: " + startDateTime
+						+ "\n" + "\n" 
+						+ " Due : " + dueDateTime);
+				dateTimeTextArea.setEditable(false);
+			}
+			Border dateTimeBorder = BorderFactory.createLineBorder(Color.ORANGE, 1);
+			dateTimeTextArea.setBorder(dateTimeBorder);
+			pane.add(dateTimeTextArea, BorderLayout.EAST);
+
+			pane.setBackground(Color.WHITE);
+			return pane;
+		}else{
+			JPanel pane = new JPanel();
+			return pane;
+		}
+	}
+
+	// This method defines the system message panel
+	public JPanel createMessagePane() {
+		JPanel pane = new JPanel(new BorderLayout());
+		messageLabel = new JLabel();
+		pane.add(messageLabel);
+		pane.setBackground(Color.WHITE);
+		pane.setBorder(new EmptyBorder(PARAM_BORDER, PARAM_BORDER, 
+				PARAM_BORDER, PARAM_BORDER) );
+
+		return pane;
+
+	}
+	
+	// This method defines the text field panel
+	public JPanel createTextFieldPane() {
+		JPanel pane = new JPanel();
+		textField = new JTextField(50);
+		textField.setFont(new Font(FONT, Font.BOLD, 14));
+		textField.setBackground(Color.WHITE);
+		textField.addActionListener(this);
+		pane.setBackground(Color.WHITE);
+		pane.add(textField);
+
+		return pane;
+	}
+
+	public void actionPerformed(ActionEvent evt) {
+
+		userInput = textField.getText();
+
+		textField.setText("");
+
+		try {
+			//guiControl.sendToLogic(userInput);
+			dynamicList = guiControl.sendToGUI(userInput);
+
+		} catch (ParserConfigurationException | TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+
+		// Update the GUI after each operation
+		mainPane.removeAll();
+		mainPane.revalidate();
+		mainPane.repaint();
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(PARAM_INSETS, PARAM_INSETS, PARAM_INSETS, PARAM_INSETS);
+		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.gridx = PARAM_GRIDX;
+		gbc.weightx = PARAM_WEIGHTX;
+		gbc.gridy = PARAM_GRIDY;
+		gbc.fill = GridBagConstraints.HORIZONTAL;           
+
+		for(int i = PARAM_INIT; i < dynamicList.size(); i++){
+			mainPane.add(createItemPane(i), gbc);            
+			gbc.gridy++; 
+		}
+		gbc.weighty = PARAM_WEIGHTY;
+		gbc.fill = GridBagConstraints.BOTH;
+		mainPane.add(new JPanel(), gbc);
+
+		messageLabel.setText(guiControl.getSystemMessageControl());
+
+		mainPane.revalidate();
+	}
+}
+
+	// End of segment: todo\ui\MyGUI.java
+
+
+
+
+
