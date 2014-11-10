@@ -18,8 +18,7 @@ public class GUIcontrol {
 	private ItemList allTasks;
 	private ArrayList<Item> completedTasks;
 	private ArrayList<Item> unCompletedTasks;
-	String systemMessage = "";
-	private static final String MESSAGE_SYSTEM = "SystemMessage:";
+	private String systemMessage = "";
 
 	public GUIcontrol() throws DOMException, ParserConfigurationException,
 			SAXException, IOException, ParseException {
@@ -57,7 +56,7 @@ public class GUIcontrol {
 	}
 
 	public String sendToLogic(String userInput) throws Exception {
-		String systemMessage = MESSAGE_SYSTEM;
+		String systemMessage = "SystemMessage:";
 		try {
 			logic.executeCommand(userInput);
 		} catch (ParserConfigurationException | TransformerException e) {
