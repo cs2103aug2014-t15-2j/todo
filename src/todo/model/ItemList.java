@@ -22,6 +22,9 @@ public class ItemList {
 	public static final String ERROR_INDEX_EXCEEDED = "Invalid index used - Index out of range";
 	public static final String ERROR_LIST_EMPTY = "The list is empty. ";
 	public static final String ERROR_GENERAL = "invalid command";
+	public static final String ERROR_NOT_FOUND = "Item not found in target list";
+	public static final String ERROR_ALREADY_COMPLETED = "Task is already marked as completed!";
+	public static final String ERROR_ALREADY_UNCOMPLETED = "Task is already marked as uncompleted!";
 
 	// System Messages
 	private static final String MESSAGE_ADDED = "%1$s" + " " + "is added.";
@@ -146,13 +149,13 @@ public class ItemList {
 				int deleteIndex = searchIndex(uncompletedList, target);
 				// Remove the item from the uncompleted list
 				if (deleteIndex == -1) {
-					String errorMessage = "Item not found in target list";
+					String errorMessage = ERROR_NOT_FOUND;
 					return errorMessage;
 				} else {
 					uncompletedList.remove(deleteIndex);
 				}
 			} else {
-				return "Task is already marked as completed!";
+				return ERROR_ALREADY_COMPLETED;
 			}
 
 			return DONE_SUCCESSFUL;
@@ -187,13 +190,13 @@ public class ItemList {
 				int deleteIndex = searchIndex(completedList, target);
 				// Remove the item from the completed list
 				if (deleteIndex == -1) {
-					String errorMessage = "Item not found in target list";
+					String errorMessage = ERROR_NOT_FOUND;
 					return errorMessage;
 				} else {
 					completedList.remove(deleteIndex);
 				}
 			} else {
-				return "Task is already mark as uncompleted!";
+				return ERROR_ALREADY_UNCOMPLETED;
 			}
 
 			return UNDONE_SUCCESSFUL;
