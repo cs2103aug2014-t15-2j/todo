@@ -15,10 +15,21 @@ public class Item implements Comparable<Item> {
 	private int itemId = 0;
 	private static int lastItemId = 0;
 	private boolean importance = unImportant;
+	
+	private static final String EMPTYSTRING = "";
+	private static final String START = " |Start: ";
+	private static final String DUE =" |Due: ";
+	private static final String LOCATION = " |Location: ";
+	private static final String TAGS = " |TAGS: ";
+	private static final String STATUS = " |Status: ";
+	private static final String UNCOMPLETED = "Uncompleted";
+	private static final String COMPLETED = "Completed";
+	private static final String IMPORTANT = "Important";
+	
 	private String description;
 	private DateTime startDateTime = null;
 	private DateTime dueDateTime = null;
-	private String location = "";
+	private String location = EMPTYSTRING;
 	private ArrayList<String> tags = new ArrayList<String>();
 	private boolean isCompleted = false;
 
@@ -310,40 +321,40 @@ public class Item implements Comparable<Item> {
 		 * result.concat(String.valueOf(this.itemId)); result =
 		 * result.concat(" ");
 		 */
-		result = result.concat("");
+		result = result.concat(EMPTYSTRING);
 		result = result.concat(description);
 
 		if (startDateTime != null) {
-			result = result.concat(" |Start: ");
+			result = result.concat(START);
 			result = result.concat(getStartDateTime().toString());
 		}
 
 		if (dueDateTime != null) {
-			result = result.concat(" |Due: ");
+			result = result.concat(DUE);
 			result = result.concat(getDueDateTime().toString());
 		}
 
-		if (!location.equals("")) {
-			result = result.concat(" |Location: ");
+		if (!location.equals(EMPTYSTRING)) {
+			result = result.concat(LOCATION);
 			result = result.concat(getLocation());
 		}
 
 		if (tags != null) {
 			if (!tags.isEmpty()) {
-				result = result.concat(" |Tags: ");
+				result = result.concat(TAGS);
 				result = result.concat(getTags().toString());
 			}
 		}
 
-		result = result.concat(" |Status: ");
+		result = result.concat(STATUS);
 		if (getStatus()) {
-			result = result.concat("Completed");
+			result = result.concat(COMPLETED);
 		}
 		if (!getStatus()) {
-			result = result.concat("Uncompleted");
+			result = result.concat(UNCOMPLETED);
 		}
 		if (getImportance()) {
-			result = result.concat("Important");
+			result = result.concat(IMPORTANT);
 		}
 		return result;
 

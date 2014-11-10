@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.time.*;
 
+//@author A0111082Y
+
+// NOTE SOME TEST CASES WRITTEN BEFORE EXTENSIVE MODIFICAL TO THE MODEL PACKAGE
+
 import org.junit.Test;
 public class ItemTest {
 	String item1 = "item-1";
