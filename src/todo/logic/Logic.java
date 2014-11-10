@@ -19,6 +19,8 @@ import todo.nlp.NLP;
 import todo.storage.Storage;
 import todo.util.StringUtil;
 
+//@author A0111082Y
+
 public class Logic {
 
 	private static String TAG = "Logic";
@@ -507,18 +509,18 @@ public class Logic {
 		//Extract date from userInput
 		dateString = userInput.substring(hasOnPosition + 2,
 				userInput.length());
-		System.out.println(dateString);
+		//System.out.println(dateString); -REMOVE!
 		// Case: Users wants to find task that are due today
 		
 		if(dateString.contains("today")){
 			dateString = LocalDateTime.now().toLocalDate().toString().replace("T", " ");
 			dateString = dateString.concat(" 11:00");
-			System.out.println(dateString);
+			//System.out.println(dateString);
 		}
 		else {
 		dateString = dateString.concat(" 11:00");
 		}
-		System.out.println(dateString.length());
+		//System.out.println(dateString.length());
 		if (dateString.length()==16) {
 			systemMessage =String.format(MESSAGE_SHOW_FILTERED, dateString.substring(0, 10)) ;
 			setSystemMessage(systemMessage);

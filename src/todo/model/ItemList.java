@@ -126,7 +126,7 @@ public class ItemList {
 		}
 
 	}
-
+//@author A0111082Y
 	// Done item
 	public String done(int index) {
 		String result = "";
@@ -167,7 +167,7 @@ public class ItemList {
 			return returnErrorMessage;
 		}
 	}
-
+//@author A0111082Y
 	// Undone item
 	public String undone(int index) {
 		String result = "";
@@ -208,7 +208,7 @@ public class ItemList {
 			return returnErrorMessage;
 		}
 	}
-
+	//@author A0111082Y
 	// Display the whole itemList in string format
 	public String toString() {
 		String result = "";
@@ -221,7 +221,7 @@ public class ItemList {
 		}
 		return result;
 	}
-
+	//@author A0111082Y
 	// Clear the whole itemList
 	public String clear() {
 		itemList.clear();
@@ -305,7 +305,7 @@ public class ItemList {
 		}
 
 	}
-
+	//@author A0111082Y
 	// Search certain key word in itemList
 	public String search(String searchKey) {
 		searchKey = searchKey.toLowerCase();
@@ -320,7 +320,7 @@ public class ItemList {
 
 		return result;
 	}
-
+	//@author A0111082Y
 	public ArrayList<Item> filterByTags(String tagString) {
 		String[] splitedTags = tagString.split("\\W+");
 		ArrayList<Item> itemWithTargetTags = new ArrayList<Item>();
@@ -340,18 +340,16 @@ public class ItemList {
 				}
 			}
 			if (currentMatchNumber == matchNumber) {
-				// String appendString = i.toString(); --remove later
-				// filteredList += appendString; --to remove later
-				// filteredList += "\n";
 				itemWithTargetTags.add(i);
 			}
 		}
 		return itemWithTargetTags;
 	}
-
+	
+//@author A0111082Y
 	public ArrayList<Item> filterByLocation(String locationString) {
 		String[] splitedTags = locationString.split("\\W+");
-		// String filteredList = ""; -remove later
+		
 		ArrayList<Item> itemWithTargetLocation = new ArrayList<Item>();
 		int matchNumber = splitedTags.length;
 		int currentMatchNumber;
@@ -369,15 +367,14 @@ public class ItemList {
 				}
 			}
 			if (currentMatchNumber == matchNumber) {
-				// String appendString = i.toString(); --remove later
-				// filteredList += appendString; --to remove later
-				// filteredList += "\n";
 				itemWithTargetLocation.add(i);
 			}
 		}
 		return itemWithTargetLocation;
 	}
-
+	
+//@author A0111082Y
+	
 	/* Returns items with either start day or end date with the input date
 	 * Input string must follow the format  "yyyy-MM-dd HH:mm"
 	 */
@@ -421,17 +418,17 @@ public class ItemList {
 		return itemWithTargetDate;
 
 	}
-
+//@author A0111082Y
 	public ArrayList<Item> showCompletedList() {
 
 		return completedList;
 	}
-
+	//@author A0111082Y
 	public ArrayList<Item> showUncompletedList() {
 
 		return uncompletedList;
 	}
-
+	
 	public String showCompletedListString() {
 		String result = "";
 
@@ -526,3 +523,4 @@ public class ItemList {
 	}
 
 }
+//@author A0111082Y
