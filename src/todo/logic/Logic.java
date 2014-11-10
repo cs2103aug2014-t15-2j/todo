@@ -2,6 +2,7 @@ package todo.logic;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,25 +38,28 @@ public class Logic {
 	private static final String ERROR_INVALID_PARAM = "Invalid parameter";
 
 	private static final String MESSAGE_ADD_TIP = "Add command : add a new event or task.\neg add project meeting tomorrow @utown #cs2103 \n";
-	private static final String MESSAGE_DELETE_TIP = "delete a existing event or task.\ne.g. delete 3";
-	private static final String MESSAGE_DONE_TIP = "set an item as done.\ne.g. done 3";
-	private static final String MESSAGE_UNDONE_TIP = "set an item as undone.\ne.g. undone 3";
-	private static final String MESSAGE_UNDO_SUCCESS = "you have successfully undo the previous action.";
-	private static final String MESSAGE_CANNOT_UNDO = "no action can be undo.";
-	private static final String MESSAGE_REDO_SUCCESS = "you have successfully redo the previous action.";
-	private static final String MESSAGE_CANNOT_REDO = "no action can be redo.";
+	private static final String MESSAGE_DELETE_TIP = "Delete a existing event or task.\ne.g. delete 3";
+	private static final String MESSAGE_DONE_TIP = "Set an item as done.\ne.g. done 3";
+	private static final String MESSAGE_UNDONE_TIP = "Set an item as undone.\ne.g. undone 3";
+	private static final String MESSAGE_UNDO_SUCCESS = "You have successfully undone the previous action.";
+	private static final String MESSAGE_CANNOT_UNDO = "No action can be undone.";
+	private static final String MESSAGE_REDO_SUCCESS = "You have successfully redo the previous action.";
+	private static final String MESSAGE_CANNOT_REDO = "No action to redo.";
 	private static final String MESSAGE_SHOW_UNCOMPLETED = "Showing all uncompleted tasks";
 	private static final String MESSAGE_SHOW_COMPLETED = "Showing all completed tasks";
 	private static final String MESSAGE_SHOW_FILTERED = "Showing task(s) labeled with" + " " + "%1$s";
+	private static final String MESSAGE_SHOW_ALL = "Showing all tasks";
+	private static final String MESSAGE_ITEM_NOT_FOUND = "Could not find required item, showing all items";
 	
 	private static final String LOGIC_HASHTAG = "#";
-	private static final String LOGIC_AT ="@";
+	private static final String LOGIC_AT = "@";
 	private static final String LOGIC_EMPTY_STRING  = "";
 	private static final String LOGIC_COMPLETED = "completed";
 	private static final String LOGIC_UNCOMPLETED = "uncompleted";
 	private static final String LOGIC_DONE = "done";
 	private static final String LOGIC_UNDONE = "undone";
-
+	private static final String LOGIC_ON = "on";
+	private static final String LOGIC_N = "n";
 	/**
 	 * Private constructor for singleton Logic
 	 * 
@@ -215,13 +219,15 @@ public class Logic {
 			content = arr[1];
 			result = NLP.getInstance().addParser(content).execute();
 			setSystemMessage(result);
-		} else {
+		} 
+		// When add command does now come along with item description
+		else {
 			result += MESSAGE_ADD_TIP;
 			setSystemMessage(result);
 		}
-
+		
+		// When add operation is not successful due to other errors 
 		if(!getSystemMessage().equals(AddCommand.ADD_SUCCESSFUL)&&(!getSystemMessage().equals(AddCommand.INVALID_START_DUE))){
-			System.out.println(getSystemMessage());
 			stateHistory.undo();
 			result = MESSAGE_ADD_TIP;
 			setSystemMessage(result);
@@ -233,46 +239,47 @@ public class Logic {
 	private ArrayList<Item> read(String userInput) {  
 		String systemMessage = LOGIC_EMPTY_STRING ;
 		ArrayList<Item> filteredItems = new ArrayList<Item>();
+		
 		// Search for items in the item list with the matching hash tags
 		if ((userInput.contains(LOGIC_HASHTAG))) {
-			filteredItems =getFilteredHashTags(userInput);
+			filteredItems = getFilteredHashTags(userInput);
+			if (filteredItems.size()==0) {
+				filteredItems = replaceEmptyFilteredList();
+			}
 		}	
 		
 		// Search for items in the item list with the matching location
-		 else if (userInput.contains(LOGIC_AT)){
+		else if (userInput.contains(LOGIC_AT)){
 			 filteredItems = getFilteredLocation (userInput);
+			 if (filteredItems.size()==0) {
+					filteredItems = replaceEmptyFilteredList();
+				}
 		}
 		
 		// Search for items in the item list with the status completed
-		
-		 else if (checkCompletedInput(userInput)) {
-			filteredItems= getFilteredCompleted();
+		else if (checkCompletedInput(userInput)) {
+			filteredItems = getFilteredCompleted();
+			if (filteredItems.size()==0) {
+				filteredItems = replaceEmptyFilteredList();
+			}
 		} 
 		
 		// Search for items in the item list with the status uncompleted
-		 else if ((userInput.contains(LOGIC_UNDONE) || userInput
-				.contains(LOGIC_UNCOMPLETED))) {
+		else if (checkUncompletedInput(userInput)) {
 			 filteredItems = getFilteredUnompleted();
+			 if (filteredItems.size()==0) {
+					filteredItems = replaceEmptyFilteredList();
+				}
 		}	
-			// Filter by dateTime using standard format yyyy/MM/dd
-		 else if (userInput.contains("on")) {
-			int hasOnPosition = userInput.indexOf("n");
-			String dateString = "";
-			dateString = userInput.substring(hasOnPosition + 2,
-					userInput.length());
-			if (dateString.isEmpty()) {
-				setSystemMessage("Invalid: Missing date for filter.");
-			} else {
-				systemMessage =String.format(MESSAGE_SHOW_FILTERED, dateString) ;
-				setSystemMessage(systemMessage);
-				filteredItems = mItemList.filterByDateTime(dateString);
-			}
+		
+		// Filter by dateTime using standard format yyyy-MM-dd
+		else if (userInput.contains(LOGIC_ON)) {
+			filteredItems = getFilteredDate(userInput);
 		}
-		// FilteredList not required, returns complete list
+		
+		// FilteredList not required, returns the full list of items
 		else {
-			filteredItems = mItemList.getAllItems();
-			systemMessage = "Showing all Tasks";
-			setSystemMessage(systemMessage);
+			filteredItems = getFullList();
 		}
 		return filteredItems;
 	}
@@ -492,6 +499,57 @@ public class Logic {
 		return filterByUncompleted;
 	}
 	
+	private ArrayList<Item> getFilteredDate(String userInput) {
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> filterByDate = new ArrayList<Item> ();
+		int hasOnPosition = userInput.indexOf(LOGIC_N);
+		String dateString = LOGIC_EMPTY_STRING;
+		//Extract date from userInput
+		dateString = userInput.substring(hasOnPosition + 2,
+				userInput.length());
+		System.out.println(dateString);
+		// Case: Users wants to find task that are due today
+		
+		if(dateString.contains("today")){
+			dateString = LocalDateTime.now().toLocalDate().toString().replace("T", " ");
+			dateString = dateString.concat(" 11:00");
+			System.out.println(dateString);
+		}
+		else {
+		dateString = dateString.concat(" 11:00");
+		}
+		System.out.println(dateString.length());
+		if (dateString.length()==16) {
+			systemMessage =String.format(MESSAGE_SHOW_FILTERED, dateString.substring(0, 10)) ;
+			setSystemMessage(systemMessage);
+			filterByDate = mItemList.filterByDateTime(dateString);
+		} else {
+			setSystemMessage("Invalid: Missing date for filter.");
+		}
+		return filterByDate;
+	}
+	
+	/* Replace an empty filtered list with the full list of items when the above function could not find 
+	 * what the user is searching for
+	 */
+	private ArrayList<Item> replaceEmptyFilteredList() {
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> replaced = new ArrayList<Item> ();
+		replaced = mItemList.getAllItems();
+		systemMessage = MESSAGE_ITEM_NOT_FOUND;
+		setSystemMessage(systemMessage);
+		return replaced;
+	}
+	
+	private ArrayList<Item> getFullList() {
+		String systemMessage = LOGIC_EMPTY_STRING ;
+		ArrayList<Item> fullList = new ArrayList<Item> ();
+		fullList = mItemList.getAllItems();
+		systemMessage = MESSAGE_SHOW_ALL;
+		setSystemMessage(systemMessage);
+		return fullList;
+	}
+	
 	private boolean checkCompletedInput(String userInput){
 		userInput = userInput.toLowerCase();
 		if((userInput.contains(LOGIC_COMPLETED) || userInput.contains(LOGIC_DONE))
@@ -503,6 +561,16 @@ public class Logic {
 		}
 	}
 	
+	private boolean checkUncompletedInput(String userInput){
+		userInput = userInput.toLowerCase();
+		if ((userInput.contains(LOGIC_UNDONE) || userInput
+				.contains(LOGIC_UNCOMPLETED))) {
+			return true;
+		}
+		else {
+		return false;
+		}
+	}
 
 	// For GUI testing purpose
 	public String getListString() {
