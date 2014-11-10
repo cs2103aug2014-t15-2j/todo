@@ -38,6 +38,8 @@ public class Logic {
 	private static final String ERROR_MISSING_LOCATION = "Invalid: Missing location name";
 	private static final String ERROR_INVALID_COMMAND = "Invalid command";
 	private static final String ERROR_INVALID_PARAM = "Invalid parameter";
+	private static final String ERROR_BATCH_PARTIAL_SUCCESS = "Some operations did not complete sucessfully";
+	private static final String ERROR_INVALID_DATE_PARAMETER = "Invalid: Missing date for filter.";
 
 	private static final String MESSAGE_ADD_TIP = "Add command : add a new event or task.\neg add project meeting tomorrow @utown #cs2103 \n";
 	private static final String MESSAGE_DELETE_TIP = "Delete a existing event or task.\ne.g. delete 3";
@@ -62,6 +64,10 @@ public class Logic {
 	private static final String LOGIC_UNDONE = "undone";
 	private static final String LOGIC_ON = "on";
 	private static final String LOGIC_N = "n";
+	private static final String LOGIC_UPDATE_INDEX= "update index ";
+	private static final String LOGIC_TODAY= "today";
+	private static final String LOGIC_ADDTIME = " 11:00";
+	
 	/**
 	 * Private constructor for singleton Logic
 	 * 
@@ -325,7 +331,7 @@ public class Logic {
 		if (!updateInfo.isEmpty() && mItemList.validIndex(updateIndex - 1)) {
 			result = NLP.getInstance().updateParser(mItemList.getItem(updateIndex - 1), updateInfo).execute();
 			saveFile();
-			LogUtil.Log(TAG, "update index " + (updateIndex - 1));
+			LogUtil.Log(TAG, LOGIC_UPDATE_INDEX + (updateIndex - 1));
 		} else {
 			result = UpdateCommand.UPDATE_FAILED;
 		}
@@ -410,7 +416,7 @@ public class Logic {
 		}
 		
 		if(num != 0 && num != numOfItems){
-			this.setSystemMessage("Some operations have passed, some haven't");
+			this.setSystemMessage(ERROR_BATCH_PARTIAL_SUCCESS);
 		}else{
 			this.setSystemMessage(result);
 		}
@@ -509,16 +515,16 @@ public class Logic {
 		//Extract date from userInput
 		dateString = userInput.substring(hasOnPosition + 2,
 				userInput.length());
-		//System.out.println(dateString); -REMOVE!
+		
 		// Case: Users wants to find task that are due today
 		
-		if(dateString.contains("today")){
+		if(dateString.contains(LOGIC_TODAY)){
 			dateString = LocalDateTime.now().toLocalDate().toString().replace("T", " ");
-			dateString = dateString.concat(" 11:00");
+			dateString = dateString.concat(LOGIC_ADDTIME);
 			//System.out.println(dateString);
 		}
 		else {
-		dateString = dateString.concat(" 11:00");
+		dateString = dateString.concat(LOGIC_ADDTIME);
 		}
 		//System.out.println(dateString.length());
 		if (dateString.length()==16) {
@@ -526,7 +532,7 @@ public class Logic {
 			setSystemMessage(systemMessage);
 			filterByDate = mItemList.filterByDateTime(dateString);
 		} else {
-			setSystemMessage("Invalid: Missing date for filter.");
+			setSystemMessage(ERROR_INVALID_DATE_PARAMETER);
 		}
 		return filterByDate;
 	}
