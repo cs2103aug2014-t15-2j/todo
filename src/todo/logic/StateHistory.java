@@ -1,7 +1,9 @@
-package todo.model;
+package todo.logic;
 
 import java.text.ParseException;
 import java.util.Stack;
+
+import todo.model.ItemList;
 
 //@author A0098155W
 /**

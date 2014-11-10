@@ -1,4 +1,4 @@
-package todo.model;
+package todo.logic;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,9 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import todo.model.DateTime;
+import todo.model.Item;
+import todo.model.ItemList;
 import todo.storage.Storage;
 
 //@author A0098155W
