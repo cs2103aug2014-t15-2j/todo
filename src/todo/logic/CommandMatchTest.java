@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import todo.util.CommandType;
+import todo.model.CommandType;
 
 //@author A0098155W
 /**

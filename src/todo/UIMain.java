@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-import todo.util.CommandType;
 import todo.util.LogUtil;
 import todo.logic.Logic;
 import todo.util.StringUtil;

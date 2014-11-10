@@ -1,6 +1,6 @@
 package todo.logic;
 
-import todo.util.CommandType;
+import todo.model.CommandType;
 
 //@author A0098155W
 /**

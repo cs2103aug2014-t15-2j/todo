@@ -10,7 +10,6 @@ import javax.xml.transform.TransformerException;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
-import todo.util.CommandType;
 import todo.util.LogUtil;
 import todo.command.AddCommand;
 import todo.command.UpdateCommand;

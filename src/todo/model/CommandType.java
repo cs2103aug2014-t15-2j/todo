@@ -1,4 +1,4 @@
-package todo.util;
+package todo.model;
 
 //@author A0098155W
 /**
