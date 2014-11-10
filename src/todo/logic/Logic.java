@@ -54,6 +54,7 @@ public class Logic {
 	private static final String MESSAGE_SHOW_FILTERED = "Showing task(s) labeled with" + " " + "%1$s";
 	private static final String MESSAGE_SHOW_ALL = "Showing all tasks";
 	private static final String MESSAGE_ITEM_NOT_FOUND = "Could not find required item, showing all items";
+	private static final String MESSAGE_INVOKE_NLP_GENERAL_PARSER = "invalid command, invoke NLP general parser";
 	
 	private static final String LOGIC_HASHTAG = "#";
 	private static final String LOGIC_AT = "@";
@@ -172,7 +173,7 @@ public class Logic {
 			System.exit(0);
 		
 		case INVALID:
-			LogUtil.Log(TAG, "invalid command, invoke NLP general parser");
+			LogUtil.Log(TAG, MESSAGE_INVOKE_NLP_GENERAL_PARSER);
 			String standardInput = NLP.getInstance().generalParser(userInput);
 			if (userInput != standardInput) {
 				executeCommand(standardInput);
@@ -245,7 +246,7 @@ public class Logic {
 	}
 
 	private ArrayList<Item> read(String userInput) {  
-		String systemMessage = LOGIC_EMPTY_STRING ;
+		
 		ArrayList<Item> filteredItems = new ArrayList<Item>();
 		
 		// Search for items in the item list with the matching hash tags

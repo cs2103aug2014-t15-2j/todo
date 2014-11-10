@@ -57,6 +57,7 @@ public class DateTime {
 		}
 		return output;
 	}
+	//Format the string for writing into xml file
 	
 	public String writeString(){
 		return this.date.toString().replace("T", " ").substring(0, 16);
@@ -66,6 +67,8 @@ public class DateTime {
 	 * @return an exact cloned copy of itself
 	 * @throws ParseException
 	 */
+	
+	// This method provides deep clonning function or the datetime object.
 	public DateTime cloneDateTime() throws ParseException {
 		
 		DateTime clonnedDateTime = null;
