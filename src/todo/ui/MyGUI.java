@@ -112,7 +112,8 @@ public class MyGUI extends JFrame implements ActionListener {
 				frame.add(createMessagePane(), gbc);
 
 				gbc.gridy++;
-				frame.add(createTextFieldPane(), gbc);        		
+				frame.add(createTextFieldPane(), gbc);    
+				
 				// Focus the textField when open the GUI
 				frame.addWindowListener(new WindowAdapter() {
 					public void windowOpened(WindowEvent e) {
@@ -154,6 +155,9 @@ public class MyGUI extends JFrame implements ActionListener {
 
 	// This method defines individual item panel
 	public JPanel createItemPane(int index) {
+		
+		assert(index < dynamicList.size());
+		
 		if(index < dynamicList.size()) {
 			JPanel pane = new JPanel(){
 
