@@ -235,6 +235,7 @@ public class ItemList {
 		return result;
 	}
 
+	//@author A0115992X
 	// Sort the itemList by itemId in ascending order
 	public void sortByItemId() {
 		Collections.sort(itemList, new Comparator<Item>() {
@@ -245,6 +246,7 @@ public class ItemList {
 
 	}
 
+	//@author A0115992X
 	// Sort the itemList according to alphabetical order of description
 	public void sortByFirstAlphabet() {
 		Collections.sort(itemList, new Comparator<Item>() {
@@ -256,8 +258,8 @@ public class ItemList {
 		});
 	}
 
-	// Sort the itemList from early to later by comparing start time with
-	// earliest first with items without startdatetime at the back
+	//@author A0115992X
+	// Sort the itemList from early to later by comparing start time
 	public void sortByTimeIncreasing() {
 		ArrayList<Item> listWithoutStartDateTime = new ArrayList<Item>();
 		// Extract items without start-time and stores them in a list
@@ -282,6 +284,7 @@ public class ItemList {
 		}
 	}
 
+	//@author A0115992X
 	// Sort the itemList from latest first with items without startdatetime at
 	// the back
 	public void sortByTimeDecreasing() {
@@ -323,7 +326,7 @@ public class ItemList {
 
 		return result;
 	}
-	//@author A0111082Y
+	//@author A0115992X
 	public ArrayList<Item> filterByTags(String tagString) {
 		String[] splitedTags = tagString.split("\\W+");
 		ArrayList<Item> itemWithTargetTags = new ArrayList<Item>();
@@ -431,7 +434,7 @@ public class ItemList {
 
 		return uncompletedList;
 	}
-	
+
 	public String showCompletedListString() {
 		String result = "";
 
