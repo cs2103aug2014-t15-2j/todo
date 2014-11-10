@@ -43,6 +43,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	
 	// Layout setting strings
 	public static final String NAME_WINDOW = "JustDidIt";
+	public static final String FONT = "Verdana";
 	
 	// Command string
 	public static final String COMMAND_SHOW = "show";
@@ -56,6 +57,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	public static final int PARAM_DIMENSION_SCROLL = 400;
 	public static final int PARAM_DIMENSION_ITEMPANE = 50;
 	public static final int PARAM_BORDER = 0;
+	public static final int PARAM_FONT_SIZE_INDEX = 13;
 	
 	// Common parameters
 	public static final int PARAM_INIT = 0;
@@ -200,7 +202,7 @@ public class MyGUI extends JFrame implements ActionListener {
 			JPanel indexPane = new JPanel();
 			indexPane.setLayout(new BorderLayout());
 			JLabel indexLabel = new JLabel("   " + displayIndex + " ");
-			indexLabel.setFont(new Font("Verdana", Font.BOLD, 13));
+			indexLabel.setFont(new Font(FONT, Font.BOLD, PARAM_FONT_SIZE_INDEX));
 			indexPane.add(indexLabel, BorderLayout.WEST);
 
 			// Displaying item completion status by check boxes
@@ -252,7 +254,7 @@ public class MyGUI extends JFrame implements ActionListener {
 			
 			// Defines DateTime TextArea
 			JTextArea dateTimeTextArea = new JTextArea(18, 18);
-			dateTimeTextArea.setFont(new Font("Verdana", Font.PLAIN, 12));
+			dateTimeTextArea.setFont(new Font(FONT, Font.PLAIN, 12));
 
 			if(index<dynamicList.size()){
 				String startDateTime;
@@ -301,7 +303,7 @@ public class MyGUI extends JFrame implements ActionListener {
 	public JPanel createTextFieldPane() {
 		JPanel pane = new JPanel();
 		textField = new JTextField(50);
-		textField.setFont(new Font("Verdana", Font.BOLD, 14));
+		textField.setFont(new Font(FONT, Font.BOLD, 14));
 		textField.setBackground(Color.WHITE);
 		textField.addActionListener(this);
 		pane.setBackground(Color.WHITE);
