@@ -40,6 +40,27 @@ import todo.model.Item;
 
 @SuppressWarnings("serial")
 public class MyGUI extends JFrame implements ActionListener {
+	
+	// Layout setting strings
+	public static final String NAME_WINDOW = "JustDidIt";
+	
+	// Command string
+	public static final String COMMAND_SHOW = "show";
+	
+	// Layout setting parameters
+	public static final int PARAM_INSETS = 4;
+	public static final int PARAM_GRIDX = 0;
+	public static final int PARAM_GRIDY = 0;
+	public static final int PARAM_WEIGHTX = 1;
+	public static final int PARAM_WEIGHTY = 1;
+	public static final int PARAM_DIMENSION_SCROLL = 400;
+	public static final int PARAM_DIMENSION_ITEMPANE = 50;
+	public static final int PARAM_BORDER = 0;
+	
+	// Common parameters
+	public static final int PARAM_INIT = 0;
+	public static final int PARAM_INCRE = 1;
+	
 
 	public GUIcontrol guiControl = null;
 	protected JTextField textField;
@@ -64,7 +85,7 @@ public class MyGUI extends JFrame implements ActionListener {
 					ex.printStackTrace();
 				}         
 
-				JFrame frame = new JFrame("JustDidIt");
+				JFrame frame = new JFrame(NAME_WINDOW);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);      
 
 				GridBagLayout gridbag = new GridBagLayout(); 
@@ -72,10 +93,10 @@ public class MyGUI extends JFrame implements ActionListener {
 				frame.getContentPane().setBackground(Color.WHITE);
 
 				GridBagConstraints gbc = new GridBagConstraints();
-				gbc.insets = new Insets(4, 4, 4, 4);
-				gbc.gridx = 0;
-				gbc.weightx = 1;
-				gbc.gridy = 0;
+				gbc.insets = new Insets(PARAM_INSETS, PARAM_INSETS, PARAM_INSETS, PARAM_INSETS);
+				gbc.gridx = PARAM_GRIDX;
+				gbc.weightx = PARAM_WEIGHTX;
+				gbc.gridy = PARAM_GRIDY;
 				gbc.fill = GridBagConstraints.HORIZONTAL;
 
 				// Link MyGUI to GUIcontrol that can access Logic
@@ -88,7 +109,7 @@ public class MyGUI extends JFrame implements ActionListener {
 				}
 
 				try {
-					dynamicList = guiControl.sendToGUI("show");
+					dynamicList = guiControl.sendToGUI(COMMAND_SHOW);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -98,11 +119,11 @@ public class MyGUI extends JFrame implements ActionListener {
 				scrollPane = new JScrollPane(createMainItemPane()) {
 					@Override
 					public Dimension getPreferredSize() {
-						return new Dimension(400, 400);
+						return new Dimension(PARAM_DIMENSION_SCROLL, PARAM_DIMENSION_SCROLL);
 					}           	
 					@Override
 					public Dimension getMinimumSize() {
-						return new Dimension(400, 400);
+						return new Dimension(PARAM_DIMENSION_SCROLL, PARAM_DIMENSION_SCROLL);
 					}
 				};
 				scrollPane.setBackground(Color.WHITE);
@@ -132,19 +153,19 @@ public class MyGUI extends JFrame implements ActionListener {
 	public JPanel createMainItemPane() {
 		mainPane = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(4, 4, 4, 4);
+		gbc.insets = new Insets(PARAM_INSETS, PARAM_INSETS, PARAM_INSETS, PARAM_INSETS);
 		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.gridx = 0;
-		gbc.weightx = 1.0;
-		gbc.gridy = 0;
+		gbc.gridx = PARAM_GRIDX;
+		gbc.weightx = PARAM_WEIGHTX;
+		gbc.gridy = PARAM_GRIDY;
 		gbc.fill = GridBagConstraints.HORIZONTAL; 
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 
-		for(int i = 0; i <dynamicList.size(); i++) {
+		for(int i = PARAM_INIT; i <dynamicList.size(); i++) {
 			mainPane.add(createItemPane(i), gbc);            
 			gbc.gridy++; 
 		}
-		gbc.weighty = 1;
+		gbc.weighty = PARAM_WEIGHTY ;
 		gbc.fill = GridBagConstraints.BOTH;
 		JPanel emptyPanel = new JPanel();
 
@@ -163,19 +184,19 @@ public class MyGUI extends JFrame implements ActionListener {
 
 				@Override
 				public Dimension getPreferredSize() {
-					return new Dimension(50, 50);
+					return new Dimension(PARAM_DIMENSION_ITEMPANE, PARAM_DIMENSION_ITEMPANE);
 				}
 
 				@Override
 				public Dimension getMinimumSize() {
-					return new Dimension(50, 50);
+					return new Dimension(PARAM_DIMENSION_ITEMPANE, PARAM_DIMENSION_ITEMPANE);
 				}
 
 			};
 			pane.setLayout(new BorderLayout());
 
 			// Displaying item index
-			int displayIndex = index + 1;
+			int displayIndex = index + PARAM_INCRE;
 			JPanel indexPane = new JPanel();
 			indexPane.setLayout(new BorderLayout());
 			JLabel indexLabel = new JLabel("   " + displayIndex + " ");
@@ -269,7 +290,8 @@ public class MyGUI extends JFrame implements ActionListener {
 		messageLabel = new JLabel();
 		pane.add(messageLabel);
 		pane.setBackground(Color.WHITE);
-		pane.setBorder(new EmptyBorder(0, 0, 0, 0) );
+		pane.setBorder(new EmptyBorder(PARAM_BORDER, PARAM_BORDER, 
+				PARAM_BORDER, PARAM_BORDER) );
 
 		return pane;
 
@@ -324,18 +346,18 @@ public class MyGUI extends JFrame implements ActionListener {
 		mainPane.repaint();
 
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(4, 4, 4, 4);
+		gbc.insets = new Insets(PARAM_INSETS, PARAM_INSETS, PARAM_INSETS, PARAM_INSETS);
 		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.gridx = 0;
-		gbc.weightx = 1.0;
-		gbc.gridy = 0;
+		gbc.gridx = PARAM_GRIDX;
+		gbc.weightx = PARAM_WEIGHTX;
+		gbc.gridy = PARAM_GRIDY;
 		gbc.fill = GridBagConstraints.HORIZONTAL;           
 
-		for(int i = 0; i < dynamicList.size(); i++){
+		for(int i = PARAM_INIT; i < dynamicList.size(); i++){
 			mainPane.add(createItemPane(i), gbc);            
 			gbc.gridy++; 
 		}
-		gbc.weighty = 1;
+		gbc.weighty = PARAM_WEIGHTY;
 		gbc.fill = GridBagConstraints.BOTH;
 		mainPane.add(new JPanel(), gbc);
 
