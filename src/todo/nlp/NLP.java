@@ -75,7 +75,7 @@ public class NLP {
 		message.deleteEscapeCharaster();
 		// step6 delete whole sentence quotation marks
 		message.deleteFullQuote();
-		// step7 trim and format message as description
+		// step7 format message as description
 		message.trim();
 		message.formatText();
 
