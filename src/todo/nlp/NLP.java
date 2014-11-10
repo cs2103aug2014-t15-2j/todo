@@ -65,12 +65,12 @@ public class NLP {
 		
 		// step1 correct date format
 		message.correctDateFormat();
-		// step2 find possible date time
-		dateTimeList = NLPUtil.extractDateTime(message);
+		// step2 find tags
+		tagList = NLPUtil.extractTags(message);
 		// step3 find location
 		location = NLPUtil.extractLocation(message);
-		// step4 find tags
-		tagList = NLPUtil.extractTags(message);
+		// step4 find possible date time
+		dateTimeList = NLPUtil.extractDateTime(message);
 		// step5 delete escape characters
 		message.deleteEscapeCharaster();
 		// step6 delete whole sentence quotation marks
