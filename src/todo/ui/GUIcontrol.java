@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
 
 import todo.logic.Logic;
 import todo.model.*;
-
+//@author A0111082Y
 public class GUIcontrol {
 	private Logic logic;
 	private ItemList allTasks;

@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.time.*;
 
+//@author A0111082Y
 public class DateTime {
 	public static final String DATE_WITH_TIME = "MM/dd/yyyy HH:mm:ss";
 	public static final String DATE_WITHOUT_TIME = "MM/dd/yyyy";
@@ -44,19 +45,9 @@ public class DateTime {
 	public boolean hasTime() {
 		return this.hasTime;
 	}
-
+	//This methods converts a dateTime object to a string format
 	public String toString() {
-		/* unwanted characters show up when command "add meet profs in 5 hours " is entered
-		String output;
-	
-		if (hasTime) {
-			output =this.date.toString();
-			output = output.replace("T", " ");
-		}else{
-			output = this.date.toLocalDate().toString();
-		}
-		return output;
-		*/
+		
 		String output = this.date.toString().replace("T", " ");
 		
 		if (hasTime) {
@@ -96,12 +87,12 @@ public class DateTime {
 	public LocalDateTime convertDateToLocalDateTime (Date targetDate){
 		Instant instant = Instant.ofEpochMilli(targetDate.getTime());
 		LocalDateTime formattedDate = LocalDateTime.ofInstant(instant, ZoneOffset.of("+08"));
-		//System.out.println(formattedDate);
+		
 		return formattedDate;
 		
 	}
 
-	// Checks if the due date is before the start date
+	// This method checks if the due date is before the start date
 		public static boolean isInValidDate(LocalDateTime startDate,
 				LocalDateTime dueDate) {
 			boolean invalid;

@@ -10,7 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Test;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
-
+//@author A0111082Y
 public class GUIcontrolTest {
 
 	@Test
